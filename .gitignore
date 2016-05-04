@@ -2,8 +2,6 @@
 .DS_Store
 .RData
 .Rdata
-/Data
-/wiki
-/Visualizations
-/Goodness_of_Fit
-/Logs
+*/Data
+*/Goodness_of_Fit
+*/Visualizations
