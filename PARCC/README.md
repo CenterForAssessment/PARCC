@@ -1,4 +1,4 @@
-PARCC Consortium
+PARCC
 ======
 
 SGP analysis source code & documentation
