@@ -13,21 +13,24 @@ require(data.table)
 
 trimWhiteSpace <- function(line) gsub("(^ +)|( +$)", "", line)
 
-PARCC_Data_LONG_2015 <- fread("~/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/Simulations/PARCC_Data_LONG_2015-Simulated.csv")
-PARCC_Data_LONG_2016 <- fread("~/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/Simulations/PARCC_Data_LONG_2016-Simulated.csv")
+PARCC_Data_LONG_2015 <- fread("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/Simulations/PARCC_Data_LONG_2015-Simulated.csv")
+PARCC_Data_LONG_2016 <- fread("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/Simulations/PARCC_Data_LONG_2016-Simulated.csv")
 
 ###  Set names based on Pearson file layout
 parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode", 
-										 "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler", "Mode")
+										 "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler", "TestFormat")
 
 center.var.names <- c("StudentGrowthPercentileComparedtoState", "StudentGrowthPercentileComparedtoPARCC", "SGPPreviousTestCodeState",
 											"SGPPreviousTestCodePARCC", "SGPUpperBoundState", "SGPLowerBoundState", "SGPUpperBoundPARCC", "SGPLowerBoundPARCC")
 
-setnames(PARCC_Data_LONG_2015, parcc.var.names)
-setnames(PARCC_Data_LONG_2016, parcc.var.names)
+all.var.names <- c(head(parcc.var.names,-1), center.var.names, "TestFormat")
+
+setnames(PARCC_Data_LONG_2015, all.var.names)
+setnames(PARCC_Data_LONG_2016, all.var.names)
 
 ####   Create PARCC_Data_LONG with Constructed Vars included
 PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG_2015, PARCC_Data_LONG_2016))
+# PARCC_Data_LONG[, SummativeCSEM := round(SummativeCSEM, 1)]
 
 ###
 ###       Data Cleaning
@@ -40,7 +43,7 @@ setnames(PARCC_Data_LONG, "PARCCStudentIdentifier", "ID")
 
 ####  CONTENT_AREA from TestCode
 PARCC_Data_LONG[, CONTENT_AREA := factor(TestCode)]
-levels(PARCC_Data_LONG$CONTENT_AREA) <- c("", "ALGEBRA_I", "ALGEBRA_II", rep("ELA", 9), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
+levels(PARCC_Data_LONG$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 9), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
 PARCC_Data_LONG[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ####  GRADE from GradeLevelWhenAssessed
@@ -84,10 +87,10 @@ PARCC_Data_LONG_SS[, CONTENT_AREA := paste(CONTENT_AREA, "SS", sep="_")]
 setnames(PARCC_Data_LONG_SS, c("SummativeScaleScore", "SummativeCSEM"), c("SCALE_SCORE", "SCALE_SCORE_CSEM"))
 
 ####  Theta data set  -  create IRT CSEM First
-scaling.constants <- as.data.table(read.csv("~/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
+scaling.constants <- as.data.table(read.csv("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
 setkey(scaling.constants, CONTENT_AREA, GRADE)
 setkey(PARCC_Data_LONG, CONTENT_AREA, GRADE)
-PARCC_Data_LONG<- scaling.constants[PARCC_Data_LONG]
+PARCC_Data_LONG <- scaling.constants[PARCC_Data_LONG]
 
 PARCC_Data_LONG[, SCALE_SCORE_CSEM := (as.numeric(SummativeCSEM))/a] # NO -b here...
 
@@ -97,7 +100,8 @@ setnames(PARCC_Data_LONG, c("IRTTheta", "SummativeScaleScore"), c("SCALE_SCORE",
 
 ####  Stack Theta and SS Data
 PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG, PARCC_Data_LONG_SS), fill=TRUE)
-PARCC_Data_LONG <- PARCC_Data_LONG[CONTENT_AREA!=""] #[!is.na(CONTENT_AREA)] - Hopefully not a problem with actual data
+PARCC_Data_LONG <- PARCC_Data_LONG[CONTENT_AREA!="" & CONTENT_AREA!="_SS"] #[!is.na(CONTENT_AREA)] - Hopefully not a problem with actual data
+PARCC_Data_LONG[, CONTENT_AREA := as.character(CONTENT_AREA)]
 PARCC_Data_LONG[which(!is.na(SCALE_SCORE) & is.na(SCALE_SCORE_CSEM)), VALID_CASE := "INVALID_CASE"] # remove to avoid problems with SIMEX, etc.
 
-save(PARCC_Data_LONG, file = "Data/PARCC_Data_LONG_Simulated.Rdata")
+save(PARCC_Data_LONG, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.Rdata")
