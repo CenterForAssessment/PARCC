@@ -9,7 +9,7 @@
 require(SGP)
 
 
-### Load Data
+### Load Data & configurations
 
 load("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.Rdata")
 
@@ -41,26 +41,64 @@ PARCC_2016.config <- c(
 )
 
 
-### abcSGP
+### prepareSGP
 
-PARCC_SGP <- abcSGP(
-		PARCC_Data_LONG,
-		sgp.config = PARCC_2016.config,
-		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "visualizeSGP", "outputSGP"),
+PARCC_SGP <- prepareSGP(PARCC_Data_LONG)
+
+
+### analyzeSGP (for student growth percentiles)
+
+PARCC_SGP <- analyzeSGP(
+		PARCC_SGP,
+		sgp.config=PARCC_2016.config,
 		sgp.percentiles=TRUE,
+		sgp.projections=FALSE,
+		sgp.projections.lagged=FALSE,
+		sgp.percentiles.baseline=FALSE,
+		sgp.projections.baseline=FALSE,
+		sgp.projections.lagged.baseline=FALSE,
+		calculate.simex=TRUE,
+		get.cohort.data.info=TRUE,
+		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4)))
+#		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 25, SIMEX=25)))
+
+
+### analyzeSGP (for student growth projections)
+
+PARCC_SGP <- analyzeSGP(
+		PARCC_SGP,
+		sgp.config=PARCC_2016.config,
+		sgp.percentiles=FALSE,
 		sgp.projections=TRUE,
 		sgp.projections.lagged=TRUE,
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		calculate.simex=TRUE,
-		save.intermediate.results=FALSE,
-		get.cohort.data.info=TRUE,
-        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 25, SIMEX=25)))
-		# parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=4, PROJECTIONS=4, LAGGED_PROJECTIONS=4, SGP_SCALE_SCORE_TARGETS=4)))
+		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PROJECTIONS=4, LAGGED_PROJECTIONS=4)))
+
+
+### combineSGP
+
+PARCC_SGP <- combineSGP(
+		PARCC_SGP,
+		sgp.target.scale.scores=TRUE,
+		sgp.config=PARCC_2016.config,
+		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SGP_SCALE_SCORE_TARGETS=4)))
+
+
+### visualizeSGP
+
+visualizeSGP(
+	PARCC_SGP,
+	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	sgPlot.demo.report=TRUE)
+
+
+### outputSGP
+
+outputSGP(PARCC_SGP)
 
 
 ### Save results
 
 save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
-
