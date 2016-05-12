@@ -14,6 +14,7 @@ require(SGP)
 load("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.Rdata")
 
 source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
+source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
 source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
 source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
