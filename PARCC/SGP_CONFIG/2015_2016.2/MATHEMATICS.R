@@ -8,7 +8,8 @@ MATHEMATICS_2015_2016.config <- list(
 	MATHEMATICS.2015_2016 = list(
 		sgp.content.areas=rep("MATHEMATICS", 2),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
-		sgp.grade.sequences=list(as.character(3:4), as.character(4:5), as.character(5:6), as.character(6:7), as.character(7:8)))
+		sgp.grade.sequences=list(as.character(3:4), as.character(4:5), as.character(5:6), as.character(6:7), as.character(7:8)),
+		sgp.projection.sequence = c("MATHEMATICS", "MATHEMATICS_INTGRT"))
 )
 
 ALGEBRA_I.2015_2016.config <- list(
