@@ -168,3 +168,10 @@ PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG, PARCC_Data_LONG_SS), fill=TRU
 
 ####  Save Initial LONG Data
 save(PARCC_Data_LONG, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.Rdata")
+
+#####  Create SQLite Databases for each year / period
+require(RSQLite)
+file.create(parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite")
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_1", value=PARCC_Data_LONG[YEAR == "2014_2015.1"])
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2", value=PARCC_Data_LONG[YEAR == "2014_2015.2"])
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2016_1", value=PARCC_Data_LONG[YEAR == "2015_2016.1"])

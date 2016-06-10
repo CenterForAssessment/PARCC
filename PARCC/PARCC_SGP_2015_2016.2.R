@@ -4,21 +4,28 @@
 ###                                                                           ###
 #################################################################################
 
+
+if (!exists("sgp.test")) sgp.test <- FALSE
+workers <- parallel::detectCores()/2
+
 ### Load Packages
 
 require(SGP)
+require(RSQLite)
+# require(data.table)
 
-setwd("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC")
+setwd("./PARCC")
 
 
 ### Load Data & configurations
 
-load("Data/PARCC_Data_LONG_2016.Rdata")
+# load("Data/PARCC_Data_LONG_2016.Rdata")
+parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
 
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
@@ -47,7 +54,8 @@ PARCC_2015_2016.2.config <- c(
 
 PARCC_SGP <- updateSGP(
 		what_sgp_object=PARCC_SGP,
-		with_sgp_data_LONG=PARCC_Data_LONG_2016,
+		# with_sgp_data_LONG=PARCC_Data_LONG_2016,
+		with_sgp_data_LONG = dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2"),
 		sgp.config = PARCC_2015_2016.2.config,
 		steps=c("prepareSGP", "analyzeSGP"),
 		sgp.percentiles = TRUE,
@@ -59,23 +67,25 @@ PARCC_SGP <- updateSGP(
 		sgp.percentiles.equated = FALSE,
 		simulate.sgps = TRUE,
 		calculate.simex = TRUE,
-		goodness.of.fit.print=TRUE,
+		sgp.test.cohort.size= if (sgp.test) 1500 else NULL,     ####
+		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ## -- Turn OFF these 3 for real analyses
+		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 12, SIMEX=12)))
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 ### analyzeSGP (for student growth projections)
 
 PARCC_SGP <- analyzeSGP(
 		PARCC_SGP,
-		sgp.config=PARCC_2016.config,
+		sgp.config=PARCC_2015_2016.2.config,
 		sgp.percentiles=FALSE,
 		sgp.projections=TRUE,
 		sgp.projections.lagged=TRUE,
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS=10, LAGGED_PROJECTIONS=10))) # 4:15 (4:50 @ 12)
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 
 ### combineSGP
@@ -83,23 +93,23 @@ PARCC_SGP <- analyzeSGP(
 PARCC_SGP <- combineSGP(
 		PARCC_SGP,
 		sgp.target.scale.scores=TRUE,
-		sgp.config=PARCC_2016.config,
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS=10)))
+		sgp.config=PARCC_2015_2016.2.config,
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
 
 save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 
 ### visualizeSGP
 
-visualizeSGP(
-	PARCC_SGP,
-	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-	sgPlot.demo.report=TRUE)
+# visualizeSGP(
+# 	PARCC_SGP,
+# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+# 	sgPlot.demo.report=TRUE)
 
 
 ### outputSGP
 
-outputSGP(PARCC_SGP)
+outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data")
 
 
 ### Save results
