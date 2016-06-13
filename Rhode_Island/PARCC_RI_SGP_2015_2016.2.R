@@ -100,8 +100,12 @@ Rhode_Island_SGP <- combineSGP(
 		Rhode_Island_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-3))))
 
+
+### Save results
+
+dir.create("Data")
 save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
 
 
@@ -117,7 +121,4 @@ save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
 
 outputSGP(Rhode_Island_SGP, output.type="LONG_FINAL_YEAR_Data")
 
-
-### Save results
-
-save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+q("no")

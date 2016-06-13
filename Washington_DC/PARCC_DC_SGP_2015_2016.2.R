@@ -100,9 +100,13 @@ Washington_DC_SGP <- combineSGP(
 		Washington_DC_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-3))))
 
-save(Washington_DC_SGP, file="Data/Washington_DC_SGP.Rdata")
+
+### Save results
+
+dir.create("Data")
+save(Washington_DC_SGP
 
 
 ### visualizeSGP
@@ -117,7 +121,4 @@ save(Washington_DC_SGP, file="Data/Washington_DC_SGP.Rdata")
 
 outputSGP(Washington_DC_SGP, output.type="LONG_FINAL_YEAR_Data")
 
-
-### Save results
-
-save(Washington_DC_SGP, file="Data/Washington_DC_SGP.Rdata")
+q("no")

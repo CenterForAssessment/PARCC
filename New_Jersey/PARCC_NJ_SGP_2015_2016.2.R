@@ -100,8 +100,12 @@ New_Jersey_SGP <- combineSGP(
 		New_Jersey_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-3))))
 
+
+### Save results
+
+dir.create("Data")
 save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
 
 
@@ -117,7 +121,4 @@ save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
 
 outputSGP(New_Jersey_SGP, output.type="LONG_FINAL_YEAR_Data")
 
-
-### Save results
-
-save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
+q("no")

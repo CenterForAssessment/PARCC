@@ -7,17 +7,20 @@
 ### Load Packages
 
 require(SGP)
+require(RSQLite)
+require(data.table)
 
-setwd("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC")
+setwd("./PARCC")
 
 ### Load Data & configurations
 
-load("Data/PARCC_Data_LONG.Rdata")
+# load("Data/PARCC_Data_LONG.Rdata")
+parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
 
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
-source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
+source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
 
 PARCC_2015_2016.1.config <- c(
 	ELA_2015_2016.1.config,
@@ -35,9 +38,13 @@ PARCC_2015_2016.1.config <- c(
 ### abcSGP
 
 PARCC_SGP <- abcSGP(
-		PARCC_Data_LONG,
+		state="PARCC",
+		sgp_object=rbindlist(list(
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2015_2"),
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1"))),
 		sgp.config = PARCC_2015_2016.1.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+		prepareSGP.create.additional.variables=TRUE,
 		sgp.percentiles=TRUE,
 		sgp.projections=FALSE,
 		sgp.projections.lagged=FALSE,
@@ -47,7 +54,7 @@ PARCC_SGP <- abcSGP(
 		calculate.simex=TRUE,
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_FINAL_YEAR_Data"),
-        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 5, SIMEX=5)))
+        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 12, SIMEX=12)))
 
 ###  Save object
 

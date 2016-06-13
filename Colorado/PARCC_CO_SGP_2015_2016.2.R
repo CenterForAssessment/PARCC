@@ -91,7 +91,7 @@ Colorado_SGP <- analyzeSGP(
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
 		# sgp.sqlite=TRUE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = (workers-2), LAGGED_PROJECTIONS = (workers-4))))
 
 
 ### combineSGP
@@ -100,8 +100,12 @@ Colorado_SGP <- combineSGP(
 		Colorado_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-4))))
 
+
+### Save results
+
+dir.create("Data")
 save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
 
 
@@ -117,7 +121,4 @@ save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
 
 outputSGP(Colorado_SGP, output.type="LONG_FINAL_YEAR_Data")
 
-
-### Save results
-
-save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
+q("no")

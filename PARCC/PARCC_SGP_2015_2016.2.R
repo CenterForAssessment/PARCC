@@ -18,6 +18,7 @@ setwd("./PARCC")
 
 
 ### Load Data & configurations
+load("Data/PARCC_SGP.Rdata")
 
 # load("Data/PARCC_Data_LONG_2016.Rdata")
 parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
@@ -50,6 +51,7 @@ PARCC_2015_2016.2.config <- c(
 	INTEGRATED_MATH_3_SS.2015_2016.config
 )
 
+
 ### updateSGP
 
 PARCC_SGP <- updateSGP(
@@ -72,7 +74,12 @@ PARCC_SGP <- updateSGP(
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
+		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(TAUS = workers, SIMEX = workers)))
+
+### Save results
+
+dir.create("Data")
+save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 ### analyzeSGP (for student growth projections)
 
@@ -85,7 +92,7 @@ PARCC_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = (workers-2), LAGGED_PROJECTIONS = (workers-4))))
 
 
 ### combineSGP
@@ -94,7 +101,9 @@ PARCC_SGP <- combineSGP(
 		PARCC_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-4))))
+
+### Save results
 
 save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
@@ -111,7 +120,4 @@ save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data")
 
-
-### Save results
-
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+q("no")
