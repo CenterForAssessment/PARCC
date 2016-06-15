@@ -12,21 +12,17 @@ workers <- parallel::detectCores()/2
 
 require(SGP)
 require(RSQLite)
-# require(data.table)
-
-setwd("./PARCC")
 
 
 ### Load Data & configurations
-load("Data/PARCC_SGP.Rdata")
+load("Data/PARCC_SGP-Sim.Rdata")
 
-# load("Data/PARCC_Data_LONG_2016.Rdata")
-parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
@@ -74,12 +70,11 @@ PARCC_SGP <- updateSGP(
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(TAUS = workers, SIMEX = workers)))
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 ### Save results
 
-dir.create("Data")
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
 
 ### analyzeSGP (for student growth projections)
 
@@ -105,7 +100,7 @@ PARCC_SGP <- combineSGP(
 
 ### Save results
 
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
 
 
 ### visualizeSGP

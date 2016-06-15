@@ -4,23 +4,23 @@
 ###                                                                           ###
 #################################################################################
 
+workers <- parallel::detectCores()/2
+
 ### Load Packages
 
 require(SGP)
 require(RSQLite)
 require(data.table)
 
-setwd("./PARCC")
-
 ### Load Data & configurations
 
 # load("Data/PARCC_Data_LONG.Rdata")
-parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
+source("../PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
 
 PARCC_2015_2016.1.config <- c(
 	ELA_2015_2016.1.config,
@@ -54,8 +54,10 @@ PARCC_SGP <- abcSGP(
 		calculate.simex=TRUE,
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_FINAL_YEAR_Data"),
-        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = 12, SIMEX=12)))
+        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX=workers)))
 
 ###  Save object
 
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
+
+q("no")

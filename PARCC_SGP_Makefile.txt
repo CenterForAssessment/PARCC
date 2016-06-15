@@ -8,42 +8,53 @@
 mkdir SGP_Projects
 sudo mount /dev/xvdf SGP_Projects
 cd SGP_Projects
-mkdir PARCC
 cd PARCC
-mkdir Colorado
-mkdir Illinois
-mkdir Maryland
-mkdir Massachusetts
-mkdir New_Jersey
-mkdir New_Mexico
-mkdir PARCC
-mkdir Rhode_Island
-mkdir Washington_DC
+
+#####  Run Full simulation.  Assumes starting from directory named 'PARCC' with all data and R code available
+
+######  First Terminal
+cd ./PARCC; nohup R CMD BATCH --vanilla PARCC_SGP_2015_2016.1.R &
+pid=$!
+wait $pid;  nohup R CMD BATCH --vanilla PARCC_SGP_2015_2016.2.R &
+
+######  Second Terminal
+cd ./Colorado; nohup R CMD BATCH --vanilla PARCC_CO_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../Illinois; nohup R CMD BATCH --vanilla PARCC_IL_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../Maryland; nohup R CMD BATCH --vanilla PARCC_MD_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../Massachusetts; nohup R CMD BATCH --vanilla PARCC_MA_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../New_Jersey; nohup R CMD BATCH --vanilla PARCC_NJ_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../New_Mexico; nohup R CMD BATCH --vanilla PARCC_NM_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../Rhode_Island; nohup R CMD BATCH --vanilla PARCC_RI_SGP_2015_2016.2.R &
+pid=$!
+wait $pid; cd ../Washington_DC; nohup R CMD BATCH --vanilla PARCC_DC_SGP_2015_2016.2.R &
 
 
+#####  Run tests with cohort of 1500 kids MAX
 #####  Individual state analyses on first terminal (first of two processes going simultaneously)
 
-export HOME=/home/ec2-user/SGP_Projects/PARCC
-cd
-pwd
-
-sgp_test=$'sgp.test <- FALSE'
-echo $sgp_test > PARCC.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/PARCC_SGP_2015_2016.2.R" >> PARCC.R | nohup R CMD BATCH --vanilla PARCC.R &
-echo $sgp_test > CO.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Colorado/PARCC_CO_SGP_2015_2016.2.R" >> CO.R | nohup R CMD BATCH --vanilla CO.R &
+sgp_test=$'sgp.test <- TRUE'
+cd ./PARCC | echo $sgp_test > PARCC.R | cat "./PARCC_SGP_2015_2016.2.R" >> PARCC.R | nohup R CMD BATCH --vanilla PARCC.R &
+cd ../Colorado; echo $sgp_test > CO.R | cat "./Colorado/PARCC_CO_SGP_2015_2016.2.R" >> CO.R | nohup R CMD BATCH --vanilla CO.R &
 pid=$!
-wait $pid; echo $sgp_test > IL.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Illinois/PARCC_IL_SGP_2015_2016.2.R" >> IL.R | nohup R CMD BATCH --vanilla IL.R &
+wait $pid; cd ../Illinois; echo $sgp_test > IL.R | cat "./PARCC_IL_SGP_2015_2016.2.R" >> IL.R | nohup R CMD BATCH --vanilla IL.R &
 pid=$!
-wait $pid; echo $sgp_test > MD.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Maryland/PARCC_MD_SGP_2015_2016.2.R" >> MD.R | nohup R CMD BATCH --vanilla MD.R &
+wait $pid; cd ../Maryland; echo $sgp_test > MD.R | cat "./PARCC_MD_SGP_2015_2016.2.R" >> MD.R | nohup R CMD BATCH --vanilla MD.R &
 pid=$!
-wait $pid; echo $sgp_test > MA.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Massachusetts/PARCC_MA_SGP_2015_2016.2.R" >> MA.R | nohup R CMD BATCH --vanilla MA.R &
+wait $pid; cd ../Massachusetts; echo $sgp_test > MA.R | cat "./Massachusetts/PARCC_MA_SGP_2015_2016.2.R" >> MA.R | nohup R CMD BATCH --vanilla MA.R &
 pid=$!
-wait $pid; echo $sgp_test > NJ.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/New_Jersey/PARCC_NJ_SGP_2015_2016.2.R" >> NJ.R | nohup R CMD BATCH --vanilla NJ.R &
+wait $pid; cd ../New_Jersey; echo $sgp_test > NJ.R | cat "./New_Jersey/PARCC_NJ_SGP_2015_2016.2.R" >> NJ.R | nohup R CMD BATCH --vanilla NJ.R &
 pid=$!
-wait $pid; echo $sgp_test > NM.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/New_Mexico/PARCC_NM_SGP_2015_2016.2.R" >> NM.R | nohup R CMD BATCH --vanilla NM.R &
+wait $pid; cd ../New_Mexico; echo $sgp_test > NM.R | cat "./New_Mexico/PARCC_NM_SGP_2015_2016.2.R" >> NM.R | nohup R CMD BATCH --vanilla NM.R &
 pid=$!
-wait $pid; echo $sgp_test > RI.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Rhode_Island/PARCC_RI_SGP_2015_2016.2.R" >> RI.R | nohup R CMD BATCH --vanilla RI.R &
+wait $pid; cd ../Rhode_Island; echo $sgp_test > RI.R | cat "./Rhode_Island/PARCC_RI_SGP_2015_2016.2.R" >> RI.R | nohup R CMD BATCH --vanilla RI.R &
 pid=$!
-wait $pid; echo $sgp_test > DC.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/Washington_DC/PARCC_DC_SGP_2015_2016.2.R" >> DC.R | nohup R CMD BATCH --vanilla DC.R &
+wait $pid; cd ../Washington_DC; echo $sgp_test > DC.R | cat "./Washington_DC/PARCC_DC_SGP_2015_2016.2.R" >> DC.R | nohup R CMD BATCH --vanilla DC.R &
 pid=$!
 wait $pid; find  -type f -iname "*.R" -delete
 
@@ -51,7 +62,7 @@ wait $pid; find  -type f -iname "*.R" -delete
 #####  PARCC Consortium on a seperate terminal (get two processes at once) -- Maybe just put this before Colorado to get it going first and then start the "waiting" system w/Colorado...
 
 sgp_test=$'sgp.test <- FALSE'
-echo $sgp_test > PARCC.R | cat "../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/PARCC_SGP_2015_2016.2.R" >> PARCC.R | nohup R CMD BATCH --vanilla PARCC.R &
+echo $sgp_test > PARCC.R | cat "./PARCC/PARCC_SGP_2015_2016.2.R" >> PARCC.R | nohup R CMD BATCH --vanilla PARCC.R &
 pid=$!; echo $pid
 wait $pid; rm PARCC.R
 

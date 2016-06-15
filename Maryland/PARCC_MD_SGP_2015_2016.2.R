@@ -14,15 +14,13 @@ require(SGP)
 require(RSQLite)
 require(data.table)
 
-setwd("./Maryland")
-
 
 ### Load configurations & combine
 
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("../../Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
@@ -50,7 +48,7 @@ PARCC_2015_2016.2.config <- c(
 
 ### prepareSGP with Data read in directly from SQLite database
 
-parcc.db <- "../../Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
 
 Maryland_SGP <- prepareSGP(
 	state = "MD",
