@@ -113,6 +113,6 @@ save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
 
 ### outputSGP
 
-outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data")
+outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"))
 
 q("no")
