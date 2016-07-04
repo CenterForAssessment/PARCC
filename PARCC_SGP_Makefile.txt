@@ -8,7 +8,11 @@
 mkdir SGP_Projects
 sudo mount /dev/xvdf SGP_Projects
 cd SGP_Projects
+
+
+git clone git@github.com:CenterForAssessment/PARCC.git
 cd PARCC
+###  Create symbolic links between R scripts and Dropbox (esp Data) directories
 
 #####  Run Full simulation.  Assumes starting from directory named 'PARCC' with all data and R code available
 

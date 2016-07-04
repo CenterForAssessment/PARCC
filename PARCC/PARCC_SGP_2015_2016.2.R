@@ -15,9 +15,10 @@ require(RSQLite)
 
 
 ### Load Data & configurations
-load("Data/PARCC_SGP-Sim.Rdata")
+load("Data/PARCC_SGP.Rdata")
 
-parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
+# parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
 source("../PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
 source("../PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")

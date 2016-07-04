@@ -48,7 +48,8 @@ PARCC_2015_2016.2.config <- c(
 
 ### prepareSGP with Data read in directly from SQLite database
 
-parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+# parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "../PARCC/Data/PARCC_Data_LONG.sqlite"
 
 Colorado_SGP <- prepareSGP(
 	state = "CO",
