@@ -11,6 +11,7 @@ cd SGP_Projects
 
 
 git clone git@github.com:CenterForAssessment/PARCC.git
+
 cd PARCC
 ###  Create symbolic links between R scripts and Dropbox (esp Data) directories
 
@@ -20,6 +21,7 @@ cd PARCC
 cd ./PARCC; nohup R CMD BATCH --vanilla PARCC_SGP_2015_2016.1.R &
 pid=$!
 wait $pid;  nohup R CMD BATCH --vanilla PARCC_SGP_2015_2016.2.R &
+cd ../
 
 ######  Second Terminal
 cd ./Colorado; nohup R CMD BATCH --vanilla PARCC_CO_SGP_2015_2016.2.R &
@@ -37,7 +39,7 @@ pid=$!
 wait $pid; cd ../Rhode_Island; nohup R CMD BATCH --vanilla PARCC_RI_SGP_2015_2016.2.R &
 pid=$!
 wait $pid; cd ../Washington_DC; nohup R CMD BATCH --vanilla PARCC_DC_SGP_2015_2016.2.R &
-
+cd ../
 
 #####  Run tests with cohort of 1500 kids MAX
 #####  Individual state analyses on first terminal (first of two processes going simultaneously)

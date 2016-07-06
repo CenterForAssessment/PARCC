@@ -48,8 +48,8 @@ PARCC_2015_2016.2.config <- c(
 
 ### prepareSGP with Data read in directly from SQLite database
 
-# parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
-parcc.db <- "../PARCC/Data/PARCC_Data_LONG.sqlite"
+parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+# parcc.db <- "../PARCC/Data/PARCC_Data_LONG.sqlite"
 
 Colorado_SGP <- prepareSGP(
 	state = "CO",
@@ -74,8 +74,8 @@ Colorado_SGP <- analyzeSGP(
 		sgp.test.cohort.size= if (sgp.test) 1500 else NULL,     #### )
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ##   > -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   #### )
-		# get.cohort.data.info=TRUE,
-		parallel.config=list(BACKEND="PARALLEL", WORKERS=list(TAUS = workers, SIMEX = workers)))
+		get.cohort.data.info=TRUE,
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
 ### analyzeSGP (for student growth projections)
