@@ -3,7 +3,7 @@ library(plyr)
 library(data.table)
 library(RSQLite)
 library(data.table)
-source('./PARCC/courseProgressionSGP.R', chdir = TRUE)
+# source('./PARCC/courseProgressionSGP.R', chdir = TRUE)
 
 parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
 PARCC_Data_LONG <- rbindlist(list(
@@ -24,8 +24,8 @@ table(PARCC_MATH$CONTENT_AREA, PARCC_MATH$YEAR)
 PARCC_ELA <- FALL_Data_LONG[CONTENT_AREA %in% "ELA"]
 table(PARCC_ELA$GRADE)
 
-math.prog <- courseProgressionSGP(PARCC_MATH, lag.direction.argument="BACKWARD", year='2015_2016.1')
-ela.prog <- courseProgressionSGP(PARCC_ELA, lag.direction.argument="BACKWARD", year='2015_2016.1')
+math.prog <- courseProgressionSGP(PARCC_MATH, lag.direction="BACKWARD", year='2015_2016.1')
+ela.prog <- courseProgressionSGP(PARCC_ELA, lag.direction="BACKWARD", year='2015_2016.1')
 
 
 ####
