@@ -70,7 +70,7 @@ Colorado_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		calculate.simex=TRUE,
+		calculate.simex= if (sgp.test) list(lambda=seq(0,2,0.5), simulation.iterations=10, csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=TRUE) else TRUE,
 		sgp.test.cohort.size= if (sgp.test) 1500 else NULL,     #### )
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ##   > -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   #### )

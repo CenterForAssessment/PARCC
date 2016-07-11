@@ -4,6 +4,7 @@
 ###                                                                           ###
 #################################################################################
 
+if (!exists("sgp.test")) sgp.test <- FALSE
 workers <- parallel::detectCores()/2
 
 ### Load Packages
@@ -14,8 +15,8 @@ require(data.table)
 
 ### Load Data & configurations
 
-# load("Data/PARCC_Data_LONG.Rdata")
 parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
+# parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
 source("../PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
 source("../PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
@@ -51,13 +52,16 @@ PARCC_SGP <- abcSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		calculate.simex=TRUE,
+		calculate.simex= if (sgp.test) list(lambda=seq(0,2,0.5), simulation.iterations=10, csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=TRUE) else TRUE,
+		sgp.test.cohort.size= if (sgp.test) 1500 else NULL,     ####
+		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ## -- Turn OFF these 3 for real analyses
+		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_FINAL_YEAR_Data"),
         parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX=workers)))
 
 ###  Save object
 
-save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
+save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 q("no")
