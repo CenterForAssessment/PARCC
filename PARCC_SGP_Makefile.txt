@@ -41,10 +41,11 @@ pid=$!
 wait $pid; cd ../Washington_DC; nohup R CMD BATCH --vanilla PARCC_DC_SGP_2015_2016.2.R &
 cd ../
 
+
 #####  Run tests with cohort of 1500 kids MAX
 #####  Individual state analyses on first terminal (first of two processes going simultaneously)
 
-sgp_test=$'sgp.test <- TRUE'
+sgp_test=$'sgp.test <- FALSE'
 cd ./PARCC | echo $sgp_test > PARCC.R | cat "./PARCC_SGP_2015_2016.2.R" >> PARCC.R | nohup R CMD BATCH --vanilla PARCC.R &
 cd ../Colorado; echo $sgp_test > CO.R | cat "./Colorado/PARCC_CO_SGP_2015_2016.2.R" >> CO.R | nohup R CMD BATCH --vanilla CO.R &
 pid=$!
@@ -81,15 +82,15 @@ wait $pid; rm PARCC.R
 
 mkdir /media/Data/PARCC
 cd /media/Data/PARCC
-mkdir Colorado
-mkdir Illinois
-mkdir Maryland
-mkdir Massachusetts
-mkdir New_Jersey
-mkdir New_Mexico
-mkdir PARCC
-mkdir Rhode_Island
-mkdir Washington_DC
+mkdir Colorado/Data
+mkdir Illinois/Data
+mkdir Maryland/Data
+mkdir Massachusetts/Data
+mkdir New_Jersey/Data
+mkdir New_Mexico/Data
+mkdir PARCC/Data
+mkdir Rhode_Island/Data
+mkdir Washington_DC/Data
 
 export HOME=/media/Data/PARCC
 cd
