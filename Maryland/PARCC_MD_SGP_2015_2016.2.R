@@ -48,8 +48,8 @@ PARCC_2015_2016.2.config <- c(
 
 ### prepareSGP with Data read in directly from SQLite database
 
-parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
-# parcc.db <- "../PARCC/Data/PARCC_Data_LONG.sqlite"
+# parcc.db <- "../PARCC/Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "../PARCC/Data/PARCC_Data_LONG.sqlite"
 
 Maryland_SGP <- prepareSGP(
 	state = "MD",
@@ -117,6 +117,6 @@ save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(Maryland_SGP, output.type="LONG_FINAL_YEAR_Data")
+outputSGP(Maryland_SGP)
 
 q("no")

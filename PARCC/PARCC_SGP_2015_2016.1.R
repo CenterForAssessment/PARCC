@@ -13,10 +13,12 @@ require(SGP)
 require(RSQLite)
 require(data.table)
 
+###  Set working directory to PARCC/PARCC
+
 ### Load Data & configurations
 
-parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
-# parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
+# parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
+parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
 source("../PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
 source("../PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
@@ -45,7 +47,7 @@ PARCC_SGP <- abcSGP(
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1"))),
 		sgp.config = PARCC_2015_2016.1.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
-		prepareSGP.create.additional.variables=TRUE,
+		prepareSGP.create.additional.variables=FALSE,
 		sgp.percentiles=TRUE,
 		sgp.projections=FALSE,
 		sgp.projections.lagged=FALSE,

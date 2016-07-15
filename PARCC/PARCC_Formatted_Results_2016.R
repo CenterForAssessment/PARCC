@@ -69,9 +69,9 @@ State_SGP_LONG_Data <- State_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRU
 PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 setnames(State_SGP_LONG_Data,
-	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
+	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_CSEM_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
 	  "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND"),
-	c("PARCCStudentIdentifier", "SummativeScaleScore", "IRTTheta", "SummativeCSEM",
+	c("PARCCStudentIdentifier", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "Filler",
 	  "StudentGrowthPercentileComparedtoState", "SGPLowerBoundState", "SGPUpperBoundState"))
 
 ###    Split SGP_NORM_GROUP to create 'SGPPreviousTestCode*' Variables
@@ -121,10 +121,11 @@ setcolorder(PARCC_SGP_LONG_Data, all.var.names)
 
 ###  Export/zip State specific .csv files
 
+dir.create("./CONSORTIUM/Data")
 setwd("./CONSORTIUM/Data")
 for (abv in unique(PARCC_SGP_LONG_Data$StateAbbreviation)) {
 	# state <- SGP:::getStateAbbreviation(abv, type="state")
 	fname <- paste("PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv", sep="")
-	fwrite(PARCC_SGP_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016"], fname, col.names = FALSE)
+	fwrite(PARCC_SGP_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
