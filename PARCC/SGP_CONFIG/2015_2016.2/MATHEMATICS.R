@@ -51,79 +51,91 @@ ALGEBRA_I.2015_2016.config <- list(
 )
 
 GEOMETRY.2015_2016.config <- list(
+	GEOMETRY.2015_2016 = list( # Fall - Spring
+		sgp.content.areas=c("ALGEBRA_I", "GEOMETRY"),
+		sgp.panel.years=c("2015_2016.1", "2015_2016.2"),
+		sgp.grade.sequences=list(c("EOCT", "EOCT")),
+		sgp.norm.group.preference=0),
+
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("ALGEBRA_I", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=0),
+		sgp.norm.group.preference=1),
 
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("MATHEMATICS", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("6", "EOCT"), c("7", "EOCT"), c("8", "EOCT")),
-		sgp.norm.group.preference=1), # 8th & 9th grades
+		sgp.norm.group.preference=2), # 7th, 8th & 9th grades
 
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("ALGEBRA_II", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=2),
+		sgp.norm.group.preference=3),
 
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_1", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=3),
+		sgp.norm.group.preference=4),
 
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_2", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=4),
+		sgp.norm.group.preference=5),
 
 	GEOMETRY.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_3", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=5)
+		sgp.norm.group.preference=6)
 )
 
 ALGEBRA_II.2015_2016.config <- list(
+	ALGEBRA_II.2015_2016 = list( # Fall - Spring
+		sgp.content.areas=c("GEOMETRY", "ALGEBRA_II"),
+		sgp.panel.years=c("2015_2016.1", "2015_2016.2"),
+		sgp.grade.sequences=list(c("EOCT", "EOCT")),
+		sgp.norm.group.preference=0),
+
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("GEOMETRY", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=0),
+		sgp.norm.group.preference=1),
 
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("MATHEMATICS", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("7", "EOCT"), c("8", "EOCT")),
-		sgp.norm.group.preference=1), # 8th & 9th grades
+		sgp.norm.group.preference=2), # 8th & 9th grades
 
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("ALGEBRA_I", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=2),
+		sgp.norm.group.preference=3),
 
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_1", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=3),
+		sgp.norm.group.preference=4),
 
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_2", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=4),
+		sgp.norm.group.preference=5),
 
 	ALGEBRA_II.2015_2016 = list(
 		sgp.content.areas=c("INTEGRATED_MATH_3", "ALGEBRA_II"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
-		sgp.norm.group.preference=5)
+		sgp.norm.group.preference=6)
 )
 
 INTEGRATED_MATH_1.2015_2016.config <- list(
