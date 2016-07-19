@@ -91,6 +91,7 @@ mkdir New_Mexico/Data
 mkdir PARCC/Data
 mkdir Rhode_Island/Data
 mkdir Washington_DC/Data
+mkdir Bureau_Indian_Affairs/Data
 
 export HOME=/media/Data/PARCC
 cd
