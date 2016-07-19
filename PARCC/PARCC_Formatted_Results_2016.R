@@ -15,7 +15,7 @@ setwd("/media/Data/PARCC")
 ###    Read in Fall and Spring 2016 Output Files
 ###
 
-load("./PARCC/Data/PARCC_SGP-Sim.Rdata")
+load("./PARCC/Data/PARCC_SGP.Rdata")
 load("./PARCC/Data/PARCC_SGP_LONG_Data.Rdata")
 
 load("./Colorado/Data/Colorado_SGP_LONG_Data_2015_2016.2.Rdata")
@@ -68,6 +68,8 @@ save(PARCC_SGP, file="./CONSORTIUM/Data/PARCC_SGP-Consortium.Rdata")
 State_SGP_LONG_Data <- State_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
 PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
+State_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
+
 setnames(State_SGP_LONG_Data,
 	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_CSEM_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
 	  "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND"),
@@ -89,6 +91,8 @@ State_SGP_LONG_Data[, GRADE_PRIOR := NULL]
 State_SGP_LONG_Data <- State_SGP_LONG_Data[, names(State_SGP_LONG_Data)[names(State_SGP_LONG_Data) %in% all.var.names], with=FALSE]
 
 ###   PARCC Consortium Data
+
+PARCC_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
 setnames(PARCC_SGP_LONG_Data,
 	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
@@ -126,6 +130,6 @@ setwd("./CONSORTIUM/Data")
 for (abv in unique(PARCC_SGP_LONG_Data$StateAbbreviation)) {
 	# state <- SGP:::getStateAbbreviation(abv, type="state")
 	fname <- paste("PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv", sep="")
-	fwrite(PARCC_SGP_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016"], fname) #, col.names = FALSE
+	fwrite(PARCC_SGP_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
