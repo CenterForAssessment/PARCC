@@ -82,9 +82,11 @@ save(PARCC_Data_LONG_2015, file="/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/
 
 ####  Fall 2015
 
-PARCC_Data_LONG_2016 <- rbindlist(list(read.parcc("IL", "2015-2016", Fall=TRUE), 
-	read.parcc("MD", "2015-2016", Fall=TRUE), read.parcc("NJ", "2015-2016", Fall=TRUE), 
-	read.parcc("NM", "2015-2016", Fall=TRUE), read.parcc("RI", "2015-2016", Fall=TRUE)))
+setwd("/media/Data/Dropbox (SGP)/SGP/PARCC")
+
+PARCC_Data_LONG_2016 <- rbindlist(list(read.parcc("IL", "2016_SGPO_D201605", Fall=TRUE), 
+	read.parcc("MD", "2016_SGPO_D201605", Fall=TRUE), read.parcc("NJ", "2016_SGPO_D201605", Fall=TRUE), 
+	read.parcc("NM", "2016_SGPO_D201605", Fall=TRUE), read.parcc("RI", "2016_SGPO_D201605", Fall=TRUE)))
 
 setkey(PARCC_Data_LONG_2016, PARCCStudentIdentifier, TestCode, Period)
 
@@ -147,7 +149,7 @@ PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CAS
 
 PARCC_Data_LONG_SS <- copy(PARCC_Data_LONG)
 
-PARCC_Data_LONG_SS[, IRTTheta := NULL]
+PARCC_Data_LONG_SS[, c("IRTTheta", "Filler") := NULL]
 PARCC_Data_LONG_SS[, CONTENT_AREA := paste(CONTENT_AREA, "SS", sep="_")]
 setnames(PARCC_Data_LONG_SS, c("SummativeScaleScore", "SummativeCSEM"), c("SCALE_SCORE", "SCALE_SCORE_CSEM"))
 
@@ -159,9 +161,9 @@ PARCC_Data_LONG <- scaling.constants[PARCC_Data_LONG]
 
 PARCC_Data_LONG[, SCALE_SCORE_CSEM := (as.numeric(SummativeCSEM))/a] # NO -b here...
 
-PARCC_Data_LONG[, c("a", "b", "SummativeCSEM") := NULL]
+PARCC_Data_LONG[, c("a", "b", "Filler") := NULL]
 
-setnames(PARCC_Data_LONG, c("IRTTheta", "SummativeScaleScore"), c("SCALE_SCORE", "SCALE_SCORE_ACTUAL"))
+setnames(PARCC_Data_LONG, c("IRTTheta", "SummativeScaleScore", "SummativeCSEM"), c("SCALE_SCORE", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_CSEM_ACTUAL"))
 
 ####  Stack Theta and SS Data
 PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG, PARCC_Data_LONG_SS), fill=TRUE)
@@ -172,6 +174,6 @@ save(PARCC_Data_LONG, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PAR
 #####  Create SQLite Databases for each year / period
 require(RSQLite)
 file.create(parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite")
-dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_1", value=PARCC_Data_LONG[YEAR == "2014_2015.1"])
-dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2", value=PARCC_Data_LONG[YEAR == "2014_2015.2"])
-dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2016_1", value=PARCC_Data_LONG[YEAR == "2015_2016.1"])
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_1", value=PARCC_Data_LONG[YEAR == "2014_2015.1"], overwrite=TRUE)
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2", value=PARCC_Data_LONG[YEAR == "2014_2015.2"], overwrite=TRUE)
+dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2016_1", value=PARCC_Data_LONG[YEAR == "2015_2016.1"], overwrite=TRUE)
