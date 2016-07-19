@@ -92,7 +92,7 @@ setkey(PARCC_Data_LONG_2016, PARCCStudentIdentifier, TestCode, Period)
 
 
 ####   Create PARCC_Data_LONG
-PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG_2015[,head(parcc.var.names, -1), with=FALSE], PARCC_Data_LONG_2016[, head(parcc.var.names,-1), with=FALSE]), fill = TRUE)
+PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG_2015[, parcc.var.names, with=FALSE], PARCC_Data_LONG_2016[, head(parcc.var.names, -1), with=FALSE]), fill = TRUE)
 
 
 ###
@@ -125,7 +125,7 @@ PARCC_Data_LONG[which(Period == "Spring"), YEAR := paste(YEAR, "2", sep=".")]
 ####  Valid Cases
 PARCC_Data_LONG[, VALID_CASE := "VALID_CASE"]
 
-####  Invalidate Cases with missing IDs
+####  Invalidate Cases with missing IDs - 0 invalid in FINAL data
 PARCC_Data_LONG[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
 
 ####  Invalidate Grades not used.  NOT NEEDED WHEN GRADE ASSIGNED BY TestCode
@@ -133,16 +133,19 @@ PARCC_Data_LONG[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
 # PARCC_Data_LONG[which(GRADE %in% 9:12 & CONTENT_AREA == "MATHEMATICS"), VALID_CASE := "INVALID_CASE"]
 
 ####  Duplicates
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SummativeScaleScore)
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-# sum(duplicated(PARCC_Data_LONG[VALID_CASE != "INVALID_CASE"]))
-# PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
-PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
 
-#  Duplicates if Grade ignored
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID, SummativeScaleScore)
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID)
-PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
+####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18
+
+# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SummativeScaleScore)
+# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
+# # sum(duplicated(PARCC_Data_LONG[VALID_CASE != "INVALID_CASE"]))
+# # PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
+# PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
+
+# #  Duplicates if Grade ignored
+# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID, SummativeScaleScore)
+# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID)
+# PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
 
 
 ####  Establish seperate Theta and Scale Score long data sets
@@ -169,6 +172,13 @@ setnames(PARCC_Data_LONG, c("IRTTheta", "SummativeScaleScore", "SummativeCSEM"),
 PARCC_Data_LONG <- rbindlist(list(PARCC_Data_LONG, PARCC_Data_LONG_SS), fill=TRUE)
 
 ####  Save Initial LONG Data
+
+PARCC_Data_LONG[, GRADE := as.character(GRADE)]
+PARCC_Data_LONG[, SCALE_SCORE := as.numeric(SCALE_SCORE)]
+PARCC_Data_LONG[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
+PARCC_Data_LONG[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
+PARCC_Data_LONG[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
+
 save(PARCC_Data_LONG, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.Rdata")
 
 #####  Create SQLite Databases for each year / period
