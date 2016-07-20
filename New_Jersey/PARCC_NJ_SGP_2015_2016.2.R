@@ -81,16 +81,16 @@ New_Jersey_SGP <- analyzeSGP(
 
 ### analyzeSGP (for student growth projections)
 
-New_Jersey_SGP <- analyzeSGP(
-		New_Jersey_SGP,
-		sgp.config=PARCC_2015_2016.2.config,
-		sgp.percentiles=FALSE,
-		sgp.projections=TRUE,
-		sgp.projections.lagged=TRUE,
-		sgp.percentiles.baseline=FALSE,
-		sgp.projections.baseline=FALSE,
-		sgp.projections.lagged.baseline=FALSE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
+# New_Jersey_SGP <- analyzeSGP(
+# 		New_Jersey_SGP,
+# 		sgp.config=PARCC_2015_2016.2.config,
+# 		sgp.percentiles=FALSE,
+# 		sgp.projections=TRUE,
+# 		sgp.projections.lagged=TRUE,
+# 		sgp.percentiles.baseline=FALSE,
+# 		sgp.projections.baseline=FALSE,
+# 		sgp.projections.lagged.baseline=FALSE,
+# 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 
 ### combineSGP
