@@ -93,17 +93,17 @@ BIA_SGP <- analyzeSGP(
 
 ### analyzeSGP (for student growth projections)
 
-BIA_SGP <- analyzeSGP(
-		state = "BIA",
-		BIA_SGP,
-		sgp.config=PARCC_2015_2016.2.config,
-		sgp.percentiles=FALSE,
-		sgp.projections=TRUE,
-		sgp.projections.lagged=TRUE,
-		sgp.percentiles.baseline=FALSE,
-		sgp.projections.baseline=FALSE,
-		sgp.projections.lagged.baseline=FALSE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = (workers-2), LAGGED_PROJECTIONS = (workers-4))))
+# BIA_SGP <- analyzeSGP(
+# 		state = "BIA",
+# 		BIA_SGP,
+# 		sgp.config=PARCC_2015_2016.2.config,
+# 		sgp.percentiles=FALSE,
+# 		sgp.projections=TRUE,
+# 		sgp.projections.lagged=TRUE,
+# 		sgp.percentiles.baseline=FALSE,
+# 		sgp.projections.baseline=FALSE,
+# 		sgp.projections.lagged.baseline=FALSE,
+# 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = (workers-2), LAGGED_PROJECTIONS = (workers-4))))
 
 
 ### combineSGP
@@ -117,7 +117,9 @@ BIA_SGP <- combineSGP(
 
 ### Save results
 
-save(BIA_SGP, file="Data/BIA_SGP.Rdata")
+if (sgp.test) {
+	save(BIA_SGP, file="SIM/BIA_SGP-Test.Rdata")
+} else save(BIA_SGP, file="Data/BIA_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -130,6 +132,6 @@ save(BIA_SGP, file="Data/BIA_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(BIA_SGP)
+outputSGP(BIA_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

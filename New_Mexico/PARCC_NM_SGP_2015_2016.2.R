@@ -104,7 +104,9 @@ New_Mexico_SGP <- combineSGP(
 
 ### Save results
 
-save(New_Mexico_SGP, file="Data/New_Mexico_SGP.Rdata")
+if (sgp.test) {
+	save(New_Mexico_SGP, file="SIM/New_Mexico_SGP-Test.Rdata")
+} save(New_Mexico_SGP, file="Data/New_Mexico_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -117,7 +119,7 @@ save(New_Mexico_SGP, file="Data/New_Mexico_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(New_Mexico_SGP)
+outputSGP(New_Mexico_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")
 

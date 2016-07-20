@@ -104,8 +104,9 @@ Maryland_SGP <- combineSGP(
 
 ### Save results
 
-dir.create("Data")
-save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
+if (sgp.test) {
+	save(Maryland_SGP, file="SIM/Maryland_SGP-Test.Rdata")
+} else save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -118,6 +119,6 @@ save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(Maryland_SGP)
+outputSGP(Maryland_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

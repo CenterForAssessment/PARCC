@@ -64,6 +64,8 @@ PARCC_SGP <- abcSGP(
 
 ###  Save object
 
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+if (sgp.test) {
+	save(PARCC_SGP, file="SIM/PARCC_SGP-Test.Rdata")
+} else save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 q("no")

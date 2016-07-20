@@ -104,7 +104,9 @@ Illinois_SGP <- combineSGP(
 
 ### Save results
 
-save(Illinois_SGP, file="Data/Illinois_SGP.Rdata")
+if (sgp.test) {
+	save(Illinois_SGP, file="SIM/Illinois_SGP-Test.Rdata")
+} else save(Illinois_SGP, file="Data/Illinois_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -117,6 +119,6 @@ save(Illinois_SGP, file="Data/Illinois_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(Illinois_SGP)
+outputSGP(Illinois_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

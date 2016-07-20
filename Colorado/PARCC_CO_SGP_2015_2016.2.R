@@ -104,7 +104,9 @@ Colorado_SGP <- combineSGP(
 
 ### Save results
 
-save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
+if (sgp.test) {
+	save(Colorado_SGP, file="SIM/Colorado_SGP-Test.Rdata")
+} else save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -117,6 +119,6 @@ save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(Colorado_SGP)
+outputSGP(Colorado_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

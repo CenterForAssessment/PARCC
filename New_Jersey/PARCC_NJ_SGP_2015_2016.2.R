@@ -104,7 +104,9 @@ New_Jersey_SGP <- combineSGP(
 
 ### Save results
 
-save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
+if (sgp.test) {
+	save(New_Jersey_SGP, file="SIM/New_Jersey_SGP-Test.Rdata")
+} else save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -117,6 +119,6 @@ save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(New_Jersey_SGP)
+outputSGP(New_Jersey_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

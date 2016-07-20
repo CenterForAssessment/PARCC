@@ -15,7 +15,9 @@ require(RSQLite)
 
 
 ### Load Data & configurations
-load("Data/PARCC_SGP.Rdata")
+if (sgp.test) {
+	load("SIM/PARCC_SGP-Test.Rdata")
+} else load("Data/PARCC_SGP.Rdata")
 
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
@@ -73,9 +75,6 @@ PARCC_SGP <- updateSGP(
 		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
 		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
 
-### Save results
-
-save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
 
 ### analyzeSGP (for student growth projections)
 
@@ -101,7 +100,9 @@ PARCC_SGP <- combineSGP(
 
 ### Save results
 
-save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
+if (sgp.test) {
+	save(PARCC_SGP, file="SIM/PARCC_SGP-Test.Rdata")
+} else save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -114,6 +115,6 @@ save(PARCC_SGP, file="Data/PARCC_SGP-Sim.Rdata")
 
 ### outputSGP
 
-outputSGP(PARCC_SGP)
+outputSGP(PARCC_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")

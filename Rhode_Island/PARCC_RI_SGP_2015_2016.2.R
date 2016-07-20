@@ -104,7 +104,9 @@ Rhode_Island_SGP <- combineSGP(
 
 ### Save results
 
-save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
+if (sgp.test) {
+	save(Rhode_Island_SGP, file="SIM/Rhode_Island_SGP-Test.Rdata")
+} else save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
 
 
 ### visualizeSGP
@@ -117,6 +119,6 @@ save(Rhode_Island_SGP, file="Data/Rhode_Island_SGP.Rdata")
 
 ### outputSGP
 
-outputSGP(Rhode_Island_SGP)
+outputSGP(Rhode_Island_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
 
 q("no")
