@@ -16,7 +16,7 @@ require(RSQLite)
 
 ### Load Data & configurations
 if (sgp.test) {
-	load("SIM/PARCC_SGP-Test.Rdata")
+	load("Data/SIM/PARCC_SGP-Test.Rdata")
 } else load("Data/PARCC_SGP.Rdata")
 
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
@@ -101,7 +101,7 @@ PARCC_SGP <- combineSGP(
 ### Save results
 
 if (sgp.test) {
-	save(PARCC_SGP, file="SIM/PARCC_SGP-Test.Rdata")
+	save(PARCC_SGP, file="Data/SIM/PARCC_SGP-Test.Rdata")
 } else save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
 
 
@@ -115,6 +115,6 @@ if (sgp.test) {
 
 ### outputSGP
 
-outputSGP(PARCC_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
+outputSGP(PARCC_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
 q("no")

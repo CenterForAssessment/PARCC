@@ -118,7 +118,7 @@ BIA_SGP <- combineSGP(
 ### Save results
 
 if (sgp.test) {
-	save(BIA_SGP, file="SIM/BIA_SGP-Test.Rdata")
+	save(BIA_SGP, file="Data/SIM/BIA_SGP-Test.Rdata")
 } else save(BIA_SGP, file="Data/BIA_SGP.Rdata")
 
 
@@ -132,6 +132,6 @@ if (sgp.test) {
 
 ### outputSGP
 
-outputSGP(BIA_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
+outputSGP(BIA_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
 q("no")

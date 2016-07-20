@@ -105,7 +105,7 @@ Massachusetts_SGP <- combineSGP(
 ### Save results
 
 if (sgp.test) {
-	save(Massachusetts_SGP, file="SIM/Massachusetts_SGP-Test.Rdata")
+	save(Massachusetts_SGP, file="Data/SIM/Massachusetts_SGP-Test.Rdata")
 } else save(Massachusetts_SGP, file="Data/Massachusetts_SGP.Rdata")
 
 
@@ -119,7 +119,7 @@ if (sgp.test) {
 
 ### outputSGP
 
-outputSGP(Massachusetts_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
+outputSGP(Massachusetts_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
 q("no")
 

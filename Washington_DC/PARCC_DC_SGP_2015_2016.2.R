@@ -105,7 +105,7 @@ Washington_DC_SGP <- combineSGP(
 ### Save results
 
 if (sgp.test) {
-	save(Washington_DC_SGP, file="SIM/Washington_DC_SGP-Test.Rdata")
+	save(Washington_DC_SGP, file="Data/SIM/Washington_DC_SGP-Test.Rdata")
 } else save(Washington_DC_SGP, file="Data/Washington_DC_SGP.Rdata")
 
 
@@ -119,6 +119,6 @@ if (sgp.test) {
 
 ### outputSGP
 
-outputSGP(Washington_DC_SGP, outputSGP.directory=if (sgp.test) "SIM" else "Data")
+outputSGP(Washington_DC_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
 q("no")
