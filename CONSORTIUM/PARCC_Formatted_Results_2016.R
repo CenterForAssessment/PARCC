@@ -38,7 +38,7 @@ all.var.names <- c(head(parcc.var.names,-1), center.var.names, "TestFormat") # T
 
 ####  State Data
 
-State_SGP_LONG_Data <- rbindlist(list(
+State_LONG_Data <- rbindlist(list(
 	Colorado_SGP_LONG_Data_2015_2016.2, Illinois_SGP_LONG_Data_2015_2016.2, Maryland_SGP_LONG_Data_2015_2016.2,
 	Massachusetts_SGP_LONG_Data_2015_2016.2, New_Jersey_SGP_LONG_Data_2015_2016.2, New_Mexico_SGP_LONG_Data_2015_2016.2,
 	Rhode_Island_SGP_LONG_Data_2015_2016.2, WASHINGTON_DC_SGP_LONG_Data_2015_2016.2), fill=TRUE)
@@ -48,7 +48,7 @@ State_SGP_LONG_Data <- rbindlist(list(
 ###    Data for Consolodated SGP object
 #####
 
-State_Subset <- State_SGP_LONG_Data[, list(VALID_CASE, CONTENT_AREA, YEAR, ID, SGP_SIMEX, SGP, SGP_0.05_CONFIDENCE_BOUND, SGP_0.95_CONFIDENCE_BOUND, SGP_NORM_GROUP)][!is.na(SGP)]
+State_Subset <- State_LONG_Data[, list(VALID_CASE, CONTENT_AREA, YEAR, ID, SGP_SIMEX, SGP, SGP_0.05_CONFIDENCE_BOUND, SGP_0.95_CONFIDENCE_BOUND, SGP_NORM_GROUP)][!is.na(SGP)]
 state.vars <- c("SGP_SIMEX", "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND", "SGP_NORM_GROUP")
 setnames(State_Subset, state.vars, paste(state.vars, "_STATE", sep=""))
 setkey(State_Subset, VALID_CASE, CONTENT_AREA, YEAR, ID)
@@ -64,72 +64,69 @@ save(PARCC_SGP, file="./CONSORTIUM/Data/PARCC_SGP-Consortium.Rdata")
 ###    Data for formatted output to Pearson
 #####
 
+load("./PARCC/Data/PARCC_SGP_LONG_Data_2015_2016.2.Rdata")
+
 ###    Remove rows associated with the Scale Score SGP
-State_SGP_LONG_Data <- State_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
-PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
+State_LONG_Data <- State_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
+PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2015_2016.2[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
-State_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
+State_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
-setnames(State_SGP_LONG_Data,
+setnames(State_LONG_Data,
 	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_CSEM_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
 	  "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND"),
 	c("PARCCStudentIdentifier", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "Filler",
 	  "StudentGrowthPercentileComparedtoState", "SGPLowerBoundState", "SGPUpperBoundState"))
 
 ###    Split SGP_NORM_GROUP to create 'SGPPreviousTestCode*' Variables
-state.tmp.split <- strsplit(as.character(State_SGP_LONG_Data$SGP_NORM_GROUP), "; ")
-State_SGP_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_")]
-State_SGP_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
-State_SGP_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
-State_SGP_LONG_Data[, SGPPreviousTestCodeState := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
-levels(State_SGP_LONG_Data$SGPPreviousTestCodeState) <- c("ALG01", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
-	"GEO01", "MAT1I", "MAT2I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
-State_SGP_LONG_Data[, SGPPreviousTestCodeState := as.character(SGPPreviousTestCodeState)]
-State_SGP_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
-State_SGP_LONG_Data[, GRADE_PRIOR := NULL]
+state.tmp.split <- strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP), "; ")
+State_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_")]
+State_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
+State_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
+State_LONG_Data[, SGPPreviousTestCodeState := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
+levels(State_LONG_Data$SGPPreviousTestCodeState) <- c("ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
+	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
+State_LONG_Data[, SGPPreviousTestCodeState := as.character(SGPPreviousTestCodeState)]
+State_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
+State_LONG_Data[, GRADE_PRIOR := NULL]
 
-State_SGP_LONG_Data <- State_SGP_LONG_Data[, names(State_SGP_LONG_Data)[names(State_SGP_LONG_Data) %in% all.var.names], with=FALSE]
+State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Data) %in% all.var.names], with=FALSE]
 
 ###   PARCC Consortium Data
 
-PARCC_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
+PARCC_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
-setnames(PARCC_SGP_LONG_Data,
-	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM",
+setnames(PARCC_LONG_Data,
+	c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM_ACTUAL", "SCALE_SCORE_CSEM",
 	  "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND"),
-	c("PARCCStudentIdentifier", "SummativeScaleScore", "IRTTheta", "SummativeCSEM",
+	c("PARCCStudentIdentifier", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler",
 	  "StudentGrowthPercentileComparedtoPARCC", "SGPLowerBoundPARCC", "SGPUpperBoundPARCC"))
 
 ### Split SGP_NORM_GROUP to create 'SGPPreviousTestCode*' Variables
-parcc.tmp.split <- strsplit(as.character(PARCC_SGP_LONG_Data$SGP_NORM_GROUP), "; ")
-PARCC_SGP_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_")]
-PARCC_SGP_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
-PARCC_SGP_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
-PARCC_SGP_LONG_Data[, SGPPreviousTestCodePARCC := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
-levels(PARCC_SGP_LONG_Data$SGPPreviousTestCodePARCC) <- c("ALG01", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09", 
-	"GEO01", "MAT1I", "MAT2I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
-PARCC_SGP_LONG_Data[, SGPPreviousTestCodePARCC := as.character(SGPPreviousTestCodePARCC)]
-PARCC_SGP_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
-PARCC_SGP_LONG_Data[, GRADE_PRIOR := NULL]
+parcc.tmp.split <- strsplit(as.character(PARCC_LONG_Data$SGP_NORM_GROUP), "; ")
+PARCC_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_")]
+PARCC_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
+PARCC_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
+PARCC_LONG_Data[, SGPPreviousTestCodePARCC := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
+levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC) <- c("ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
+	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
+PARCC_LONG_Data[, SGPPreviousTestCodePARCC := as.character(SGPPreviousTestCodePARCC)]
+PARCC_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
+PARCC_LONG_Data[, GRADE_PRIOR := NULL]
 
-PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[, names(PARCC_SGP_LONG_Data)[names(PARCC_SGP_LONG_Data) %in% all.var.names], with=FALSE]
-# setkey(PARCC_SGP_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, PARCCStudentIdentifier)
+PARCC_LONG_Data <- PARCC_LONG_Data[, names(PARCC_LONG_Data)[names(PARCC_LONG_Data) %in% all.var.names], with=FALSE]
 
 ###       Merge PARCC and State Data
-
-PARCC_SGP_LONG_Data <- merge(PARCC_SGP_LONG_Data, State_SGP_LONG_Data, by=intersect(names(PARCC_SGP_LONG_Data), names(State_SGP_LONG_Data)), all.x=TRUE)
-
-PARCC_SGP_LONG_Data[, TestFormat := ""]
-setcolorder(PARCC_SGP_LONG_Data, all.var.names)
-
+FINAL_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
+setcolorder(FINAL_LONG_Data, all.var.names)
 
 ###  Export/zip State specific .csv files
-
 dir.create("./CONSORTIUM/Data")
 setwd("./CONSORTIUM/Data")
-for (abv in unique(PARCC_SGP_LONG_Data$StateAbbreviation)) {
-	# state <- SGP:::getStateAbbreviation(abv, type="state")
+for (abv in tail(unique(FINAL_LONG_Data$StateAbbreviation), -1)) {
 	fname <- paste("PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv", sep="")
-	fwrite(PARCC_SGP_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
+	fwrite(FINAL_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
+
+save(FINAL_LONG_Data, file="PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
