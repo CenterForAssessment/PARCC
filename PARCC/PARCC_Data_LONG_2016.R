@@ -133,8 +133,13 @@ PARCC_Data_LONG_2016 <- rbindlist(list(PARCC_Data_LONG_2016, PARCC_Data_LONG_SS)
 PARCC_Data_LONG_2016[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ####  Save 2016 LONG Data
-setcolorder(PARCC_Data_LONG_2016, c("CONTENT_AREA", "GRADE", "AssessmentYear", "StateAbbreviation", "ID", "GradeLevelWhenAssessed", "Period", "TestCode", 
-	"SummativeScoreRecordUUID", "StudentTestUUID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE", "SCALE_SCORE_CSEM_ACTUAL", "YEAR", "VALID_CASE", "SCALE_SCORE_CSEM", "TestFormat")) # To Match 2015 order
+
+require(RSQLite)
+parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
+db.order <- dbListFields(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2")
+
+
+setcolorder(PARCC_Data_LONG_2016, db.order) # To Match 2015 order
 
 PARCC_Data_LONG_2016[, GRADE := as.character(GRADE)]
 PARCC_Data_LONG_2016[, SCALE_SCORE := as.numeric(SCALE_SCORE)]
@@ -142,12 +147,10 @@ PARCC_Data_LONG_2016[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 PARCC_Data_LONG_2016[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG_2016[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
+####  Save 2016 LONG Data
 save(PARCC_Data_LONG_2016, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_2016.Rdata")
 
 
-#####  Create SQLite Databases for each year / period
-
-require(RSQLite)
-parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
+#####  Add 2016 LONG data to existing SQLite Database.  Tables stored by each year / period
 
 dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2016_2", value=PARCC_Data_LONG_2016, overwrite=TRUE)

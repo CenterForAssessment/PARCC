@@ -80,6 +80,7 @@ else
 	
 	pid=$!
 	wait $pid
+	cd ../New_Jersey
 	R CMD BATCH --vanilla PARCC_NJ_SGP_2015_2016.2.R; mv ./PARCC_NJ_SGP_2015_2016.2.Rout ./Logs/PARCC_NJ_SGP_2015_2016.2.Rout &
 
 	pid=$!
