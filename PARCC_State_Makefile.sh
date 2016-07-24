@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [ "$sgp_test" = "sgp.test <- TRUE" ]; then
-	echo Beggining 2016 STATE Analyses with TEST cohort subset
+	echo Beginning 2016 STATE Analyses with TEST cohort subset
 
 	cd ./Colorado
 	echo $sgp_test > CO.R

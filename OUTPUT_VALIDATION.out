@@ -1,0 +1,60 @@
+#########################################
+######### PARCC OUTPUT VALIDATION #######
+#########################################
+
+
+
+### Colorado Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.99 75 99 200713
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 24 48 48.7 73 99 194983
+
+
+### Illinois Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.99 75 99 469803
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 22 46 47.09 71 99 467257
+
+
+### Maryland Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.99 75 99 273187
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 25 50 49.8 75 99 272465
+
+
+### Massachusetts Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.99 75 99 242656
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 29 55 53.53 79 99 242418
+
+
+### New_Jersey Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.99 75 99 396589
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 29 56 53.9 79 99 394678
+
+
+### New_Mexico Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.98 75 99 102800
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 24 48 48.53 72 99 100195
+
+
+### Rhode_Island Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.95 75 99 38803
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 24 49 49.51 75 99 38452
+
+
+### Washington_DC Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.89 75 99 24429
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 21 45 46.48 71 99 23017
