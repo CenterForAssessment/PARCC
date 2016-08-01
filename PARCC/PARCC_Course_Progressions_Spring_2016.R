@@ -1,8 +1,13 @@
+################################################################################
+###                                                                          ###
+###         Identify Fall 2015 to Spring 2016 Progressions for PARCC         ###
+###                                                                          ###
+################################################################################
+
 library(SGP)
 library(plyr)
 library(RSQLite)
 library(data.table)
-# source('./PARCC/courseProgressionSGP.R', chdir = TRUE)
 
 parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
 PARCC_Data_LONG <- rbindlist(list(
@@ -13,11 +18,14 @@ PARCC_Data_LONG <- rbindlist(list(
 PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 PARCC_MATH<- PARCC_Data_LONG[!CONTENT_AREA %in% "ELA"]
-PARCC_ELA <- PARCC_Data_LONG[CONTENT_AREA %in% "ELA"]
 
 math.prog <- courseProgressionSGP(PARCC_MATH, lag.direction="BACKWARD", year='2015_2016_2')
 
-# tmp.years <- sort(unique(PARCC_MATH$YEAR))
+
+### 
+###         MATHEMATICS
+###
+
 
 ##
 ##    Algebra I
@@ -188,3 +196,23 @@ sum(math.prog$BACKWARD[['2015_2016.2']]$INTEGRATED_MATH_3.CT[CONTENT_AREA_by_GRA
 sum(math.prog$BACKWARD[['2015_2016.2']]$INTEGRATED_MATH_3.CT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="INTEGRATED_MATH_1.CT"]$COUNT) # 
 sum(math.prog$BACKWARD[['2015_2016.2']]$INTEGRATED_MATH_3.CT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="INTEGRATED_MATH_2.CT"]$COUNT) # 
 sum(math.prog$BACKWARD[['2015_2016.2']]$INTEGRATED_MATH_3.CT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="INTEGRATED_MATH_3.CT"]$COUNT) # 
+
+
+### 
+###         ELA
+###
+
+PARCC_ELA <- PARCC_Data_LONG[CONTENT_AREA %in% "ELA"]
+ela.prog <- courseProgressionSGP(PARCC_ELA, lag.direction="BACKWARD", year='2015_2016_2')
+
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.11[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+sum(ela.prog$BACKWARD[['2015_2016.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT) # 404
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.10[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+sum(ela.prog$BACKWARD[['2015_2016.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT) # 351
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.09[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.08[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.07[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.06[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.05[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+ela.prog$BACKWARD[['2015_2016.2']]$ELA.04[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
