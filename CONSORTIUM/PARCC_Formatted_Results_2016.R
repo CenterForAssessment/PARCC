@@ -186,7 +186,7 @@ State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.i
 State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% repeat.ela.ids, MISSING_SGP := "Repeat"]
 State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% sm.cohort.ela.ids, MISSING_SGP := "<1000"]
 
-table(State_LONG_Data[, MISSING_SGP])
+table(State_LONG_Data[, MISSING_SGP], exclude=NULL)
 
 ###  Grade Level Math
 
@@ -210,7 +210,7 @@ State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sk
 State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% repeat.math.ids, MISSING_SGP := "Repeat"]
 # State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sm.cohort.math.ids, MISSING_SGP := "<1000"]
 
-table(State_LONG_Data[, MISSING_SGP])
+table(State_LONG_Data[, MISSING_SGP], exclude=NULL)
 
 
 ###  EOCT Math
@@ -255,14 +255,14 @@ identical(na.eoct.ids, no.prior.eoct.ids)
 xids <- setdiff(na.eoct.ids, no.prior.eoct.ids)
 data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016.2 - one without an SGP and the other with (8 kids)
 
-
-###    Remove rows associated with the Scale Score SGP
+###  Substitute in MISSING_SGP coding where SGP is missing
 State_LONG_Data <- State_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]
 PARCC_LONG_Data <- PARCC_SGP_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 State_LONG_Data[, SGP := as.character(SGP)]
 State_LONG_Data[which(is.na(SGP)), SGP := MISSING_SGP]
 
+###    Remove rows associated with the Scale Score SGP
 State_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
 setnames(State_LONG_Data,
@@ -314,6 +314,8 @@ PARCC_LONG_Data <- PARCC_LONG_Data[, names(PARCC_LONG_Data)[names(PARCC_LONG_Dat
 
 ###       Merge PARCC and State Data
 FINAL_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
+FINAL_LONG_Data[is.na(StudentGrowthPercentileComparedtoState), StudentGrowthPercentileComparedtoState := "NA"]
+
 setcolorder(FINAL_LONG_Data, all.var.names)
 
 ###  Export/zip State specific .csv files
