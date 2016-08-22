@@ -9,7 +9,7 @@
 require(SGP)
 require(data.table)
 
-setwd("/media/Data/PARCC")
+setwd("PARCC")
 
 ###
 ###    Read in Fall and Spring 2016 Output Files
@@ -58,8 +58,8 @@ PARCC_SGP@Data <- merge(PARCC_SGP_LONG_Data, State_Subset, all.x=TRUE)
 
 PARCC_SGP <- prepareSGP(PARCC_SGP)
 
-dir.create("./CONSORTIUM/Data", recursive=TRUE)
-save(PARCC_SGP, file="./CONSORTIUM/Data/PARCC_SGP-Consortium.Rdata")
+dir.create("./PARCC/Data/Pearson", recursive=TRUE)
+save(PARCC_SGP, file="./PARCC/Data/Pearson/PARCC_SGP-Consortium.Rdata")
 
 
 #####
@@ -319,15 +319,15 @@ FINAL_LONG_Data[is.na(StudentGrowthPercentileComparedtoState), StudentGrowthPerc
 setcolorder(FINAL_LONG_Data, all.var.names)
 
 ###  Save R object and Export/zip State specific .csv files
-dir.create("./CONSORTIUM/Data")
-setwd("./CONSORTIUM/Data")
-save(FINAL_LONG_Data, file="PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
+dir.create("./PARCC/Data/Pearson")
+save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
 
 FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoPARCC %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoPARCC := as.character(NA)]
 FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoState %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoState := as.character(NA)]
 
 for (abv in tail(unique(FINAL_LONG_Data$StateAbbreviation), -1)) {
-	fname <- paste("PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv", sep="")
+	dir.create(dir.name <- paste0("./",  gsub(" ", "_", capwords(SGP:::getStateAbbreviation(abv, type="state"), special.words="DC")), "/Data/Pearson"), recursive=TRUE)
+	fname <- paste0(dir.name, "/PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
 	fwrite(FINAL_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
