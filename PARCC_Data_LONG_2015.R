@@ -9,7 +9,7 @@
 require(SGP)
 require(data.table)
 
-setwd("/media/Data/Dropbox (SGP)/SGP/PARCC")
+setwd("PARCC")
 
 ###
 ###       Read in Spring 2015 & Fall 2016 Pearson base data
@@ -57,7 +57,7 @@ setkey(PARCC_Data_LONG_2015, PARCCStudentIdentifier, TestCode, Period)
 
 ####  Merge in the TestFormat variable from 2015 data obtained from client states
 
-PARCC_TEST_MODE <- as.data.table(read.csv("/media/Data/Dropbox (SGP)/SGP/PARCC/Colorado/Data/Base_Files/PARCC_TEST_MODE.csv"))
+PARCC_TEST_MODE <- as.data.table(read.csv("./Colorado/Data/Base_Files/PARCC_TEST_MODE.csv"))
 PARCC_TEST_MODE[, SASID := NULL]
 setnames(PARCC_TEST_MODE, "summativeScoreRecordUuid", "SummativeScoreRecordUUID")
 setkey(PARCC_TEST_MODE, SummativeScoreRecordUUID)
@@ -77,7 +77,7 @@ PARCC_Data_LONG_2015[, i.TestFormat := NULL]
 
 PARCC_Data_LONG_2015 <- PARCC_Data_LONG_2015[, parcc.var.names, with=FALSE]
 
-save(PARCC_Data_LONG_2015, file="/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/PARCC_Data_LONG_2015.Rdata")
+save(PARCC_Data_LONG_2015, file="./PARCC/Data/Base_Files/PARCC_Data_LONG_2015.Rdata")
 
 
 ####  Fall 2015
@@ -157,7 +157,7 @@ PARCC_Data_LONG_SS[, CONTENT_AREA := paste(CONTENT_AREA, "SS", sep="_")]
 setnames(PARCC_Data_LONG_SS, c("SummativeScaleScore", "SummativeCSEM"), c("SCALE_SCORE", "SCALE_SCORE_CSEM"))
 
 ####  Theta data set - create IRT CSEM First
-scaling.constants <- as.data.table(read.csv("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
+scaling.constants <- as.data.table(read.csv("./PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
 setkey(scaling.constants, CONTENT_AREA, GRADE)
 setkey(PARCC_Data_LONG, CONTENT_AREA, GRADE)
 PARCC_Data_LONG <- scaling.constants[PARCC_Data_LONG]
@@ -179,13 +179,13 @@ PARCC_Data_LONG[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 PARCC_Data_LONG[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
-save(PARCC_Data_LONG, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.Rdata")
+save(PARCC_Data_LONG, file = "./PARCC/Data/PARCC_Data_LONG.Rdata")
 
 #####  Create SQLite Databases for each year / period
 require(RSQLite)
 
-# file.create(parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite") # only create file once (or to overwrite)
-parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
+# file.create(parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite") # only create file once (or to overwrite)
+parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
 
 dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_1", value=PARCC_Data_LONG[YEAR == "2014_2015.1"], overwrite=TRUE)
 dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2", value=PARCC_Data_LONG[YEAR == "2014_2015.2"], overwrite=TRUE)

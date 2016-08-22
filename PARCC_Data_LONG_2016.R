@@ -9,7 +9,7 @@
 require(SGP)
 require(data.table)
 
-setwd("/media/Data/Dropbox (SGP)/SGP/PARCC")
+setwd("PARCC")
 
 ###
 ###  Read in Spring 2016 Pearson base data
@@ -115,8 +115,8 @@ PARCC_Data_LONG_SS[, CONTENT_AREA := paste(CONTENT_AREA, "SS", sep="_")]
 setnames(PARCC_Data_LONG_SS, c("SummativeScaleScore", "SummativeCSEM"), c("SCALE_SCORE", "SCALE_SCORE_CSEM"))
 
 ####  Theta data set - create IRT CSEM First
-scaling.constants <- as.data.table(read.csv("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/2015-2016 PARCC Scaling Constants.csv"))
-# scaling.constants <- as.data.table(read.csv("/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
+scaling.constants <- as.data.table(read.csv("./PARCC/Data/Base_Files/2015-2016 PARCC Scaling Constants.csv"))
+# scaling.constants <- as.data.table(read.csv("./PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
 setkey(scaling.constants, CONTENT_AREA, GRADE)
 setkey(PARCC_Data_LONG_2016, CONTENT_AREA, GRADE)
 PARCC_Data_LONG_2016 <- scaling.constants[PARCC_Data_LONG_2016]
@@ -135,7 +135,7 @@ PARCC_Data_LONG_2016[, CONTENT_AREA := as.character(CONTENT_AREA)]
 ####  Save 2016 LONG Data
 
 require(RSQLite)
-parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
+parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
 db.order <- dbListFields(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2")
 
 
@@ -148,7 +148,7 @@ PARCC_Data_LONG_2016[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG_2016[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ####  Save 2016 LONG Data
-save(PARCC_Data_LONG_2016, file = "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG_2016.Rdata")
+save(PARCC_Data_LONG_2016, file = "./PARCC/Data/PARCC_Data_LONG_2016.Rdata")
 
 
 #####  Add 2016 LONG data to existing SQLite Database.  Tables stored by each year / period
