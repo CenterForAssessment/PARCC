@@ -318,14 +318,17 @@ FINAL_LONG_Data[is.na(StudentGrowthPercentileComparedtoState), StudentGrowthPerc
 
 setcolorder(FINAL_LONG_Data, all.var.names)
 
-###  Export/zip State specific .csv files
+###  Save R object and Export/zip State specific .csv files
 dir.create("./CONSORTIUM/Data")
 setwd("./CONSORTIUM/Data")
+save(FINAL_LONG_Data, file="PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
+
+FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoPARCC %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoPARCC := as.character(NA)]
+FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoState %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoState := as.character(NA)]
+
 for (abv in tail(unique(FINAL_LONG_Data$StateAbbreviation), -1)) {
 	fname <- paste("PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv", sep="")
 	fwrite(FINAL_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
-
-save(FINAL_LONG_Data, file="PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
 
