@@ -81,16 +81,16 @@ Massachusetts_SGP <- analyzeSGP(
 
 ### analyzeSGP (for student growth projections)
 
-# Massachusetts_SGP <- analyzeSGP(
-# 		Massachusetts_SGP,
-# 		sgp.config=PARCC_2015_2016.2.config,
-# 		sgp.percentiles=FALSE,
-# 		sgp.projections=TRUE,
-# 		sgp.projections.lagged=TRUE,
-# 		sgp.percentiles.baseline=FALSE,
-# 		sgp.projections.baseline=FALSE,
-# 		sgp.projections.lagged.baseline=FALSE,
-# 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS=12, LAGGED_PROJECTIONS=12)))
+Massachusetts_SGP <- analyzeSGP(
+		Massachusetts_SGP,
+		sgp.config=PARCC_2015_2016.2.config,
+		sgp.percentiles=FALSE,
+		sgp.projections=TRUE,
+		sgp.projections.lagged=TRUE,
+		sgp.percentiles.baseline=FALSE,
+		sgp.projections.baseline=FALSE,
+		sgp.projections.lagged.baseline=FALSE,
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS=workers, LAGGED_PROJECTIONS=workers)))
 
 
 ### combineSGP
@@ -99,7 +99,7 @@ Massachusetts_SGP <- combineSGP(
 		Massachusetts_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS=(workers-3))))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS=workers)))
 
 
 ### Save results
