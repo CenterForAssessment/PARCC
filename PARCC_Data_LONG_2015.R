@@ -65,8 +65,8 @@ setkey(PARCC_Data_LONG_2015, SummativeScoreRecordUUID)
 PARCC_Data_LONG_2015 <- PARCC_TEST_MODE[PARCC_Data_LONG_2015]
 setnames(PARCC_Data_LONG_2015, "PARCC_MODE", "TestFormat")
 
-load("/media/Data/Dropbox (SGP)/SGP/Rhode_Island/Data/Rhode_Island_Data_LONG_2014_2015.Rdata")
-RI.15 <- as.data.table(foreign::read.spss("/media/Data/Dropbox (SGP)/SGP/Rhode_Island/Data/Base_Files/2015 Summative File with Test Format.sav", to.data.frame=TRUE, use.value.labels=FALSE))
+load("./Rhode_Island/Data/Rhode_Island_Data_LONG_2014_2015.Rdata")
+RI.15 <- as.data.table(foreign::read.spss("./Rhode_Island/Data/Base_Files/2015 Summative File with Test Format.sav", to.data.frame=TRUE, use.value.labels=FALSE))
 RI.15 <- RI.15[,c("summativeScoreRecordUuid", "TestFormat"), with=FALSE]
 setnames(RI.15, "summativeScoreRecordUuid", "SummativeScoreRecordUUID")
 setkey(RI.15, SummativeScoreRecordUUID)
@@ -82,7 +82,7 @@ save(PARCC_Data_LONG_2015, file="./PARCC/Data/Base_Files/PARCC_Data_LONG_2015.Rd
 
 ####  Fall 2015
 
-setwd("/media/Data/Dropbox (SGP)/SGP/PARCC")
+setwd("./PARCC")
 
 PARCC_Data_LONG_2016 <- rbindlist(list(read.parcc("IL", "2016_SGPO_D201605", Fall=TRUE), 
 	read.parcc("MD", "2016_SGPO_D201605", Fall=TRUE), read.parcc("NJ", "2016_SGPO_D201605", Fall=TRUE), 
