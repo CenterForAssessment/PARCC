@@ -4,9 +4,9 @@
 ###
 #######################################################################
 
-cat("#########################################\n", file="PARCC_Output_Validation_2016.out")
-cat("######### PARCC OUTPUT VALIDATION #######\n", file="PARCC_Output_Validation_2016.out", append=TRUE)
-cat("#########################################\n", file="PARCC_Output_Validation_2016.out", append=TRUE)
+cat("#########################################\n", file="PARCC_Output_Validation_2015_2016.2.out")
+cat("######### PARCC OUTPUT VALIDATION #######\n", file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
+cat("#########################################\n", file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
 
 ### Load packages
 
@@ -35,18 +35,18 @@ for (iter in seq_along(tmp.states)) {
     unlink(paste("PARCC_", tmp.states.abb[iter], "_2015-2016_SGP-Results_20160723.csv", sep=""))
     setwd(tmp.wd)
 
-    cat(paste("\n\n\n###", tmp.states[iter], "Output Validation ###\n"), file="PARCC_Output_Validation_2016.out", append=TRUE)
+    cat(paste("\n\n\n###", tmp.states[iter], "Output Validation ###\n"), file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
 
     ### TEST for identical PARCCStudentIdentifier
 
     tmp.tf <- identical(tmp.OUTPUT$PARCCStudentIdentifier, tmp.ORIGINAL$PARCCStudentIdentifier)
-    cat(paste("\n### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files:", tmp.tf), file="PARCC_Output_Validation_2016.out", append=TRUE)
+    cat(paste("\n### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files:", tmp.tf), file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
 
     tmp.sgp.state <- paste(as.character(summary(tmp.OUTPUT$StudentGrowthPercentileComparedtoState)), collapse=" ")
-    cat(paste("\n### Test of StudentGrowthPercentileComparedtoState:", tmp.sgp.state), file="PARCC_Output_Validation_2016.out", append=TRUE)
+    cat(paste("\n### Test of StudentGrowthPercentileComparedtoState:", tmp.sgp.state), file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
 
     tmp.sgp.parcc <- paste(as.character(summary(tmp.OUTPUT$StudentGrowthPercentileComparedtoPARCC)), collapse=" ")
-    cat(paste("\n### Test of StudentGrowthPercentileComparedtoPARCC:", tmp.sgp.parcc), file="PARCC_Output_Validation_2016.out", append=TRUE)
+    cat(paste("\n### Test of StudentGrowthPercentileComparedtoPARCC:", tmp.sgp.parcc), file="PARCC_Output_Validation_2015_2016.2.out", append=TRUE)
 
     gc()
 }
