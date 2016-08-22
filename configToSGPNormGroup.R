@@ -7,7 +7,6 @@
 ### Load packages
 
 require("data.table")
-options(error=recover)
 
 ### utility function
 
@@ -46,8 +45,8 @@ configToSGPNormGroup <- function(sgp.config) {
 
 ### Load EOCT Math Configurations
 
-source("2015_2016.2/MATHEMATICS.R")
-source("2015_2016.2/MATHEMATICS_SS.R")
+source("SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 ###  Compile annual configuration lists
@@ -60,11 +59,13 @@ PARCC_2015_2016.2.config <- c(
 	INTEGRATED_MATH_1_SS.2015_2016.config, INTEGRATED_MATH_2_SS.2015_2016.config, INTEGRATED_MATH_3_SS.2015_2016.config)
 
 
-### Create configToNormGroup data.frame
+### Create configToNormGroup data.frame for each year
 
 tmp.configToNormGroup <- lapply(PARCC_2015_2016.2.config, configToSGPNormGroup)
 PARCC_SGP_Norm_Group_Preference_2016 <- data.table(
 					YEAR="2015_2016.2", rbindlist(tmp.configToNormGroup))
+
+###  Combine annual preference objects into a single PARCC_SGP_Norm_Group_Preference with rbind(...)
 
 PARCC_SGP_Norm_Group_Preference <- PARCC_SGP_Norm_Group_Preference_2016
 # PARCC_SGP_Norm_Group_Preference <- rbind(PARCC_SGP_Norm_Group_Preference_2016, PARCC_SGP_Norm_Group_Preference_2017)
@@ -74,4 +75,4 @@ PARCC_SGP_Norm_Group_Preference$SGP_NORM_GROUP <- as.factor(PARCC_SGP_Norm_Group
 ### Save result
 
 setkey(PARCC_SGP_Norm_Group_Preference, YEAR, SGP_NORM_GROUP)
-save(PARCC_SGP_Norm_Group_Preference, file="PARCC_SGP_Norm_Group_Preference.Rdata")
+save(PARCC_SGP_Norm_Group_Preference, file="SGP_CONFIG/PARCC_SGP_Norm_Group_Preference.Rdata")
