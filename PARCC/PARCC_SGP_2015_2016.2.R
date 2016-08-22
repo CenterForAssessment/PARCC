@@ -22,10 +22,10 @@ if (sgp.test) {
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
-source("../PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("./SGP_CONFIG/2015_2016.2/ELA.R")
+source("./SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("./SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("./SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
@@ -94,6 +94,10 @@ PARCC_SGP <- analyzeSGP(
 
 PARCC_SGP <- combineSGP(
 		PARCC_SGP,
+		sgp.projections=FALSE,
+		sgp.projections.lagged=FALSE,
+		sgp.target.scale.scores=FALSE)
+
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers-4))))

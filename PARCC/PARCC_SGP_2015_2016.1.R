@@ -20,10 +20,10 @@ require(data.table)
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
-source("../PARCC/SGP_CONFIG/2015_2016.1/ELA.R")
-source("../PARCC/SGP_CONFIG/2015_2016.1/ELA_SS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
+source("./SGP_CONFIG/2015_2016.1/ELA.R")
+source("./SGP_CONFIG/2015_2016.1/ELA_SS.R")
+source("./SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
+source("./SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
 
 PARCC_2015_2016.1.config <- c(
 	ELA_2015_2016.1.config,

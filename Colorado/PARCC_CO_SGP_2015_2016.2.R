@@ -17,10 +17,10 @@ require(data.table)
 
 ### Load configurations & combine
 
-source("../PARCC/SGP_CONFIG/2015_2016.2/ELA.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("../PARCC/SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("./SGP_CONFIG/2015_2016.2/ELA.R")
+source("./SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("./SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("./SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
