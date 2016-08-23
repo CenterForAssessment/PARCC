@@ -20,10 +20,10 @@ require(data.table)
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
-source("./SGP_CONFIG/2015_2016.1/ELA.R")
-source("./SGP_CONFIG/2015_2016.1/ELA_SS.R")
-source("./SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
-source("./SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
+source("../SGP_CONFIG/2015_2016.1/ELA.R")
+source("../SGP_CONFIG/2015_2016.1/ELA_SS.R")
+source("../SGP_CONFIG/2015_2016.1/MATHEMATICS.R")
+source("../SGP_CONFIG/2015_2016.1/MATHEMATICS_SS.R")
 
 PARCC_2015_2016.1.config <- c(
 	ELA_2015_2016.1.config,
@@ -60,12 +60,12 @@ PARCC_SGP <- abcSGP(
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_FINAL_YEAR_Data"),
-        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX=workers)))
+        parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX=workers)))
 
 ###  Save object
 
 if (sgp.test) {
-	save(PARCC_SGP, file="Data/SIM/PARCC_SGP-Test.Rdata")
-} else save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+	save(PARCC_SGP, file="./Data/SIM/PARCC_SGP-Test.Rdata")
+} else save(PARCC_SGP, file="./Data/PARCC_SGP.Rdata")
 
 q("no")

@@ -23,6 +23,7 @@ if [ "$sgp_test" = "sgp.test <- TRUE" ]; then
 else
 	echo Running PARCC with FULL cohort
 	echo Beggining Spring 15 to Spring 16 Analyses
+	
 	R CMD BATCH --vanilla PARCC_SGP_2015_2016.2.R; mv ./PARCC_SGP_2015_2016.2.Rout ./Logs/PARCC_SGP_2015_2016.2.Rout
 fi
 

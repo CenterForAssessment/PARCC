@@ -31,7 +31,8 @@ if [ "$sgp_test" = "sgp.test <- TRUE" ]; then
 	
 	pid=$!
 	wait $pid
-	cd ../New_Jersey; echo $sgp_test > NJ.R
+	cd ../New_Jersey
+	echo $sgp_test > NJ.R
 	cat "./PARCC_NJ_SGP_2015_2016.2.R" >> NJ.R
 	R CMD BATCH --vanilla NJ.R; mv ./NJ.Rout ./Logs/NJ.Rout; rm NJ.R &
 

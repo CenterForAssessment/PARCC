@@ -17,10 +17,10 @@ require(data.table)
 
 ### Load configurations & combine
 
-source("./SGP_CONFIG/2015_2016.2/ELA.R")
-source("./SGP_CONFIG/2015_2016.2/ELA_SS.R")
-source("./SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
-source("./SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
+source("../SGP_CONFIG/2015_2016.2/ELA.R")
+source("../SGP_CONFIG/2015_2016.2/ELA_SS.R")
+source("../SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
 
 PARCC_2015_2016.2.config <- c(
@@ -76,7 +76,7 @@ Maryland_SGP <- analyzeSGP(
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ##   > -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   #### )
 		get.cohort.data.info=TRUE,
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
 ### analyzeSGP (for student growth projections)
@@ -90,7 +90,7 @@ Maryland_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 
 ### combineSGP
@@ -99,11 +99,12 @@ Maryland_SGP <- combineSGP(
 		Maryland_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
 
 
 ### Save results
 
+dir.create("Data")
 if (sgp.test) {
 	save(Maryland_SGP, file="Data/SIM/Maryland_SGP-Test.Rdata")
 } else save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
