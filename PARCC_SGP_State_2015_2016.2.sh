@@ -59,7 +59,7 @@ if [ "$sgp_test" = "sgp.test <- TRUE" ]; then
 	
 else
 	echo Running STATES with FULL cohort
-	echo Beggining 2016 STATE Analyses
+	echo Beginning 2016 STATE Analyses
 
 	cd ./Colorado
 	R CMD BATCH --vanilla PARCC_CO_SGP_2015_2016.2.R; mv ./PARCC_CO_SGP_2015_2016.2.Rout ./Logs/PARCC_CO_SGP_2015_2016.2.Rout &
