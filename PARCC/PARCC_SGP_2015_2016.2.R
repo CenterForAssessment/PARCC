@@ -14,13 +14,16 @@ require(SGP)
 require(RSQLite)
 
 
-### Load Data & configurations
+### Load Data
 if (sgp.test) {
 	load("./Data/SIM/PARCC_SGP-Test.Rdata")
 } else load("./Data/PARCC_SGP.Rdata")
 
 # parcc.db <- "./Data/PARCC_Data_LONG_Simulated.sqlite"
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
+
+
+###  Read in the Spring 2016 configuration code and combine into a single list.
 
 source("../SGP_CONFIG/2015_2016.2/ELA.R")
 source("../SGP_CONFIG/2015_2016.2/ELA_SS.R")
