@@ -76,7 +76,7 @@ PARCC_SGP <- updateSGP(
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
 ### analyzeSGP (for student growth projections)
@@ -90,7 +90,7 @@ PARCC_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = (workers/2))))
 
 
 ### combineSGP
@@ -99,7 +99,7 @@ PARCC_SGP <- combineSGP(
 		PARCC_SGP,
 		sgp.target.scale.scores=TRUE,
 		sgp.config=PARCC_2015_2016.2.config,
-		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = workers)))
+		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(SGP_SCALE_SCORE_TARGETS = (workers/2))))
 
 ### Save results
 

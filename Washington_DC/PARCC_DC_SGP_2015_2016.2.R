@@ -76,7 +76,7 @@ Washington_DC_SGP <- analyzeSGP(
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ## -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		get.cohort.data.info=TRUE,
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX = workers)))
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", SNOW_TEST=TRUE, WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
 ### analyzeSGP (for student growth projections)
