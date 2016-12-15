@@ -56,7 +56,7 @@ Maryland_SGP <- prepareSGP(
 	data = rbindlist(list(
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2015_2 where StateAbbreviation in ('MD')"),
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1 where StateAbbreviation in ('MD')"),
-		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('MD')"))), 
+		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('MD')"))),
 	create.additional.variables=FALSE)
 
 
@@ -79,6 +79,11 @@ Maryland_SGP <- analyzeSGP(
 		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
+### Fix ACHIEVEMENT_LEVEL
+# table(Maryland_SGP@Data[YEAR=='2015_2016.2', CONTENT_AREA, ACHIEVEMENT_LEVEL])
+# Maryland_SGP@Data[, ACHIEVEMENT_LEVEL := NULL]
+# Maryland_SGP <- prepareSGP(Maryland_SGP, create.additional.variables=FALSE)
+
 ### analyzeSGP (for student growth projections)
 
 Maryland_SGP <- analyzeSGP(
@@ -90,6 +95,7 @@ Maryland_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
+		goodness.of.fit.print=FALSE,
 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 

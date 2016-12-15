@@ -27,7 +27,7 @@ load("./Rhode_Island/Data/Rhode_Island_SGP_LONG_Data.Rdata")
 load("./Washington_DC/Data/WASHINGTON_DC_SGP_LONG_Data.Rdata")
 
 ####  Set names based on Pearson file layout
-parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode", 
+parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode",
                      "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler", "TestFormat")
 
 center.var.names <- c("StudentGrowthPercentileComparedtoState", "StudentGrowthPercentileComparedtoPARCC", "SGPPreviousTestCodeState",
@@ -72,7 +72,7 @@ save(PARCC_SGP, file="./PARCC/Data/Pearson/PARCC_SGP-Consortium.Rdata")
 
 ####  ELA
 
-PARCC_SGP_LONG_Data[, MISSING_SGP := "NA"]
+PARCC_SGP_LONG_Data[, SGP_NOTE := "NA"]
 na.ela.ids <- PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
 
@@ -88,12 +88,12 @@ regr.ela.ids <- unique(c(ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2015_201
 length(unique(c(sm.cohort.ela.ids, repeat.ela.ids, skip.ela.ids, regr.ela.ids))) == length(yes.prior.ela.ids)
 table(ela_wide[ID %in% skip.ela.ids][, `2014_2015.2`, `2015_2016.2`]) # Only 9th to 11th grade ELA is close (still < 1000 @ 920)
 
-PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% regr.ela.ids, MISSING_SGP := "Regressed"]
-PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.ids, MISSING_SGP := "Skipped"]
-PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% repeat.ela.ids, MISSING_SGP := "Repeat"]
-PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% sm.cohort.ela.ids, MISSING_SGP := "<1000"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% regr.ela.ids, SGP_NOTE := "Regressed"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.ids, SGP_NOTE := "Skipped"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% repeat.ela.ids, SGP_NOTE := "Repeat"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% sm.cohort.ela.ids, SGP_NOTE := "<1000"]
 
-table(PARCC_SGP_LONG_Data[, MISSING_SGP])
+table(PARCC_SGP_LONG_Data[, SGP_NOTE])
 
 ###  Grade Level Math
 
@@ -112,12 +112,12 @@ regr.math.ids <- math_wide[as.numeric(`2015_2016.2`)-as.numeric(`2014_2015.2`) <
 length(unique(c(repeat.math.ids, skip.math.ids, regr.math.ids))) == length(yes.prior.math.ids)
 table(math_wide[ID %in% skip.math.ids][, `2014_2015.2`, `2015_2016.2`]) # Skipping from 6th to 8th grade Math would have been feasible
 
-PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% regr.math.ids, MISSING_SGP := "Regressed"]
-PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% skip.math.ids, MISSING_SGP := "Skipped"]
-PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% repeat.math.ids, MISSING_SGP := "Repeat"]
-# PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sm.cohort.math.ids, MISSING_SGP := "<1000"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% regr.math.ids, SGP_NOTE := "Regressed"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% skip.math.ids, SGP_NOTE := "Skipped"]
+PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% repeat.math.ids, SGP_NOTE := "Repeat"]
+# PARCC_SGP_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sm.cohort.math.ids, SGP_NOTE := "<1000"]
 
-table(PARCC_SGP_LONG_Data[, MISSING_SGP])
+table(PARCC_SGP_LONG_Data[, SGP_NOTE])
 
 
 ###  EOCT Math
@@ -134,13 +134,13 @@ eoct_wide <- data.table(eoct[YEAR=='2015_2016.2'][, list(ID, StudentTestUUID, CO
 
 repeater.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$ID # still 3 grade level Maths included.
 repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID # still 3 grade level Maths included.
-PARCC_SGP_LONG_Data[StudentTestUUID %in% repeater.test.ids, MISSING_SGP := "Repeat"]
+PARCC_SGP_LONG_Data[StudentTestUUID %in% repeater.test.ids, SGP_NOTE := "Repeat"]
 
 sm.cohort.eoct.ids <- setdiff(yes.prior.eoct.ids, repeater.ids)
-PARCC_SGP_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, MISSING_SGP := "<1000"]
+PARCC_SGP_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, SGP_NOTE := "<1000"]
 
 ###  Checks
-nas <- PARCC_SGP_LONG_Data[MISSING_SGP=="NA" & is.na(SGP)]
+nas <- PARCC_SGP_LONG_Data[SGP_NOTE=="NA" & is.na(SGP)]
 
 na.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
@@ -165,7 +165,7 @@ data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 201
 
 ####  ELA
 
-State_LONG_Data[, MISSING_SGP := "NA"]
+State_LONG_Data[, SGP_NOTE := "NA"]
 na.ela.ids <- State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- State_LONG_Data[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
 
@@ -181,12 +181,12 @@ regr.ela.ids <- unique(c(ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2015_201
 length(unique(c(sm.cohort.ela.ids, repeat.ela.ids, skip.ela.ids, regr.ela.ids))) == length(yes.prior.ela.ids)
 table(ela_wide[ID %in% skip.ela.ids][, `2014_2015.2`, `2015_2016.2`]) # Only 9th to 11th grade ELA is close (still < 1000 @ 920)
 
-State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% regr.ela.ids, MISSING_SGP := "Regressed"]
-State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.ids, MISSING_SGP := "Skipped"]
-State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% repeat.ela.ids, MISSING_SGP := "Repeat"]
-State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% sm.cohort.ela.ids, MISSING_SGP := "<1000"]
+State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% regr.ela.ids, SGP_NOTE := "Regressed"]
+State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.ids, SGP_NOTE := "Skipped"]
+State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% repeat.ela.ids, SGP_NOTE := "Repeat"]
+State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% sm.cohort.ela.ids, SGP_NOTE := "<1000"]
 
-table(State_LONG_Data[, MISSING_SGP], exclude=NULL)
+table(State_LONG_Data[, SGP_NOTE], exclude=NULL)
 
 ###  Grade Level Math
 
@@ -205,12 +205,12 @@ regr.math.ids <- math_wide[as.numeric(`2015_2016.2`)-as.numeric(`2014_2015.2`) <
 length(unique(c(repeat.math.ids, skip.math.ids, regr.math.ids))) == length(yes.prior.math.ids)
 table(math_wide[ID %in% skip.math.ids][, `2014_2015.2`, `2015_2016.2`]) # Skipping from 6th to 8th grade Math would have been feasible
 
-State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% regr.math.ids, MISSING_SGP := "Regressed"]
-State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% skip.math.ids, MISSING_SGP := "Skipped"]
-State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% repeat.math.ids, MISSING_SGP := "Repeat"]
-# State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sm.cohort.math.ids, MISSING_SGP := "<1000"]
+State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% regr.math.ids, SGP_NOTE := "Regressed"]
+State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% skip.math.ids, SGP_NOTE := "Skipped"]
+State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% repeat.math.ids, SGP_NOTE := "Repeat"]
+# State_LONG_Data[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & ID %in% sm.cohort.math.ids, SGP_NOTE := "<1000"]
 
-table(State_LONG_Data[, MISSING_SGP], exclude=NULL)
+table(State_LONG_Data[, SGP_NOTE], exclude=NULL)
 
 
 ###  EOCT Math
@@ -226,14 +226,14 @@ eoct <- State_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS") & ID %in% yes.prio
 eoct_wide <- data.table(eoct[YEAR=='2015_2016.2'][, list(ID, StudentTestUUID, CONTENT_AREA)], key="ID")[data.table(eoct[YEAR!='2015_2016.2'][, list(ID, CONTENT_AREA)], key="ID")]
 
 repeater.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$ID # still 3 grade level Maths included.
-repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID # still 3 grade level Maths included.
-State_LONG_Data[StudentTestUUID %in% repeater.test.ids, MISSING_SGP := "Repeat"]
+repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID
+State_LONG_Data[StudentTestUUID %in% repeater.test.ids, SGP_NOTE := "Repeat"]
 
 sm.cohort.eoct.ids <- setdiff(yes.prior.eoct.ids, repeater.ids)
-State_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, MISSING_SGP := "<1000"]
+State_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, SGP_NOTE := "<1000"]
 
 ###  Checks
-nas <- State_LONG_Data[MISSING_SGP=="NA" & is.na(SGP)]
+nas <- State_LONG_Data[SGP_NOTE=="NA" & is.na(SGP)]
 
 na.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
@@ -255,12 +255,12 @@ identical(na.eoct.ids, no.prior.eoct.ids)
 xids <- setdiff(na.eoct.ids, no.prior.eoct.ids)
 data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016.2 - one without an SGP and the other with (8 kids)
 
-###  Substitute in MISSING_SGP coding where SGP is missing
+###  Substitute in SGP_NOTE coding where SGP is missing
 State_LONG_Data <- State_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]
 PARCC_LONG_Data <- PARCC_SGP_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 State_LONG_Data[, SGP := as.character(SGP)]
-State_LONG_Data[which(is.na(SGP)), SGP := MISSING_SGP]
+State_LONG_Data[which(is.na(SGP)), SGP := SGP_NOTE]
 
 ###    Remove rows associated with the Scale Score SGP
 State_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
@@ -277,8 +277,13 @@ State_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(s
 State_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
 State_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
 State_LONG_Data[, SGPPreviousTestCodeState := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
-levels(State_LONG_Data$SGPPreviousTestCodeState) <- c("ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
-	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
+
+###  Recode new SGPPreviousTestCodeState Variable.  Check table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState)) before and after to ensure match!!!
+table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState))
+levels(State_LONG_Data$SGPPreviousTestCodeState) <- c(NA, "ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
+	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
+table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState)) ##  Match???
+
 State_LONG_Data[, SGPPreviousTestCodeState := as.character(SGPPreviousTestCodeState)]
 State_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
 State_LONG_Data[, GRADE_PRIOR := NULL]
@@ -288,7 +293,7 @@ State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Dat
 ###   PARCC Consortium Data
 
 PARCC_LONG_Data[, SGP := as.character(SGP)]
-PARCC_LONG_Data[which(is.na(SGP)), SGP := MISSING_SGP]
+PARCC_LONG_Data[which(is.na(SGP)), SGP := SGP_NOTE]
 
 PARCC_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
@@ -304,8 +309,13 @@ PARCC_LONG_Data[, CONTENT_AREA_PRIOR := sapply(sapply(strsplit(sapply(strsplit(s
 PARCC_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
 PARCC_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
 PARCC_LONG_Data[, SGPPreviousTestCodePARCC := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
-levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC) <- c("ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
-	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08", NA)
+
+###  Recode new SGPPreviousTestCodePARCC Variable.  Check table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC)) before and after to ensure match!!!
+table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC))
+levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC) <- c(NA, "ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
+	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
+table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC)) ##  Match???
+
 PARCC_LONG_Data[, SGPPreviousTestCodePARCC := as.character(SGPPreviousTestCodePARCC)]
 PARCC_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
 PARCC_LONG_Data[, GRADE_PRIOR := NULL]
@@ -331,4 +341,3 @@ for (abv in tail(unique(FINAL_LONG_Data$StateAbbreviation), -1)) {
 	fwrite(FINAL_LONG_Data[StateAbbreviation == abv & AssessmentYear == "2015-2016" & Period == "Spring"], fname) #, col.names = FALSE
 	zip(zipfile=paste(fname, "zip", sep="."), files=fname, flags="-mq")
 }
-

@@ -56,7 +56,7 @@ Massachusetts_SGP <- prepareSGP(
 	data = rbindlist(list(
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2015_2 where StateAbbreviation in ('MA')"),
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1 where StateAbbreviation in ('MA')"),
-		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('MA')"))), 
+		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('MA')"))),
 	create.additional.variables=FALSE)
 
 
@@ -90,10 +90,16 @@ Massachusetts_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
+		goodness.of.fit.print=FALSE,
 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PROJECTIONS=workers, LAGGED_PROJECTIONS=workers)))
 
 
 ### combineSGP
+
+###  Only Math Grade 7 to Algebra I progression, which throws and error here when looking for 8th to Alg I
+SGPstateData[["MA"]][["SGP_Configuration"]][["grade.projection.sequence"]][["MATHEMATICS"]] <- c("3", "4", "5", "6", "7", "8")
+SGPstateData[["MA"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["MATHEMATICS"]] <- rep("MATHEMATICS", 6)
+SGPstateData[["MA"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["MATHEMATICS"]] <- rep(1L, 5)
 
 Massachusetts_SGP <- combineSGP(
 		Massachusetts_SGP,
@@ -123,4 +129,3 @@ if (sgp.test) {
 outputSGP(Massachusetts_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
 q("no")
-

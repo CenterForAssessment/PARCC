@@ -17,7 +17,7 @@ setwd("PARCC")
 
 ####  Set names based on Pearson file layout
 
-parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode", 
+parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode",
                      "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler", "TestFormat")
 
 center.var.names <- c("StudentGrowthPercentileComparedtoState", "StudentGrowthPercentileComparedtoPARCC", "SGPPreviousTestCodeState",
@@ -30,12 +30,12 @@ all.var.names <- c(head(parcc.var.names,-1), center.var.names, "TestFormat")
 read.parcc <- function(state, year, Fall=FALSE) {
 	tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
 	if(tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
-	tmp.files <- list.files(file.path(tmp.name, "Data/Base_Files"))
+	tmp.files <- list.files(file.path("..", tmp.name, "Data/Base_Files"))
 	my.zip <- grep(year, tmp.files, value=TRUE)
 	my.file <- gsub(".zip",  "", my.zip)
 	tmp.dir <- getwd()
-	setwd("~")
-	system(paste("unzip '", file.path(tmp.dir, tmp.name, "Data/Base_Files", my.zip), "'", sep=""))
+	system(paste("unzip '", file.path("..", tmp.name, "Data/Base_Files", my.zip), "'", " -d ", tempdir(), sep=""))
+  setwd(tempdir())
 	TMP <- fread(my.file, sep=',', header=FALSE, skip=1L, colClasses=rep("character", 20))
 	unlink(my.file)
 	setwd(tmp.dir)
@@ -48,8 +48,8 @@ read.parcc <- function(state, year, Fall=FALSE) {
 ####  Fall 2014 / Spring 2015
 
 PARCC_Data_LONG_2015 <- rbindlist(list(
-	read.parcc("CO", "2014-2015"), read.parcc("IL", "2014-2015"), 
-	read.parcc("MD", "2014-2015"), read.parcc("MA", "2014-2015"), 
+	read.parcc("CO", "2014-2015"), read.parcc("IL", "2014-2015"),
+	read.parcc("MD", "2014-2015"), read.parcc("MA", "2014-2015"),
 	read.parcc("NJ", "2014-2015"), read.parcc("NM", "2014-2015"),
 	read.parcc("RI", "2014-2015"), read.parcc("DC", "2014-2015")))
 
@@ -61,7 +61,7 @@ PARCC_TEST_MODE <- as.data.table(read.csv("./Colorado/Data/Base_Files/PARCC_TEST
 PARCC_TEST_MODE[, SASID := NULL]
 setnames(PARCC_TEST_MODE, "summativeScoreRecordUuid", "SummativeScoreRecordUUID")
 setkey(PARCC_TEST_MODE, SummativeScoreRecordUUID)
-setkey(PARCC_Data_LONG_2015, SummativeScoreRecordUUID)	
+setkey(PARCC_Data_LONG_2015, SummativeScoreRecordUUID)
 PARCC_Data_LONG_2015 <- PARCC_TEST_MODE[PARCC_Data_LONG_2015]
 setnames(PARCC_Data_LONG_2015, "PARCC_MODE", "TestFormat")
 
@@ -70,7 +70,7 @@ RI.15 <- as.data.table(foreign::read.spss("./Rhode_Island/Data/Base_Files/2015 S
 RI.15 <- RI.15[,c("summativeScoreRecordUuid", "TestFormat"), with=FALSE]
 setnames(RI.15, "summativeScoreRecordUuid", "SummativeScoreRecordUUID")
 setkey(RI.15, SummativeScoreRecordUUID)
-setkey(PARCC_Data_LONG_2015, SummativeScoreRecordUUID)	
+setkey(PARCC_Data_LONG_2015, SummativeScoreRecordUUID)
 PARCC_Data_LONG_2015 <- RI.15[PARCC_Data_LONG_2015]
 PARCC_Data_LONG_2015[which(!is.na(i.TestFormat)), TestFormat := i.TestFormat]
 PARCC_Data_LONG_2015[, i.TestFormat := NULL]
@@ -84,8 +84,8 @@ save(PARCC_Data_LONG_2015, file="./PARCC/Data/Base_Files/PARCC_Data_LONG_2015.Rd
 
 setwd("./PARCC")
 
-PARCC_Data_LONG_2016 <- rbindlist(list(read.parcc("IL", "2016_SGPO_D201605", Fall=TRUE), 
-	read.parcc("MD", "2016_SGPO_D201605", Fall=TRUE), read.parcc("NJ", "2016_SGPO_D201605", Fall=TRUE), 
+PARCC_Data_LONG_2016 <- rbindlist(list(read.parcc("IL", "2016_SGPO_D201605", Fall=TRUE),
+	read.parcc("MD", "2016_SGPO_D201605", Fall=TRUE), read.parcc("NJ", "2016_SGPO_D201605", Fall=TRUE),
 	read.parcc("NM", "2016_SGPO_D201605", Fall=TRUE), read.parcc("RI", "2016_SGPO_D201605", Fall=TRUE)))
 
 setkey(PARCC_Data_LONG_2016, PARCCStudentIdentifier, TestCode, Period)

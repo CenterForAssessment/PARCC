@@ -56,7 +56,7 @@ Colorado_SGP <- prepareSGP(
 	data = rbindlist(list(
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2015_2 where StateAbbreviation in ('CO')"),
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1 where StateAbbreviation in ('CO')"),
-		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('CO')"))), 
+		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('CO')"))),
 	create.additional.variables=FALSE)
 
 
@@ -114,7 +114,8 @@ if (sgp.test) {
 
 # visualizeSGP(
 # 	Colorado_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+# 	plot.types=c("growthAchievementPlot"),
+# 	gaPlot.content_areas=c("ELA", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II"),
 # 	sgPlot.demo.report=TRUE)
 
 

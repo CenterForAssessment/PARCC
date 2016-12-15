@@ -56,7 +56,7 @@ New_Mexico_SGP <- prepareSGP(
 	data = rbindlist(list(
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2015_2 where StateAbbreviation in ('NM')"),
 		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_1 where StateAbbreviation in ('NM')"),
-		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('NM')"))), 
+		dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2 where StateAbbreviation in ('NM')"))),
 	create.additional.variables=FALSE)
 
 
@@ -90,6 +90,7 @@ New_Mexico_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
+		goodness.of.fit.print=FALSE,
 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 
@@ -107,20 +108,20 @@ New_Mexico_SGP <- combineSGP(
 dir.create("Data")
 if (sgp.test) {
 	save(New_Mexico_SGP, file="Data/SIM/New_Mexico_SGP-Test.Rdata")
-} save(New_Mexico_SGP, file="Data/New_Mexico_SGP.Rdata")
-
-
-### visualizeSGP
-
-# visualizeSGP(
-# 	New_Mexico_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
+} else save(New_Mexico_SGP, file="Data/New_Mexico_SGP.Rdata")
 
 
 ### outputSGP
 
 outputSGP(New_Mexico_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
 
-q("no")
 
+### visualizeSGP
+#
+# visualizeSGP(
+# 	New_Mexico_SGP,
+# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+# 	sgPlot.demo.report=TRUE)
+# 	# gaPlot.content_areas=c("ELA", "MATHEMATICS", "ALGEBRA_I", "ALGEBRA_II", "GEOMETRY"))
+
+q("no")
