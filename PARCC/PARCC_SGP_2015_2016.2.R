@@ -118,18 +118,12 @@ if (sgp.test) {
 ### visualizeSGP
 
 SGPstateData[["PARCC"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(MATHEMATICS="MATHEMATICS", ELA="ELA", GEOMETRY="MATHEMATICS", ALGEBRA_I="MATHEMATICS", ALGEBRA_II="MATHEMATICS")
-# SGPstateData[["PARCC"]][["Student_Report_Information"]][["Grades_Reported"]] <- c(SGPstateData[["PARCC"]][["Student_Report_Information"]][["Grades_Reported"]], SGPstateData[["CO"]][["Student_Report_Information"]][["Grades_Reported"]])
-
-# names(SGPstateData[["PARCC"]][["Achievement"]][["Cutscores"]]) <-  gsub("2015_2016[.]2", "2015_2016", names(SGP::SGPstateData[["PARCC"]][["Achievement"]][["Cutscores"]]))
-# names(SGPstateData[["PARCC"]][["Achievement"]][["Knots_Boundaries"]]) <-  gsub("2015_2016[.]2", "2015_2016", names(SGP::SGPstateData[["PARCC"]][["Achievement"]][["Knots_Boundaries"]]))
-data.table::key(PARCC_SGP@Data)
-data.table::setkeyv(PARCC_SGP@Data, SGP:::getKey(PARCC_SGP@Data))
+if(!identical(data.table::key(PARCC_SGP@Data), SGP:::getKey(PARCC_SGP@Data))) data.table::setkeyv(PARCC_SGP@Data, SGP:::getKey(PARCC_SGP@Data))
 
 visualizeSGP(
 	PARCC_SGP,
-	plot.types=c("growthAchievementPlot"), #, "studentGrowthPlot"
-	gaPlot.content_areas=c("ELA", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II"),
-	sgPlot.demo.report=TRUE)
+	plot.types=c("growthAchievementPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 
 ### outputSGP
