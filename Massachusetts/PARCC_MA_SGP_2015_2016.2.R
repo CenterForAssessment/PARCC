@@ -116,16 +116,35 @@ if (sgp.test) {
 } else save(Massachusetts_SGP, file="Data/Massachusetts_SGP.Rdata")
 
 
-### visualizeSGP
-
-# visualizeSGP(
-# 	Massachusetts_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
-
-
 ### outputSGP
 
 outputSGP(Massachusetts_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
+
+
+### visualizeSGP
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+
+table(Massachusetts_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(Massachusetts_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+
+SGPstateData[["MA"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS")
+SGPstateData[["MA"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8")
+SGPstateData[["MA"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 6)
+SGPstateData[["MA"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 5)
+
+SGPstateData[["MA"]][["SGP_Configuration"]][["grade.projection.sequence"]][["MATHEMATICS"]] <- c("3", "4", "5", "6", "7", "8")
+SGPstateData[["MA"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["MATHEMATICS"]] <- rep("MATHEMATICS", 6)
+SGPstateData[["MA"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["MATHEMATICS"]] <- rep(1L, 5)
+
+if(!identical(data.table::key(Massachusetts_SGP@Data), SGP:::getKey(Massachusetts_SGP@Data))) data.table::setkeyv(Massachusetts_SGP@Data, SGP:::getKey(Massachusetts_SGP@Data))
+
+visualizeSGP(
+	Massachusetts_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")

@@ -90,6 +90,7 @@ Colorado_SGP <- analyzeSGP(
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
+		goodness.of.fit.print= FALSE,
 		parallel.config = if (sgp.test) NULL else list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PROJECTIONS = workers, LAGGED_PROJECTIONS = workers)))
 
 
@@ -110,17 +111,39 @@ if (sgp.test) {
 } else save(Colorado_SGP, file="Data/Colorado_SGP.Rdata")
 
 
-### visualizeSGP
-
-# visualizeSGP(
-# 	Colorado_SGP,
-# 	plot.types=c("growthAchievementPlot"),
-# 	gaPlot.content_areas=c("ELA", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II"),
-# 	sgPlot.demo.report=TRUE)
-
-
 ### outputSGP
 
 outputSGP(Colorado_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
+
+
+### visualizeSGP
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+setwd("/media/Data/PARCC/Colorado"); load("Data/Colorado_SGP.Rdata"); require(SGP)
+
+SGPstateData[["CO"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS")
+
+table(Colorado_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(Colorado_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+table(Colorado_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="GEOMETRY", as.character(SGP_NORM_GROUP)]) # Only 7000 kids in ALGEBRA_I to GEOMETRY cohort.  Enough to make the GA Plot sensibly?
+
+SGPstateData[["CO"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "9")
+SGPstateData[["CO"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 7)
+SGPstateData[["CO"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 6)
+
+SGPstateData[["CO"]][["SGP_Configuration"]][["grade.projection.sequence"]][["MATHEMATICS"]] <- c("3", "4", "5", "6", "7", "8", "EOCT", "EOCT")
+SGPstateData[["CO"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["MATHEMATICS"]] <- c("MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY")
+SGPstateData[["CO"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["MATHEMATICS"]] <- rep(1L, 7)
+
+
+if(!identical(data.table::key(Colorado_SGP@Data), SGP:::getKey(Colorado_SGP@Data))) data.table::setkeyv(Colorado_SGP@Data, SGP:::getKey(Colorado_SGP@Data))
+
+visualizeSGP(
+	Colorado_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")

@@ -111,16 +111,35 @@ if (sgp.test) {
 } else save(Washington_DC_SGP, file="Data/Washington_DC_SGP.Rdata")
 
 
-### visualizeSGP
-
-# visualizeSGP(
-# 	Washington_DC_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
-
-
 ### outputSGP
 
 outputSGP(Washington_DC_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
+
+
+### visualizeSGP
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+
+table(Washington_DC_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(Washington_DC_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+
+SGPstateData[["DC"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS")
+SGPstateData[["DC"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "9", "10")
+SGPstateData[["DC"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 8)
+SGPstateData[["DC"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 7)
+
+SGPstateData[["DC"]][["SGP_Configuration"]][["grade.projection.sequence"]][["MATHEMATICS"]] <- c("3", "4", "5", "6", "7", "8", "EOCT", "EOCT")
+SGPstateData[["DC"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["MATHEMATICS"]] <- c("MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY")
+SGPstateData[["DC"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["MATHEMATICS"]] <- rep(1L, 7)
+
+if(!identical(data.table::key(Washington_DC_SGP@Data), SGP:::getKey(Washington_DC_SGP@Data))) data.table::setkeyv(Washington_DC_SGP@Data, SGP:::getKey(Washington_DC_SGP@Data))
+
+visualizeSGP(
+	Washington_DC_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")

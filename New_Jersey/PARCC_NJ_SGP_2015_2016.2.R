@@ -111,16 +111,26 @@ if (sgp.test) {
 } else save(New_Jersey_SGP, file="Data/New_Jersey_SGP.Rdata")
 
 
-### visualizeSGP
-
-# visualizeSGP(
-# 	New_Jersey_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
-
-
 ### outputSGP
 
 outputSGP(New_Jersey_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
+
+
+### visualizeSGP
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+
+table(New_Jersey_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(New_Jersey_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+
+SGPstateData[["NJ"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS", ALGEBRA_II="MATHEMATICS")
+
+visualizeSGP(
+	New_Jersey_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")

@@ -22,7 +22,6 @@ source("../SGP_CONFIG/2015_2016.2/ELA_SS.R")
 source("../SGP_CONFIG/2015_2016.2/MATHEMATICS.R")
 source("../SGP_CONFIG/2015_2016.2/MATHEMATICS_SS.R")
 
-
 PARCC_2015_2016.2.config <- c(
 	ELA_2015_2016.2.config,
 	ELA_SS_2015_2016.2.config,
@@ -79,12 +78,22 @@ Maryland_SGP <- analyzeSGP(
 		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX = workers)))
 
 
-### Fix ACHIEVEMENT_LEVEL
-# table(Maryland_SGP@Data[YEAR=='2015_2016.2', CONTENT_AREA, ACHIEVEMENT_LEVEL])
-# Maryland_SGP@Data[, ACHIEVEMENT_LEVEL := NULL]
-# Maryland_SGP <- prepareSGP(Maryland_SGP, create.additional.variables=FALSE)
-
 ### analyzeSGP (for student growth projections)
+
+###  Maryland is an odd case - they don't have 9th grade ELA, so 9th or 10th Grade SGPs aren't calculated.
+###  Because of the gap between 8th and 11th Grade, the SGP_Configuration meta-data must be revised
+###  and the sgp.grade.sequences in the sgp.config re-set before running the SG Projections.
+
+table(Maryland_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(Maryland_SGP@Data[YEAR=='2015_2016.2' & CONTENT_AREA=="ELA", GRADE])
+table(Maryland_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+table(Maryland_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ALGEBRA_II", as.character(SGP_NORM_GROUP)]) # No Geometry to Alg II, so cut it off
+
+PARCC_2015_2016.2.config[["ELA.2015_2016.2"]][["sgp.grade.sequences"]] <- list(c("3", "4"), c("4", "5"), c("5", "6"), c("6", "7"), c("7", "8"))
+
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8") #, "9", "10", "11"
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 6)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 5)
 
 Maryland_SGP <- analyzeSGP(
 		Maryland_SGP,
@@ -116,16 +125,29 @@ if (sgp.test) {
 } else save(Maryland_SGP, file="Data/Maryland_SGP.Rdata")
 
 
-### visualizeSGP
-
-# visualizeSGP(
-# 	Maryland_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
-
-
 ### outputSGP
 
 outputSGP(Maryland_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Data")
+
+
+### visualizeSGP
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+
+SGPstateData[["MD"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS")
+
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["MATHEMATICS"]] <- c("3", "4", "5", "6", "7", "8", "EOCT", "EOCT")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["MATHEMATICS"]] <- c("MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY")
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["MATHEMATICS"]] <- rep(1L, 7)
+
+if(!identical(data.table::key(Maryland_SGP@Data), SGP:::getKey(Maryland_SGP@Data))) data.table::setkeyv(Maryland_SGP@Data, SGP:::getKey(Maryland_SGP@Data))
+
+visualizeSGP(
+	Maryland_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")

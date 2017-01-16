@@ -117,11 +117,22 @@ outputSGP(New_Mexico_SGP, outputSGP.directory=if (sgp.test) "Data/SIM" else "Dat
 
 
 ### visualizeSGP
-#
-# visualizeSGP(
-# 	New_Mexico_SGP,
-# 	plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
-# 	sgPlot.demo.report=TRUE)
-# 	# gaPlot.content_areas=c("ELA", "MATHEMATICS", "ALGEBRA_I", "ALGEBRA_II", "GEOMETRY"))
+
+###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###  Accurately reflect the course taking patterns in the state (the
+###  original meta-data are based on the entire PARCC Consortium).
+
+table(New_Mexico_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP), CONTENT_AREA])
+table(New_Mexico_SGP@Data[YEAR=='2015_2016.2' & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+
+SGPstateData[["NM"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS", ALGEBRA_II="MATHEMATICS")
+
+if(!identical(data.table::key(New_Mexico_SGP@Data), SGP:::getKey(New_Mexico_SGP@Data))) data.table::setkeyv(New_Mexico_SGP@Data, SGP:::getKey(New_Mexico_SGP@Data))
+
+visualizeSGP(
+	New_Mexico_SGP,
+	plot.types=c("growthAchievementPlot"),
+	# plot.types=c("growthAchievementPlot", "studentGrowthPlot"),
+	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")
