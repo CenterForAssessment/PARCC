@@ -9,8 +9,6 @@
 require(SGP)
 require(data.table)
 
-setwd("PARCC")
-
 ###
 ###    Read in Fall and Spring 2016 Output Files
 ###
@@ -33,7 +31,7 @@ parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentif
 center.var.names <- c("StudentGrowthPercentileComparedtoState", "StudentGrowthPercentileComparedtoPARCC", "SGPPreviousTestCodeState",
                       "SGPPreviousTestCodePARCC", "SGPUpperBoundState", "SGPLowerBoundState", "SGPUpperBoundPARCC", "SGPLowerBoundPARCC")
 
-all.var.names <- c(head(parcc.var.names,-1), center.var.names, "TestFormat") # TestFormat is out of order
+all.var.names <- c(head(parcc.var.names,-1), center.var.names, "TestFormat", "PACKAGE_NOTE") # TestFormat is out of order.  Add in PACKAGE_NOTE to check consistency between manual and package NOTE versions
 
 ####  State Data
 
@@ -46,20 +44,20 @@ State_LONG_Data <- rbindlist(list(
 #####
 ###    Data for Consolodated SGP object
 #####
-
-load("./PARCC/Data/PARCC_SGP.Rdata")
-
-State_Subset <- State_LONG_Data[, list(VALID_CASE, CONTENT_AREA, YEAR, ID, SGP_SIMEX, SGP, SGP_0.05_CONFIDENCE_BOUND, SGP_0.95_CONFIDENCE_BOUND, SGP_NORM_GROUP)][!is.na(SGP) & YEAR=='2015_2016.2']
-state.vars <- c("SGP_SIMEX", "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND", "SGP_NORM_GROUP")
-setnames(State_Subset, state.vars, paste(state.vars, "_STATE", sep=""))
-setkey(State_Subset, VALID_CASE, CONTENT_AREA, YEAR, ID)
-setkey(PARCC_SGP_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
-PARCC_SGP@Data <- merge(PARCC_SGP_LONG_Data, State_Subset, all.x=TRUE)
-
-PARCC_SGP <- prepareSGP(PARCC_SGP)
-
-dir.create("./PARCC/Data/Pearson", recursive=TRUE)
-save(PARCC_SGP, file="./PARCC/Data/Pearson/PARCC_SGP-Consortium.Rdata")
+#
+# load("./PARCC/Data/PARCC_SGP.Rdata")
+#
+# State_Subset <- State_LONG_Data[, list(VALID_CASE, CONTENT_AREA, YEAR, ID, SGP_SIMEX, SGP, SGP_0.05_CONFIDENCE_BOUND, SGP_0.95_CONFIDENCE_BOUND, SGP_NORM_GROUP)][!is.na(SGP) & YEAR=='2015_2016.2']
+# state.vars <- c("SGP_SIMEX", "SGP", "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND", "SGP_NORM_GROUP")
+# setnames(State_Subset, state.vars, paste(state.vars, "_STATE", sep=""))
+# setkey(State_Subset, VALID_CASE, CONTENT_AREA, YEAR, ID)
+# setkey(PARCC_SGP_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+# PARCC_SGP@Data <- merge(PARCC_SGP_LONG_Data, State_Subset, all.x=TRUE)
+#
+# PARCC_SGP <- prepareSGP(PARCC_SGP)
+#
+# dir.create("./PARCC/Data/Pearson", recursive=TRUE)
+# save(PARCC_SGP, file="./PARCC/Data/Pearson/PARCC_SGP-Consortium.Rdata")
 
 
 #####
@@ -67,6 +65,10 @@ save(PARCC_SGP, file="./PARCC/Data/Pearson/PARCC_SGP-Consortium.Rdata")
 #####
 
 ##  Add in the Missing SGP identifiers requested by Pearson
+
+###  Rename new SGP_NOTE variable to compare with constructed one from formatting process:
+setnames(State_LONG_Data, "SGP_NOTE", "PACKAGE_NOTE")
+setnames(PARCC_SGP_LONG_Data, "SGP_NOTE", "PACKAGE_NOTE")
 
 ###  PARCC Consortium
 
@@ -133,8 +135,10 @@ eoct <- PARCC_SGP_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS") & ID %in% yes.
 eoct_wide <- data.table(eoct[YEAR=='2015_2016.2'][, list(ID, StudentTestUUID, CONTENT_AREA)], key="ID")[data.table(eoct[YEAR!='2015_2016.2'][, list(ID, CONTENT_AREA)], key="ID")]
 
 repeater.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$ID # still 3 grade level Maths included.
-repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID # still 3 grade level Maths included.
-PARCC_SGP_LONG_Data[StudentTestUUID %in% repeater.test.ids, SGP_NOTE := "Repeat"]
+repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID
+repeater.plus.test.ids <- unique(eoct_wide[StudentTestUUID %in% repeater.test.ids][CONTENT_AREA != i.CONTENT_AREA]$StudentTestUUID)
+repeater.ids <- setdiff(repeater.ids, unique(eoct_wide[StudentTestUUID %in% repeater.plus.test.ids]$ID)) # Identify/remove students with repeat and an additional math (small cohort) prior
+PARCC_SGP_LONG_Data[StudentTestUUID %in% setdiff(repeater.test.ids, repeater.plus.test.ids), SGP_NOTE := "Repeat"]
 
 sm.cohort.eoct.ids <- setdiff(yes.prior.eoct.ids, repeater.ids)
 PARCC_SGP_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, SGP_NOTE := "<1000"]
@@ -145,20 +149,20 @@ nas <- PARCC_SGP_LONG_Data[SGP_NOTE=="NA" & is.na(SGP)]
 na.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
 no.prior.ela.ids <- setdiff(na.ela.ids, prior.ela.ids)
-identical(na.ela.ids, no.prior.ela.ids)
+identical(na.ela.ids, no.prior.ela.ids) # TRUE
 
 na.math.ids <- nas[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.math.ids <- nas[CONTENT_AREA == "MATHEMATICS" & YEAR!='2015_2016.2']$ID
 no.prior.math.ids <- setdiff(na.math.ids, prior.math.ids)
-identical(na.math.ids, no.prior.math.ids)
+identical(na.math.ids, no.prior.math.ids) # TRUE
 
 na.eoct.ids <- nas[grep("_SS", CONTENT_AREA, invert =TRUE),][!CONTENT_AREA %in% c("ELA", "MATHEMATICS") & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.eoct.ids <- nas[grep("_SS", CONTENT_AREA, invert =TRUE),][!CONTENT_AREA %in% c("ELA", "ELA_SS") & YEAR!='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]$ID
 no.prior.eoct.ids <- setdiff(na.eoct.ids, prior.eoct.ids)
-identical(na.eoct.ids, no.prior.eoct.ids)
+identical(na.eoct.ids, no.prior.eoct.ids) #FALSE - examine in next two lines
 
 xids <- setdiff(na.eoct.ids, no.prior.eoct.ids)
-data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016.2 - one without an SGP and the other with (8 kids)
+data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016 (Fall or Spring) - one without an SGP and the other with (8 kids)
 
 
 ###  PARCC States
@@ -179,7 +183,7 @@ repeat.ela.ids <- ela_wide[`2014_2015.2`==`2015_2016.2` | `2015_2016.1`==`2015_2
 skip.ela.ids <- unique(c(ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2015_2016.1`) > 1,]$ID, ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2014_2015.2`) > 1,]$ID))
 regr.ela.ids <- unique(c(ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2015_2016.1`) < 0,]$ID, ela_wide[as.numeric(`2015_2016.2`)-as.numeric(`2014_2015.2`) < 0,]$ID))
 length(unique(c(sm.cohort.ela.ids, repeat.ela.ids, skip.ela.ids, regr.ela.ids))) == length(yes.prior.ela.ids)
-table(ela_wide[ID %in% skip.ela.ids][, `2014_2015.2`, `2015_2016.2`]) # Only 9th to 11th grade ELA is close (still < 1000 @ 920)
+table(ela_wide[ID %in% skip.ela.ids][, `2014_2015.2`, `2015_2016.2`]) # Only 9th to 11th grade ELA is close (still < 1000 @ 925)
 
 State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% regr.ela.ids, SGP_NOTE := "Regressed"]
 State_LONG_Data[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & ID %in% skip.ela.ids, SGP_NOTE := "Skipped"]
@@ -227,7 +231,9 @@ eoct_wide <- data.table(eoct[YEAR=='2015_2016.2'][, list(ID, StudentTestUUID, CO
 
 repeater.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$ID # still 3 grade level Maths included.
 repeater.test.ids <- eoct_wide[CONTENT_AREA==i.CONTENT_AREA & i.CONTENT_AREA != "MATHEMATICS"]$StudentTestUUID
-State_LONG_Data[StudentTestUUID %in% repeater.test.ids, SGP_NOTE := "Repeat"]
+repeater.plus.test.ids <- unique(eoct_wide[StudentTestUUID %in% repeater.test.ids][CONTENT_AREA != i.CONTENT_AREA]$StudentTestUUID)
+repeater.ids <- setdiff(repeater.ids, unique(eoct_wide[StudentTestUUID %in% repeater.plus.test.ids]$ID)) # Identify/remove students with repeat and an additional math (small cohort) prior
+State_LONG_Data[StudentTestUUID %in% setdiff(repeater.test.ids, repeater.plus.test.ids), SGP_NOTE := "Repeat"]
 
 sm.cohort.eoct.ids <- setdiff(yes.prior.eoct.ids, repeater.ids)
 State_LONG_Data[!CONTENT_AREA %in% c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS") & YEAR=='2015_2016.2' & ID %in% sm.cohort.eoct.ids, SGP_NOTE := "<1000"]
@@ -238,14 +244,12 @@ nas <- State_LONG_Data[SGP_NOTE=="NA" & is.na(SGP)]
 na.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.ela.ids <- nas[CONTENT_AREA == "ELA" & YEAR!='2015_2016.2']$ID
 no.prior.ela.ids <- setdiff(na.ela.ids, prior.ela.ids)
-identical(na.ela.ids, no.prior.ela.ids)
-# xids <- setdiff(na.ela.ids, no.prior.ela.ids)
-# m.ela <- data.table(State_LONG_Data[CONTENT_AREA == "ELA" & ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016.2 - one without an SGP and the other with (8 kids)
+identical(na.ela.ids, no.prior.ela.ids) # TRUE
 
 na.math.ids <- nas[CONTENT_AREA == "MATHEMATICS" & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.math.ids <- nas[CONTENT_AREA == "MATHEMATICS" & YEAR!='2015_2016.2']$ID
 no.prior.math.ids <- setdiff(na.math.ids, prior.math.ids)
-identical(na.math.ids, no.prior.math.ids)
+identical(na.math.ids, no.prior.math.ids) # TRUE
 
 na.eoct.ids <- nas[grep("_SS", CONTENT_AREA, invert =TRUE),][!CONTENT_AREA %in% c("ELA", "MATHEMATICS") & YEAR=='2015_2016.2' & is.na(SGP)]$ID
 prior.eoct.ids <- nas[grep("_SS", CONTENT_AREA, invert =TRUE),][!CONTENT_AREA %in% c("ELA", "ELA_SS") & YEAR!='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]$ID
@@ -253,7 +257,8 @@ no.prior.eoct.ids <- setdiff(na.eoct.ids, prior.eoct.ids)
 identical(na.eoct.ids, no.prior.eoct.ids)
 
 xids <- setdiff(na.eoct.ids, no.prior.eoct.ids)
-data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016.2 - one without an SGP and the other with (8 kids)
+data.table(eoct[ID %in% xids], key="ID") # looks like kids with 2 records in 2015_2016 (Fall or Spring) - ALL without an SGP (23 kids)
+uniqueN(eoct[ID %in% xids]$ID)
 
 ###  Substitute in SGP_NOTE coding where SGP is missing
 State_LONG_Data <- State_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_AREA, invert =TRUE),]
@@ -261,6 +266,38 @@ PARCC_LONG_Data <- PARCC_SGP_LONG_Data[YEAR=='2015_2016.2'][grep("_SS", CONTENT_
 
 State_LONG_Data[, SGP := as.character(SGP)]
 State_LONG_Data[which(is.na(SGP)), SGP := SGP_NOTE]
+
+PARCC_LONG_Data[, SGP := as.character(SGP)]
+PARCC_LONG_Data[which(is.na(SGP)), SGP := SGP_NOTE]
+
+###  Compare the SGP_NOTE with PACKAGE_NOTE
+###     These all appear to be 1) VERY rare EOCT math progressions (and regressions - e.g. Alg 2 to Alg 1).
+###     or the Fall to Spring ELA progressions (high school grades) with too few kids.
+###     These didn't have config scripts written out and so did not recieve a PACKAGE_NOTE.
+###     Pearson will have to decide how these recors should be coded.
+###     Does Pearson want any/all possible EOCT math progressions with <1000 identified (SGP_NOTE)?
+###     Or do they want only those that were attempted (have a config identified)?
+
+table(PARCC_SGP_LONG_Data[, SGP_NOTE, PACKAGE_NOTE], exclude=NULL)
+
+table(PARCC_SGP_LONG_Data[SGP_NOTE=="<1000" & is.na(PACKAGE_NOTE), as.character(SGP_NORM_GROUP)], exclude=NULL)
+table(PARCC_SGP_LONG_Data[SGP_NOTE=="Repeat" & !is.na(PACKAGE_NOTE), as.character(SGP_NORM_GROUP)], exclude=NULL) # should be 0 now
+
+####  Explore cases where there is a SGP_NOTE, but no PACKAGE_NOTE
+tmp.ids <- head(PARCC_SGP_LONG_Data[SGP_NOTE=="<1000" & is.na(PACKAGE_NOTE) & is.na(SGP_NORM_GROUP), ID], 25)
+PARCC_SGP_LONG_Data[ID == tmp.ids[25]] ##  An EOCT Math course regression - Alg 2 to Alg 1
+
+####  ELA fall to spring course progression (10th & 11th Grade ELA)
+table(PARCC_SGP_LONG_Data[SGP_NOTE=="<1000" & is.na(PACKAGE_NOTE) & is.na(SGP_NORM_GROUP) & CONTENT_AREA=="ELA", TestCode], exclude=NULL)
+tmp.ids <- head(PARCC_SGP_LONG_Data[SGP_NOTE=="<1000" & is.na(PACKAGE_NOTE) & is.na(SGP_NORM_GROUP) & CONTENT_AREA=="ELA", ID], 25)
+PARCC_SGP_LONG_Data[ID == tmp.ids[2]] # Can check any of the 25 sample IDs in tmp.ids
+
+
+##
+##   Final data cleanup and construction of variables Pearson requested
+##
+
+###   State Data
 
 ###    Remove rows associated with the Scale Score SGP
 State_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
@@ -278,22 +315,22 @@ State_LONG_Data[, GRADE_PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tm
 State_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
 State_LONG_Data[, SGPPreviousTestCodeState := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
 
-###  Recode new SGPPreviousTestCodeState Variable.  Check table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState)) before and after to ensure match!!!
-table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState))
+###  Recode new SGPPreviousTestCodeState Variable.  Check table(levels(State_LONG_Data$SGPPreviousTestCodeState)) before and after to ensure match!!!
+table(State_LONG_Data$SGPPreviousTestCodeState)
 levels(State_LONG_Data$SGPPreviousTestCodeState) <- c(NA, "ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
-	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
-table(levels(PARCC_LONG_Data$SGPPreviousTestCodeState)) ##  Match???
+	"GEO01", "MAT1I", "MAT2I", "MAT3I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
+table(State_LONG_Data$SGPPreviousTestCodeState, exclude=NULL) ##  Match???
 
 State_LONG_Data[, SGPPreviousTestCodeState := as.character(SGPPreviousTestCodeState)]
 State_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
 State_LONG_Data[, GRADE_PRIOR := NULL]
 
+save(State_LONG_Data, file="./PARCC/Data/Pearson/State_LONG_Data-FORMATTED.Rdata")
+
 State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Data) %in% all.var.names], with=FALSE]
 
-###   PARCC Consortium Data
 
-PARCC_LONG_Data[, SGP := as.character(SGP)]
-PARCC_LONG_Data[which(is.na(SGP)), SGP := SGP_NOTE]
+###   PARCC Consortium Data
 
 PARCC_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
@@ -311,14 +348,16 @@ PARCC_LONG_Data[which(GRADE_PRIOR=="EOCT"), GRADE_PRIOR := ""]
 PARCC_LONG_Data[, SGPPreviousTestCodePARCC := factor(paste(CONTENT_AREA_PRIOR, GRADE_PRIOR))]
 
 ###  Recode new SGPPreviousTestCodePARCC Variable.  Check table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC)) before and after to ensure match!!!
-table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC))
+table(PARCC_LONG_Data$SGPPreviousTestCodePARCC)
 levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC) <- c(NA, "ALG01", "ALG02", "ELA10", "ELA03", "ELA04", "ELA05", "ELA06", "ELA07", "ELA08", "ELA09",
-	"GEO01", "MAT1I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
-table(levels(PARCC_LONG_Data$SGPPreviousTestCodePARCC)) ##  Match???
+	"GEO01", "MAT1I", "MAT2I", "MAT3I", "MAT03", "MAT04", "MAT05", "MAT06", "MAT07", "MAT08")
+table(PARCC_LONG_Data$SGPPreviousTestCodePARCC, exclude=NULL) ##  Match???
 
 PARCC_LONG_Data[, SGPPreviousTestCodePARCC := as.character(SGPPreviousTestCodePARCC)]
 PARCC_LONG_Data[, CONTENT_AREA_PRIOR := NULL]
 PARCC_LONG_Data[, GRADE_PRIOR := NULL]
+
+save(PARCC_LONG_Data, file="./PARCC/Data/Pearson/PARCC_LONG_Data-FORMATTED.Rdata")
 
 PARCC_LONG_Data <- PARCC_LONG_Data[, names(PARCC_LONG_Data)[names(PARCC_LONG_Data) %in% all.var.names], with=FALSE]
 
@@ -328,13 +367,20 @@ FINAL_LONG_Data[is.na(StudentGrowthPercentileComparedtoState), StudentGrowthPerc
 
 setcolorder(FINAL_LONG_Data, all.var.names)
 
+###
 ###  Save R object and Export/zip State specific .csv files
+###
+
 dir.create("./PARCC/Data/Pearson")
 save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2015_2016.2-FORMATTED.Rdata")
 
+####  First remove unused/unrequested NOTE versions and values/levels
+
+FINAL_LONG_Data[, PACKAGE_NOTE := NULL]
 FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoPARCC %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoPARCC := as.character(NA)]
 FINAL_LONG_Data[which(StudentGrowthPercentileComparedtoState %in% c("NA", "Regressed", "Repeat", "Skipped")), StudentGrowthPercentileComparedtoState := as.character(NA)]
 
+####  Loop on State Abbreviation to write out each state file in format that it was recieved and return requested
 for (abv in tail(unique(FINAL_LONG_Data$StateAbbreviation), -1)) {
 	dir.create(dir.name <- paste0("./",  gsub(" ", "_", capwords(SGP:::getStateAbbreviation(abv, type="state"), special.words="DC")), "/Data/Pearson"), recursive=TRUE)
 	fname <- paste0(dir.name, "/PARCC_", abv, "_2015-2016_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
