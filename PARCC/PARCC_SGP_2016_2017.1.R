@@ -35,22 +35,22 @@ PARCC_2016_2017.1.config <- c(
 	ELA_2016_2017.1.config,
 	ELA_SS_2016_2017.1.config,
 
-	MATHEMATICS_2015_2016.config,
-	MATHEMATICS_SS_2015_2016.config,
+	MATHEMATICS_2016_2017.1.config,
+	MATHEMATICS_SS_2016_2017.1.config,
 
-	ALGEBRA_I.2015_2016.config,
-	ALGEBRA_I_SS.2015_2016.config,
-	ALGEBRA_II.2015_2016.config,
-	ALGEBRA_II_SS.2015_2016.config,
-	GEOMETRY.2015_2016.config,
-	GEOMETRY_SS.2015_2016.config,
+	ALGEBRA_I.2016_2017.1.config,
+	ALGEBRA_I_SS.2016_2017.1.config,
+	ALGEBRA_II.2016_2017.1.config,
+	ALGEBRA_II_SS.2016_2017.1.config,
+	GEOMETRY.2016_2017.1.config,
+	GEOMETRY_SS.2016_2017.1.config,
 
-	INTEGRATED_MATH_1.2015_2016.config,
-	INTEGRATED_MATH_1_SS.2015_2016.config,
-	INTEGRATED_MATH_2.2015_2016.config,
-	INTEGRATED_MATH_2_SS.2015_2016.config,
-	INTEGRATED_MATH_3.2015_2016.config,
-	INTEGRATED_MATH_3_SS.2015_2016.config
+	INTEGRATED_MATH_1.2016_2017.1.config,
+	INTEGRATED_MATH_1_SS.2016_2017.1.config,
+	INTEGRATED_MATH_2.2016_2017.1.config,
+	INTEGRATED_MATH_2_SS.2016_2017.1.config,
+	INTEGRATED_MATH_3.2016_2017.1.config,
+	INTEGRATED_MATH_3_SS.2016_2017.1.config
 )
 
 
@@ -58,7 +58,7 @@ PARCC_2016_2017.1.config <- c(
 
 PARCC_SGP <- updateSGP(
 		what_sgp_object=PARCC_SGP,
-		with_sgp_data_LONG = dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2016_2"),
+		with_sgp_data_LONG = dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_1"),
 		sgp.config = PARCC_2016_2017.1.config,
 		steps=c("prepareSGP", "analyzeSGP"),
 		sgp.percentiles = TRUE,
