@@ -1,6 +1,6 @@
 #####################################################################################
 ###                                                                               ###
-###      SGP Configurations for Fall 2015 EOCT Math subjects  -  SCALE SCORES     ###
+###      SGP Configurations for Fall 2016 EOCT Math subjects  -  SCALE SCORES     ###
 ###                                                                               ###
 #####################################################################################
 
