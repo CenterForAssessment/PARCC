@@ -9,7 +9,7 @@
 require(SGP)
 require(data.table)
 
-setwd("PARCC")
+###  Set working directory to top level directory (PARCC)
 
 ###
 ###    Read in Fall 2016 Pearson base data
@@ -35,7 +35,7 @@ read.parcc <- function(state, year, Fall=FALSE) {
 	tmp.dir <- getwd()
 	setwd(tempdir())
 	system(paste("unzip '", file.path(tmp.dir, tmp.name, "Data/Base_Files", my.zip), "'", sep=""))
-	if (year=="2015-2016" | Fall==TRUE) {
+	if (year=="2014-2015" | Fall==TRUE) {
 		tmp.var.names <- head(all.var.names,-1)
 		cols <- 20
 	} else {
@@ -51,11 +51,9 @@ read.parcc <- function(state, year, Fall=FALSE) {
 
 ####  Fall 2016
 
-PARCC_Data_LONG_2016_2017.1 <- rbindlist(list(read.parcc("BI", "D201607"),
-	read.parcc("CO", "D201607"), read.parcc("IL", "D201607"),
-	read.parcc("MD", "D201607"), read.parcc("MA", "D201607"),
-	read.parcc("NJ", "D201607"), read.parcc("NM", "D201607"),
-	read.parcc("RI", "D201607"), read.parcc("DC", "D201607")))
+PARCC_Data_LONG_2016_2017.1 <- rbindlist(list(read.parcc("BI", "D20170214"),
+	read.parcc("MD", "D20170214"), read.parcc("NJ", "D20170214"),
+	read.parcc("NM", "D20170214"), read.parcc("RI", "D20170214")))
 
 setkey(PARCC_Data_LONG_2016_2017.1, PARCCStudentIdentifier, TestCode, Period)
 PARCC_Data_LONG_2016_2017.1 <- PARCC_Data_LONG_2016_2017.1[, parcc.var.names, with=FALSE]
@@ -70,7 +68,7 @@ setnames(PARCC_Data_LONG_2016_2017.1, "PARCCStudentIdentifier", "ID")
 
 ####  CONTENT_AREA from TestCode
 PARCC_Data_LONG_2016_2017.1[, CONTENT_AREA := factor(TestCode)]
-levels(PARCC_Data_LONG_2016_2017.1$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 9), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
+levels(PARCC_Data_LONG_2016_2017.1$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 3), "GEOMETRY")
 PARCC_Data_LONG_2016_2017.1[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ####  GRADE from TestCode
@@ -78,6 +76,7 @@ PARCC_Data_LONG_2016_2017.1[, GRADE := gsub("ELA|MAT", "", TestCode)]
 PARCC_Data_LONG_2016_2017.1[, GRADE := as.character(as.numeric(GRADE))]
 PARCC_Data_LONG_2016_2017.1[which(is.na(GRADE)), GRADE := "EOCT"]
 PARCC_Data_LONG_2016_2017.1[, GRADE := as.character(GRADE)]
+table(PARCC_Data_LONG_2016_2017.1[, GRADE, TestCode])
 
 ####  YEAR
 PARCC_Data_LONG_2016_2017.1[, YEAR := gsub("-", "_", AssessmentYear)]
@@ -92,7 +91,7 @@ PARCC_Data_LONG_2016_2017.1[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
 
 ####  Duplicates
 
-####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18
+####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18 (NO Dups anyway for Fall 2016)
 
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SummativeScaleScore)
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
@@ -147,7 +146,8 @@ PARCC_Data_LONG_2016_2017.1[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUA
 PARCC_Data_LONG_2016_2017.1[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ####  Save Fall 2016 LONG Data
-save(PARCC_Data_LONG_2016_2017.1, file = "./PARCC/Data/PARCC_Data_LONG_2016_2017.1.Rdata")
+dir.create("./PARCC/Data/Archive/2016_2017.1")
+save(PARCC_Data_LONG_2016_2017.1, file = "./PARCC/Data/Archive/2016_2017.1/PARCC_Data_LONG_2016_2017.1.Rdata")
 
 
 #####  Add Fall 2016 LONG data to existing SQLite Database.  Tables stored by each year / period
