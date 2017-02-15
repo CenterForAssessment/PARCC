@@ -67,7 +67,8 @@ ALG1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c(
 # 1:                     ALGEBRA_I.EOCT    94
 # 2:                    ALGEBRA_II.EOCT    24
 # 3:                      GEOMETRY.EOCT     8
-###   None
+###   None - but establish configs with Geometry for the SGP_NOTE variables
+table(math.prog$BACKWARD[['2016_2017.1']]$ALGEBRA_I.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "GEOMETRY.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude ALGEBRA_I + GEOMETRY and ALGEBRA_II for good measure
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) ALGEBRA_I Progressions
 ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
@@ -101,7 +102,10 @@ GEOM[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c(
 # 1:                     ALGEBRA_I.EOCT   566
 # 2:                    ALGEBRA_II.EOCT   167
 # 3:                      GEOMETRY.EOCT    51
-###   None -
+###   None - but establish configs with Algebra I and II for the SGP_NOTE variables
+table(math.prog$BACKWARD[['2016_2017.1']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_I.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
+table(math.prog$BACKWARD[['2016_2017.1']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_II.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1]) # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
+
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
 GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
@@ -133,7 +137,9 @@ ALG2[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c(
 # 1:                     ALGEBRA_I.EOCT   352
 # 2:                    ALGEBRA_II.EOCT   137
 # 3:                      GEOMETRY.EOCT  1050
-###   Geometry
+###   Geometry  -  also establish config with Algebra I for the SGP_NOTE variables
+table(math.prog$BACKWARD[['2016_2017.1']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_I.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1]) # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
+table(math.prog$BACKWARD[['2016_2017.1']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "GEOMETRY.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) ALGEBRA_II Progressions
 ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]

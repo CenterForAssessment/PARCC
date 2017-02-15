@@ -12,6 +12,7 @@ workers <- parallel::detectCores()/2
 
 require(SGP)
 require(RSQLite)
+require(data.table)
 
 
 ###  Load SGP LONG Data from Spring 2016 Analyses
