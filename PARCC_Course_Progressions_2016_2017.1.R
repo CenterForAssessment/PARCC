@@ -4,7 +4,7 @@
 ###                                                                          ###
 ################################################################################
 
-library(SGP)  # Version 1.6
+library(SGP)  # Version 1.6-2.5 or later
 library(data.table)
 library(RSQLite)
 
@@ -74,6 +74,8 @@ table(math.prog$BACKWARD[['2016_2017.1']]$ALGEBRA_I.EOCT[CONTENT_AREA_by_GRADE_P
 ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
 # 1:                     MATHEMATICS.08                     MATHEMATICS.07  3105
+
+ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="MATHEMATICS.08" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.07"] # No Fall 15 (YEAR.2) exclusions necessary
 ###   8th and 7th Grade Math
 
 
@@ -111,7 +113,9 @@ table(math.prog$BACKWARD[['2016_2017.1']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PR
 GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
 # 1:                     ALGEBRA_I.EOCT                     MATHEMATICS.08  1474
-###   Algebra I and 8th Grade Math
+
+GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ALGEBRA_I.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.08"] # Exclude 12 cases with ALGEBRA_I in Fall 15 (YEAR.2)
+###   Algebra I and 8th Grade Math, with exclusions
 
 
 ###   Algebra II (No Repeaters)
@@ -145,7 +149,9 @@ table(math.prog$BACKWARD[['2016_2017.1']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_
 ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
 # 1:                      GEOMETRY.EOCT                     ALGEBRA_I.EOCT  1823
-###   Geometry and Algebra I
+
+ALG2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="GEOMETRY.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="ALGEBRA_I.EOCT"] # Exclude (79 total) cases with Fall 15 (YEAR.2) scores (Alg 1, 2 and Geometry)
+###   Geometry and Algebra I, with exclusions
 
 
 ####
