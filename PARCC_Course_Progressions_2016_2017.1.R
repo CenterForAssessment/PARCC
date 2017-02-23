@@ -34,8 +34,12 @@ table(FALL_Data_LONG[YEAR == "2016_2017.1" & !CONTENT_AREA %in% "ELA", CONTENT_A
 
 ###  Run courseProgressionSGP by content area subsets of the FALL_Data_LONG
 
-math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
-ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
+math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.1')
+ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.1')
+
+###  State specific analyses - re-run for NM, NJ, & MD
+# math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
+# ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
 
 
 ####
