@@ -16,11 +16,10 @@ require(data.table)
 
 
 ###  Load SGP LONG Data from Spring 2016 Analyses
-load("./Data/Archive/2016_2017.1/PARCC_SGP_LONG_Data.Rdata")
+load("./Data/Archive/2015_2016.2/PARCC_SGP_LONG_Data.Rdata")
 
 ###  Location of PARCC SQLite Database (Fall 2016 added in Data Prep step)
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
-
 
 ###  Read in the Spring 2016 configuration code and combine into a single list.
 
@@ -28,7 +27,6 @@ source("../SGP_CONFIG/2016_2017.1/ELA.R")
 source("../SGP_CONFIG/2016_2017.1/ELA_SS.R")
 source("../SGP_CONFIG/2016_2017.1/MATHEMATICS.R")
 source("../SGP_CONFIG/2016_2017.1/MATHEMATICS_SS.R")
-
 
 PARCC_2016_2017.1.config <- c(
 	ELA_2016_2017.1.config,
@@ -49,7 +47,7 @@ PARCC_SGP <- abcSGP(
 		state="PARCC",
 		sgp_object=rbindlist(list(
 			PARCC_SGP_LONG_Data,
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_1"))),
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_1")), fill=TRUE),
 		sgp.config = PARCC_2016_2017.1.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
@@ -64,15 +62,18 @@ PARCC_SGP <- abcSGP(
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ## -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
-		outputSGP.output.type=c("LONG_FINAL_YEAR_Data"),
-    parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(TAUS = workers, SIMEX=workers)))
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		outputSGP.directory="Data/Archive/2016_2017.1",
+    parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel", SNOW_TEST = TRUE,
+			WORKERS = list(TAUS = workers, SIMEX = workers)))
 
 
 ### Save results
 
 if (sgp.test) {
 	save(PARCC_SGP, file="./Data/SIM/PARCC_SGP-Test_PARCC_2016_2017.1.Rdata")
-} else save(PARCC_SGP, file="./Data/PARCC_SGP.Rdata")
+} else save(PARCC_SGP, file="./Data/Archive/2016_2017.1/PARCC_SGP.Rdata")
 
 
 q("no")
