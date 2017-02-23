@@ -13,10 +13,10 @@ library(RSQLite)
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
 PARCC_Data_LONG <- rbindlist(list(
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE from PARCC_Data_LONG_2015_2"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE from PARCC_Data_LONG_2016_1"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE from PARCC_Data_LONG_2016_2"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE from PARCC_Data_LONG_2017_1")))
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2015_2"),
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_1"),
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_2"),
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1")))
 
 PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
@@ -29,11 +29,13 @@ FALL_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
 table(FALL_Data_LONG[!CONTENT_AREA %in% "ELA", CONTENT_AREA, YEAR])
 table(FALL_Data_LONG[CONTENT_AREA %in% "ELA", as.numeric(GRADE), YEAR])
 
+table(FALL_Data_LONG[YEAR == "2016_2017.1" & CONTENT_AREA %in% "ELA", CONTENT_AREA, StateAbbreviation]) # NM, NJ, MD
+table(FALL_Data_LONG[YEAR == "2016_2017.1" & !CONTENT_AREA %in% "ELA", CONTENT_AREA, StateAbbreviation]) # NM, NJ, MD
 
 ###  Run courseProgressionSGP by content area subsets of the FALL_Data_LONG
 
-math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.1')
-ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.1')
+math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
+ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.1')
 
 
 ####
@@ -60,6 +62,9 @@ ALG1[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.n
 # 3:                     MATHEMATICS.07   157
 # 4:                     MATHEMATICS.08  3367
 ###   All listed
+###   NM - None
+###   NJ - MATHEMATICS.08 1478
+###   MD - MATHEMATICS.08 1607
 
 ###   Viable 1 Prior (Fall 15) ALGEBRA_I Progressions (ENFORCE THAT NO SPRING 16 TEST AVAILABLE!)
 ALG1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
@@ -77,6 +82,8 @@ ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c
 
 ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="MATHEMATICS.08" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.07"] # No Fall 15 (YEAR.2) exclusions necessary
 ###   8th and 7th Grade Math
+###   NJ - MATHEMATICS.08  <->  MATHEMATICS.07 1311
+###   MD - MATHEMATICS.08  <->  MATHEMATICS.07 1546
 
 
 ###   Geometry (No Repeaters)
@@ -97,6 +104,9 @@ GEOM[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.n
 # 5:             INTEGRATED_MATH_3.EOCT     1
 # 6:                     MATHEMATICS.08    34
 ###   All listed
+###   NM - None
+###   NJ - ALGEBRA_I.EOCT 2506
+###   MD - None
 
 ###   Viable 1 Prior (Fall 15) GEOMETRY Progressions (ENFORCE THAT NO SPRING 16 TEST AVAILABLE!)
 GEOM[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
@@ -116,6 +126,7 @@ GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c
 
 GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ALGEBRA_I.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.08"] # Exclude 12 cases with ALGEBRA_I in Fall 15 (YEAR.2)
 ###   Algebra I and 8th Grade Math, with exclusions
+###   NJ - ALGEBRA_I.EOCT  <->  MATHEMATICS.08    1277
 
 
 ###   Algebra II (No Repeaters)
@@ -134,6 +145,9 @@ ALG2[, list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1")][!i
 # 4:             INTEGRATED_MATH_3.EOCT   160
 # 5:                     MATHEMATICS.08     4
 ###   All listed
+###   NM - None
+###   NJ - GEOMETRY.EOCT 2007
+###   MD - None
 
 ###   Viable 1 Prior (Fall 15) ALGEBRA_II Progressions (NO SPRING 16 TEST AVAILABLE!)
 ALG2[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
@@ -152,6 +166,7 @@ ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c
 
 ALG2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="GEOMETRY.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="ALGEBRA_I.EOCT"] # Exclude (79 total) cases with Fall 15 (YEAR.2) scores (Alg 1, 2 and Geometry)
 ###   Geometry and Algebra I, with exclusions
+###   NJ - GEOMETRY.EOCT  <->  ALGEBRA_I.EOCT 1382
 
 
 ####
@@ -167,3 +182,7 @@ sum(ela.prog$BACKWARD[['2016_2017.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1
 sum(ela.prog$BACKWARD[['2016_2017.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  361 (repeaters)
 sum(ela.prog$BACKWARD[['2016_2017.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   # 4159
 sum(ela.prog$BACKWARD[['2016_2017.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.11"]$COUNT)   # 6621 (repeaters)
+
+###   NM - None
+###   NJ - All 3 Grades
+###   MD - 11th Grade
