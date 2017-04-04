@@ -1,0 +1,122 @@
+
+############################################################################
+####
+#         2016
+####
+############################################################################
+
+### Load required packages
+
+require(SGP)
+require(data.table)
+
+setwd("~/Dropbox (SGP)/SGP/PARCC")
+
+###
+###    Read in Fall and Spring 2016 Output Files
+###
+
+load("./PARCC/Data/PARCC_SGP_LONG_Data_2015_2016.2.Rdata")
+
+load("./Colorado/Data/Colorado_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Illinois/Data/Illinois_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Maryland/Data/Maryland_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Massachusetts/Data/Massachusetts_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./New_Jersey/Data/New_Jersey_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./New_Mexico/Data/New_Mexico_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Rhode_Island/Data/Rhode_Island_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Washington_DC/Data/WASHINGTON_DC_SGP_LONG_Data_2015_2016.2.Rdata")
+
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports")
+
+####  Subset PARCC Data
+
+PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2015_2016.2[grep("_SS", CONTENT_AREA, invert =TRUE), 
+				c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX", "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_PRIOR",
+					"SGP_NORM_GROUP","SCALE_SCORE", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "StateAbbreviation")]
+
+####  Subset State Data
+
+State_LONG_Data <- rbindlist(list(
+	Colorado_SGP_LONG_Data_2015_2016.2, Illinois_SGP_LONG_Data_2015_2016.2, Maryland_SGP_LONG_Data_2015_2016.2,
+	Massachusetts_SGP_LONG_Data_2015_2016.2, New_Jersey_SGP_LONG_Data_2015_2016.2, New_Mexico_SGP_LONG_Data_2015_2016.2,
+	Rhode_Island_SGP_LONG_Data_2015_2016.2, WASHINGTON_DC_SGP_LONG_Data_2015_2016.2), fill=TRUE)[grep("_SS", CONTENT_AREA, invert =TRUE),
+				c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX", "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_PRIOR",
+					"SGP_NORM_GROUP","SCALE_SCORE", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED")]
+
+# rm(list=ls()[c(-7,-10)]);gc()
+
+
+state.vars <- c("SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "SGP", "SGP_SIMEX", "SGP_NORM_GROUP")
+setnames(State_LONG_Data, state.vars, paste(state.vars, "_STATE", sep=""))
+setkey(State_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+setkey(PARCC_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+
+###       Merge PARCC and State Data
+PARCC_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
+
+rm(State_LONG_Data); gc()
+
+PARCC_LONG_Data[, Most_Recent_Prior := as.character(NA)]
+PARCC_LONG_Data[, Most_Recent_Prior := sapply(strsplit(as.character(SGP_NORM_GROUP), "; "), function(x) rev(x)[2])]
+PARCC_LONG_Data[, Most_Recent_Prior_State := as.character(NA)]
+PARCC_LONG_Data[, Most_Recent_Prior_State := sapply(strsplit(as.character(SGP_NORM_GROUP_STATE), "; "), function(x) rev(x)[2])]
+
+###   Add variables, etc used in State summary tables
+
+PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 1", "Level 2", "Level 3"), PROFICIENT:=0L]
+PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 4", "Level 5"), PROFICIENT:=1L]
+PARCC_LONG_Data[, SCALE_SCORE_CURRENT_STANDARDIZED:=scale(SCALE_SCORE), keyby=list(CONTENT_AREA, YEAR, GRADE)]
+PARCC_LONG_Data[, PRIOR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PRIOR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PRIOR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
+
+scaling.constants <- as.data.table(read.csv("PARCC/Data/Base_Files/2014-2015 PARCC Scaling Constants.csv"))
+PARCC_LONG_Data[, SCALE_SCORE_PRIOR_ACTUAL := round((SCALE_SCORE_PRIOR*scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["a"]]+scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["b"]]), 0), by=c("PRIOR_CONTENT_AREA", "PRIOR_GRADE")]
+cor(PARCC_LONG_Data$SCALE_SCORE_PRIOR_ACTUAL, PARCC_LONG_Data$SCALE_SCORE_PRIOR, use="complete")
+PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL < 650), SCALE_SCORE_PRIOR_ACTUAL := 650]
+PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL > 850), SCALE_SCORE_PRIOR_ACTUAL := 850]
+
+# # These were causing problems with calculation of PRIOR_ACHIEVEMENT_PERCENTILE below
+PARCC_LONG_Data[, PR_YEAR := PRIOR_YEAR] # Next time just use setnames(...)
+PARCC_LONG_Data[, PR_GRADE := PRIOR_GRADE]
+PARCC_LONG_Data[, PR_CONTENT_AREA := PRIOR_CONTENT_AREA]
+PARCC_LONG_Data[, PRIOR_YEAR := NULL]
+PARCC_LONG_Data[, PRIOR_GRADE := NULL]
+PARCC_LONG_Data[, PRIOR_CONTENT_AREA := NULL]
+
+
+PARCC_SGP <- prepareSGP(PARCC_LONG_Data, create.additional.variables = FALSE)
+
+save(PARCC_SGP, file="../Data/PARCC_SGP-Tech_Reports.Rdata")
+
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PARCC/2016")
+
+library(SGPreports)
+use.data.table()
+
+#####
+#####			PARCC Consortium
+#####
+
+load("../../../Data/PARCC_SGP-Tech_Reports.Rdata")
+
+renderMultiDocument(rmd_input = "PARCC_SGP_Report_2016.Rmd",
+										output_format = c("HTML", "PDF"), # 
+										cover_img="../img/cover.jpg",
+										add_cover_title=TRUE, 
+										# cleanup_aux_files = FALSE,
+										pandoc_args = "--webtex")
+
+renderMultiDocument(rmd_input = "Appendix_A_2016.Rmd",
+										# output_format = c("HTML"),
+										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										cover_img="../img/cover.jpg",
+										# cleanup_aux_files = FALSE,
+										add_cover_title=TRUE)
+
+renderMultiDocument(rmd_input = "Appendix_C_2016.Rmd",
+										# output_format = c("HTML"),
+										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										cover_img="../img/cover.jpg",
+										add_cover_title=TRUE)
