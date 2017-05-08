@@ -23,9 +23,9 @@ parcc.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier"
                  "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "Filler", "TestFormat")
 
 nciea.names <- c("StudentGrowthPercentileComparedtoState", "StudentGrowthPercentileComparedtoPARCC", "SGPPreviousTestCodeState", "SGPPreviousTestCodePARCC",
-                 "SGPUpperBoundState", "SGPLowerBoundState", "SGPUpperBoundPARCC", "SGPLowerBoundPARCC", "SGPStandardErrorPARCC", "SGPStandardErrorState")
+                 "SGPUpperBoundState", "SGPLowerBoundState", "SGPUpperBoundPARCC", "SGPLowerBoundPARCC")#, "SGPStandardErrorPARCC", "SGPStandardErrorState")
 
-all.names <- c(head(parcc.names,-1), head(nciea.names, -2), "TestFormat", "SGPStandardErrorPARCC", "SGPStandardErrorState") # TestFormat and new SEs are out of order.
+all.names <- c(head(parcc.names,-1), nciea.names, "TestFormat")#, head(nciea.names, -2) ... "SGPStandardErrorPARCC", "SGPStandardErrorState") # TestFormat and new SEs are out of order.
 
 ####  Combine states' data into single data table
 State_LONG_Data <- rbindlist(list(
@@ -43,6 +43,11 @@ PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2016_2017.1[grep("_SS", CONTENT_AREA, inv
 ###   State Data
 
 ###  Remove "DUPS" label from IDs for duplicated records
+###  First do some QC to make sure that the DUPS that were used to produce SGPs correspond correctly between
+###  State_LONG_Data & PARCC_LONG_Data.  In Fall 2016 analyses - only Dups for 11th grade ELA produced SGPs.
+###  The "dups" were all from 10th grade ELA tests also taken in Fall 2016 (i.e not exact duplicates).
+###  Therefore "_DUPS_" flag can be removed here without problem.
+
 State_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
 ###  Combine SGP_NOTE and SGP variables (use SGP_ORDER_1 as "official" SGP for Fall 2016 analyses)
@@ -78,6 +83,11 @@ State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Dat
 ###   PARCC Consortium Data
 
 ###  Remove "DUPS" label from IDs for duplicated records
+###  First do some QC to make sure that the DUPS that were used to produce SGPs correspond correctly between
+###  State_LONG_Data & PARCC_LONG_Data.  In Fall 2016 analyses - only Dups for 11th grade ELA produced SGPs.
+###  The "dups" were all from 10th grade ELA tests also taken in Fall 2016 (i.e not exact duplicates).
+###  Therefore "_DUPS_" flag can be removed here without problem.
+
 PARCC_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
 ###  Combine SGP_NOTE and SGP variables (use SGP_ORDER_1 as "official" SGP for Fall 2016 analyses)
@@ -117,6 +127,13 @@ FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGro
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
+
+###  Make sure no exact duplicates remain.
+setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode, SummativeScaleScore)
+setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode)
+table(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data))) # Should be FALSE
+findups <- FINAL_LONG_Data[c(which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))-1, which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))),]
+dim(findups) # Should be 0 rows!
 
 setcolorder(FINAL_LONG_Data, all.names)
 

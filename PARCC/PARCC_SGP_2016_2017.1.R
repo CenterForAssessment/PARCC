@@ -18,6 +18,14 @@ require(data.table)
 ###  Load SGP LONG Data from Spring 2016 Analyses
 load("./Data/Archive/2015_2016.2/PARCC_SGP_LONG_Data.Rdata")
 
+###  Remove old duplicate case tags and invalidate exact duplicates created in Spring 2016 Analyses:
+PARCC_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
+PARCC_SGP_LONG_Data[, VALID_CASE := "VALID_CASE"]
+setkey(PARCC_SGP_LONG_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE, SGP)
+setkey(PARCC_SGP_LONG_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
+PARCC_SGP_LONG_Data[which(duplicated(PARCC_SGP_LONG_Data, by=key(PARCC_SGP_LONG_Data)))-1, VALID_CASE := "INVALID_CASE"] # 105
+table(PARCC_SGP_LONG_Data[, VALID_CASE])
+
 ###  Location of PARCC SQLite Database (Fall 2016 added in Data Prep step)
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
@@ -45,9 +53,10 @@ PARCC_2016_2017.1.config <- c(
 
 PARCC_SGP <- abcSGP(
 		state="PARCC",
-		sgp_object=rbindlist(list(
-			PARCC_SGP_LONG_Data,
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_1")), fill=TRUE),
+		sgp_object=rbindlist(list(PARCC_SGP_LONG_Data, PARCC_Data_LONG_2016_2017.1), fill=TRUE),
+		# sgp_object=rbindlist(list(
+		# 	PARCC_SGP_LONG_Data,
+		# 	dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_1")), fill=TRUE),
 		sgp.config = PARCC_2016_2017.1.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,

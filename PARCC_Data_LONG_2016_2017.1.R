@@ -93,14 +93,15 @@ PARCC_Data_LONG_2016_2017.1[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
 
 ####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18 (NO Dups anyway for Fall 2016)
 
+##  36 dups in same grade
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SummativeScaleScore)
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-# PARCC_Data_LONG_2016_2017.1[which(duplicated(PARCC_Data_LONG_2016_2017.1))-1, VALID_CASE := "INVALID_CASE"]
+# PARCC_Data_LONG_2016_2017.1[which(duplicated(PARCC_Data_LONG_2016_2017.1, by=key(PARCC_Data_LONG_2016_2017.1)))-1, VALID_CASE := "INVALID_CASE"]
 
-# #  Duplicates if Grade ignored
+#  Duplicates if grade ignored  -  198
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, ID, SummativeScaleScore)
 # setkey(PARCC_Data_LONG_2016_2017.1, VALID_CASE, YEAR, CONTENT_AREA, ID)
-# PARCC_Data_LONG_2016_2017.1[which(duplicated(PARCC_Data_LONG_2016_2017.1))-1, VALID_CASE := "INVALID_CASE"]
+# PARCC_Data_LONG_2016_2017.1[which(duplicated(PARCC_Data_LONG_2016_2017.1, by=key(PARCC_Data_LONG_2016_2017.1)))-1, VALID_CASE := "INVALID_CASE"]
 
 
 ####
@@ -146,8 +147,8 @@ PARCC_Data_LONG_2016_2017.1[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUA
 PARCC_Data_LONG_2016_2017.1[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ####  Save Fall 2016 LONG Data
-dir.create("./PARCC/Data/Archive/2016_2017.1")
-save(PARCC_Data_LONG_2016_2017.1, file = "./PARCC/Data/Archive/2016_2017.1/PARCC_Data_LONG_2016_2017.1.Rdata")
+dir.create("./PARCC/Data//2016_2017.1")
+save(PARCC_Data_LONG_2016_2017.1, file = "./PARCC/Data/PARCC_Data_LONG_2016_2017.1.Rdata")
 
 
 #####  Add Fall 2016 LONG data to existing SQLite Database.  Tables stored by each year / period
