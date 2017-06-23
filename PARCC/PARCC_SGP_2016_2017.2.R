@@ -17,34 +17,33 @@ require(data.table)
 
 ###  Load SGP LONG Data from FALL 2016 Analyses
 load("./Data/Archive/2016_2017.1/PARCC_SGP_LONG_Data.Rdata")
+PARCC_Prior_Data <- copy(PARCC_SGP_LONG_Data[StateAbbreviation != "MA"])[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
 
-###  Shouldn't be necessary to deal with dups with this:
+###   INVALIDate duplicate prior test scores
 
-# ###  Remove old duplicate case tags and invalidate exact duplicates created in Spring 2017 Analyses:
-# PARCC_SGP_LONG_Data[, ID:=gsub("_DUPS_[0-9]*", "", ID)]
-# PARCC_SGP_LONG_Data[, VALID_CASE := "VALID_CASE"]
-# setkey(PARCC_SGP_LONG_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE, SGP)
-# setkey(PARCC_SGP_LONG_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
-# PARCC_SGP_LONG_Data[which(duplicated(PARCC_SGP_LONG_Data, by=key(PARCC_SGP_LONG_Data)))-1, VALID_CASE := "INVALID_CASE"] # 105
-# table(PARCC_SGP_LONG_Data[, VALID_CASE])
+setkey(PARCC_Prior_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE, SCALE_SCORE_ACTUAL)
+setkey(PARCC_Prior_Data, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
+# dups <- PARCC_Prior_Data[c(which(duplicated(PARCC_Prior_Data, by=key(PARCC_Prior_Data)))-1, which(duplicated(PARCC_Prior_Data, by=key(PARCC_Prior_Data)))),]
+# setkeyv(dups, key(PARCC_Prior_Data))
+PARCC_Prior_Data[which(duplicated(PARCC_Prior_Data, by=key(PARCC_Prior_Data)))-1, VALID_CASE := "INVALID_CASE"]
 
 ###  Location of PARCC SQLite Database (Spring 2017 added in Data Prep step)
 parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
 
 ###  Read in the Spring 2017 configuration code and combine into a single list.
 
-source("../SGP_CONFIG/2016_2017.2/ELA.R")
-source("../SGP_CONFIG/2016_2017.2/ELA_SS.R")
-source("../SGP_CONFIG/2016_2017.2/MATHEMATICS.R")
-source("../SGP_CONFIG/2016_2017.2/MATHEMATICS_SS.R")
+source("./SGP_CONFIG/2016_2017.2/ELA.R")
+source("./SGP_CONFIG/2016_2017.2/ELA_SS.R")
+source("./SGP_CONFIG/2016_2017.2/MATHEMATICS.R")
+source("./SGP_CONFIG/2016_2017.2/MATHEMATICS_SS.R")
 
 
 PARCC_2016_2017.2.config <- c(
-	ELA_2016_2017.2.config,
-	ELA_SS_2016_2017.2.config,
+	ELA.2016_2017.2.config,
+	ELA_SS.2016_2017.2.config,
 
-	MATHEMATICS_2016_2017.2.config,
-	MATHEMATICS_SS_2016_2017.2.config,
+	MATHEMATICS.2016_2017.2.config,
+	MATHEMATICS_SS.2016_2017.2.config,
 
 	ALGEBRA_I.2016_2017.2.config,
 	ALGEBRA_I_SS.2016_2017.2.config,
@@ -67,8 +66,8 @@ PARCC_2016_2017.2.config <- c(
 PARCC_SGP <- abcSGP(
 		state="PARCC",
 		sgp_object=rbindlist(list(
-			PARCC_SGP_LONG_Data,
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_2")), fill=TRUE),
+			PARCC_Prior_Data, PARCC_Data_LONG_2016_2017.2), fill=TRUE),
+			# dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_2")), fill=TRUE),
 		sgp.config = PARCC_2016_2017.2.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,

@@ -16,8 +16,8 @@ PARCC_Data_LONG <- rbindlist(list(
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2015_2"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_1"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_2"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1"), PARCC_Data_LONG_2016_2017.2[,list(ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation)]))
+			# dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))
 
 PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
@@ -25,22 +25,15 @@ PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
 ###  Get subset of PARCC_Data_LONG with only IDs from Spring 2017
 
 ids <- unique(PARCC_Data_LONG[YEAR=="2016_2017.2", ID])
-FALL_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
+Spring_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
 
-table(FALL_Data_LONG[!CONTENT_AREA %in% "ELA", CONTENT_AREA, YEAR])
-table(FALL_Data_LONG[CONTENT_AREA %in% "ELA", as.numeric(GRADE), YEAR])
+table(Spring_Data_LONG[!CONTENT_AREA %in% "ELA", CONTENT_AREA, YEAR])
+table(Spring_Data_LONG[CONTENT_AREA %in% "ELA", as.numeric(GRADE), YEAR])
 
-table(FALL_Data_LONG[YEAR == "2016_2017.2" & CONTENT_AREA %in% "ELA", CONTENT_AREA, StateAbbreviation]) # NM, NJ, MD
-table(FALL_Data_LONG[YEAR == "2016_2017.2" & !CONTENT_AREA %in% "ELA", CONTENT_AREA, StateAbbreviation]) # NM, NJ, MD
+###  Run courseProgressionSGP by content area subsets of the Spring_Data_LONG
 
-###  Run courseProgressionSGP by content area subsets of the FALL_Data_LONG
-
-math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.2')
-ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.2')
-
-###  State specific analyses - re-run for NM, NJ, & MD
-# math.prog<- courseProgressionSGP(FALL_Data_LONG[!CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.2')
-# ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA" & StateAbbreviation == "MD"], lag.direction="BACKWARD", year='2016_2017.2')
+math.prog<- courseProgressionSGP(Spring_Data_LONG[!CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.2')
+ela.prog <- courseProgressionSGP(Spring_Data_LONG[CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2016_2017.2')
 
 
 ####
@@ -50,128 +43,247 @@ ela.prog <- courseProgressionSGP(FALL_Data_LONG[CONTENT_AREA %in% "ELA"], lag.di
 ###  Find out which Math related content areas are present in the Fall data
 names(math.prog$BACKWARD[['2016_2017.2']])
 
-
+###
 ###   Algebra I (No Repeaters or Regression)
 ###
 
-ALG1 <- math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_I.EOCT[!CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 %in% c("ALGEBRA_I.EOCT", "ALGEBRA_II.EOCT") | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
-
+ALG1 <- math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_I.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "ALGEBRA_I.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
+ALG1 <- ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "ALGEBRA_I.EOCT"]
 table(ALG1$CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)
 ALG1[COUNT > 100]  #  Major progressions
 
-###   Viable 1 Prior (Spring 16) ALGEBRA_I Progressions
+###   Viable 1 Prior (Fall 16) ALGEBRA_I Progressions
 ALG1[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 Total
-# 1:                      GEOMETRY.EOCT   141
-# 2:             INTEGRATED_MATH_2.EOCT     2
-# 3:                     MATHEMATICS.07   157
-# 4:                     MATHEMATICS.08  3367
-###   All listed
-###   NM - None
-###   NJ - MATHEMATICS.08 1478
-###   MD - MATHEMATICS.08 1607
+# 1:                    ALGEBRA_II.EOCT    22		XXX  No REGRESSORS!
+# 2:                      GEOMETRY.EOCT    11
+###   Establish configs for the SGP_NOTE variable
 
-###   Viable 1 Prior (Fall 15) ALGEBRA_I Progressions (ENFORCE THAT NO SPRING 16 TEST AVAILABLE!)
+
+###   Viable 1 Prior (Spring 16) ALGEBRA_I Progressions (ENFORCE THAT NO Fall 16 TEST AVAILABLE!)
 ALG1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 Total
-# 1:                     ALGEBRA_I.EOCT    94
-# 2:                    ALGEBRA_II.EOCT    24
-# 3:                      GEOMETRY.EOCT     8
-###   None - but establish configs with Geometry for the SGP_NOTE variables
-table(math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_I.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "GEOMETRY.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude ALGEBRA_I + GEOMETRY and ALGEBRA_II for good measure
+#      CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  Total
+#  1:                     ALGEBRA_I.EOCT  12937		XXX		REPEATERS!
+
+#  1:                    ALGEBRA_II.EOCT    220		XXX		REGRESSORS!
+#  2:                      GEOMETRY.EOCT   1370
+#  3:             INTEGRATED_MATH_1.EOCT    169		XXX
+#  4:             INTEGRATED_MATH_2.EOCT      7		XXX
+#  5:                     MATHEMATICS.03      1		XXX
+#  6:                     MATHEMATICS.04      6		XXX
+#  7:                     MATHEMATICS.05    192		XXX
+#  8:                     MATHEMATICS.06  13481
+#  9:                     MATHEMATICS.07  68856
+# 10:                     MATHEMATICS.08 127907
+###   Also establish config with INTEGRATED_MATH_1, 2 and 3 for the SGP_NOTE variables
+
+# Exclude Fall 2016 ALGEBRA_I, GEOMETRY and ALGEBRA_II for good measure?
+table(math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_I.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "GEOMETRY.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) ALGEBRA_I Progressions
-ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
-# 1:                     MATHEMATICS.08                     MATHEMATICS.07  3105
+ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 999]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 CONTENT_AREA_by_GRADE_PRIOR_YEAR.4  Total
+# 1:                     MATHEMATICS.06                     MATHEMATICS.05  12940
+# 2:                     MATHEMATICS.07                                 NA   4041
+# 3:                     MATHEMATICS.07                     MATHEMATICS.06  64511
+# 4:                     MATHEMATICS.08                                 NA  12418
+# 5:                     MATHEMATICS.08                     MATHEMATICS.06   1536		XXX
+# 6:                     MATHEMATICS.08                     MATHEMATICS.07 113166
 
-ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="MATHEMATICS.08" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.07"] # No Fall 15 (YEAR.2) exclusions necessary
-###   8th and 7th Grade Math
-###   NJ - MATHEMATICS.08  <->  MATHEMATICS.07 1311
-###   MD - MATHEMATICS.08  <->  MATHEMATICS.07 1546
+ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="MATHEMATICS.08" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.4=="MATHEMATICS.07"] # No Fall 16 (YEAR.1) exclusions necessary
 
-
+###
 ###   Geometry (No Repeaters)
 ###
 
 GEOM <- math.prog$BACKWARD[['2016_2017.2']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "GEOMETRY.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
-
+GEOM <- GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "GEOMETRY.EOCT"]
 table(GEOM$CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)
 GEOM[COUNT > 100]  #  Major progressions
 
-###   Viable 1 Prior (Spring 16) GEOMETRY Progressions
+###   Viable 1 Prior (Fall 16) GEOMETRY Progressions
 GEOM[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 Total
-# 1:                     ALGEBRA_I.EOCT  3244
-# 2:                    ALGEBRA_II.EOCT   842
-# 3:             INTEGRATED_MATH_1.EOCT     3
-# 4:             INTEGRATED_MATH_2.EOCT     1
-# 5:             INTEGRATED_MATH_3.EOCT     1
-# 6:                     MATHEMATICS.08    34
-###   All listed
-###   NM - None
-###   NJ - ALGEBRA_I.EOCT 2506
-###   MD - None
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1   Total
+# 1:                     ALGEBRA_I.EOCT   539
+# 2:                    ALGEBRA_II.EOCT   140
 
-###   Viable 1 Prior (Fall 15) GEOMETRY Progressions (ENFORCE THAT NO SPRING 16 TEST AVAILABLE!)
+###  NONE - Don't exclude these either?
+
+###   Viable 1 Prior (Spring 16) GEOMETRY Progressions (ENFORCE THAT NO Fall 16 TEST AVAILABLE?)
 GEOM[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 Total
-# 1:                     ALGEBRA_I.EOCT   566
-# 2:                    ALGEBRA_II.EOCT   167
-# 3:                      GEOMETRY.EOCT    51
-###   None - but establish configs with Algebra I and II for the SGP_NOTE variables
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  Total
+# 1:                     ALGEBRA_I.EOCT 113802
+# 2:                    ALGEBRA_II.EOCT   3136
+# 3:             INTEGRATED_MATH_1.EOCT    234		XXX
+# 4:             INTEGRATED_MATH_2.EOCT     78		XXX
+# 5:             INTEGRATED_MATH_3.EOCT      1		XXX
+# 6:                     MATHEMATICS.05      1		XXX
+# 7:                     MATHEMATICS.06     39		XXX
+# 8:                     MATHEMATICS.07    647		XXX
+# 9:                     MATHEMATICS.08   3040
+###   Also establish config with INTEGRATED_MATH_1 to MATHEMATICS.07 for the SGP_NOTE variables
+
 table(math.prog$BACKWARD[['2016_2017.2']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_I.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
 table(math.prog$BACKWARD[['2016_2017.2']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_II.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1]) # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
+table(math.prog$BACKWARD[['2016_2017.2']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "MATHEMATICS.08",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1]) # Exclude  ALGEBRA_I
+
+math.prog$BACKWARD[['2016_2017.2']]$GEOMETRY.EOCT[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_II.EOCT", list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")]
 
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
-GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
-# 1:                     ALGEBRA_I.EOCT                     MATHEMATICS.08  1474
+GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & !is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 500]
+# CONTENT_AREA_by_GRADE_PRIOR_YEAR.2    CONTENT_AREA_by_GRADE_PRIOR_YEAR.4 Total
+# 1:                     ALGEBRA_I.EOCT                     ALGEBRA_I.EOCT  5641		XXX
+# 2:                     ALGEBRA_I.EOCT                     MATHEMATICS.06  9285
+# 3:                     ALGEBRA_I.EOCT                     MATHEMATICS.07 32108
+# 4:                     ALGEBRA_I.EOCT                     MATHEMATICS.08 49759
+# 5:                    ALGEBRA_II.EOCT                     ALGEBRA_I.EOCT  2356
+# 6:                     MATHEMATICS.07                     MATHEMATICS.06   621		XXX
+# 7:                     MATHEMATICS.08                     MATHEMATICS.07  2965
 
-GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ALGEBRA_I.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.08"] # Exclude 12 cases with ALGEBRA_I in Fall 15 (YEAR.2)
-###   Algebra I and 8th Grade Math, with exclusions
-###   NJ - ALGEBRA_I.EOCT  <->  MATHEMATICS.08    1277
+GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ALGEBRA_I.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.4=="MATHEMATICS.08"] # Exclude 15 cases with GEOMETRY in Fall 16 (YEAR.1)?
 
-
+###
 ###   Algebra II (No Repeaters)
 ###
 
 ALG2 <- math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "ALGEBRA_II.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
+ALG2 <- ALG2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "ALGEBRA_II.EOCT"]
 
 ALG2[COUNT > 100]  #  Major progressions
 
-###   Viable 1 Prior (Spring 16) ALGEBRA_II Progressions
+###   Viable 1 Prior (Fall 16) ALGEBRA_II Progressions
 ALG2[, list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 Total
-# 1:                     ALGEBRA_I.EOCT   781
-# 2:                      GEOMETRY.EOCT  2817
-# 3:             INTEGRATED_MATH_2.EOCT    24
-# 4:             INTEGRATED_MATH_3.EOCT   160
-# 5:                     MATHEMATICS.08     4
-###   All listed
-###   NM - None
-###   NJ - GEOMETRY.EOCT 2007
-###   MD - None
+# 1:                     ALGEBRA_I.EOCT   164
+# 2:                      GEOMETRY.EOCT   903		#  Was 1144 before sorting out repeaters ...
 
-###   Viable 1 Prior (Fall 15) ALGEBRA_II Progressions (NO SPRING 16 TEST AVAILABLE!)
+###   Viable 1 Prior (Spring 16) ALGEBRA_II Progressions (NO FALL 16 TEST AVAILABLE!)
 ALG2[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 Total
-# 1:                     ALGEBRA_I.EOCT   352
-# 2:                    ALGEBRA_II.EOCT   137
-# 3:                      GEOMETRY.EOCT  1050
-###   Geometry  -  also establish config with Algebra I for the SGP_NOTE variables
+# 1:                     ALGEBRA_I.EOCT 12726
+# 2:                      GEOMETRY.EOCT 79214
+# 3:             INTEGRATED_MATH_1.EOCT   100		XXX
+# 4:             INTEGRATED_MATH_2.EOCT   139		XXX
+# 5:             INTEGRATED_MATH_3.EOCT     5		XXX
+# 6:                     MATHEMATICS.06     4		XXX
+# 7:                     MATHEMATICS.07    92		XXX
+# 8:                     MATHEMATICS.08   402		XXX
+###   Also establish config with INTEGRATED_MATH_1 to MATHEMATICS.08 for the SGP_NOTE variables
+
 table(math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ALGEBRA_I.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1]) # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
 table(math.prog$BACKWARD[['2016_2017.2']]$ALGEBRA_II.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "GEOMETRY.EOCT",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Exclude  GEOMETRY, ALGEBRA_I and ALGEBRA_II
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) ALGEBRA_II Progressions
-ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 999]
-#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
-# 1:                      GEOMETRY.EOCT                     ALGEBRA_I.EOCT  1823
+ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & !is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 500]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 CONTENT_AREA_by_GRADE_PRIOR_YEAR.4 Total
+# 1:                     ALGEBRA_I.EOCT                     ALGEBRA_I.EOCT  1358		XXX
+# 2:                     ALGEBRA_I.EOCT                     MATHEMATICS.07  3677
+# 3:                     ALGEBRA_I.EOCT                     MATHEMATICS.08  5543
+# 4:                      GEOMETRY.EOCT                     ALGEBRA_I.EOCT 66145
+# 5:                      GEOMETRY.EOCT                      GEOMETRY.EOCT   586		XXX
+# 6:                      GEOMETRY.EOCT                     MATHEMATICS.07   907		XXX
+# 7:                      GEOMETRY.EOCT                     MATHEMATICS.08  1099
+###   Don't establish configs for XXX  -  Only viable 2 priors
 
-ALG2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="GEOMETRY.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="ALGEBRA_I.EOCT"] # Exclude (79 total) cases with Fall 15 (YEAR.2) scores (Alg 1, 2 and Geometry)
-###   Geometry and Algebra I, with exclusions
-###   NJ - GEOMETRY.EOCT  <->  ALGEBRA_I.EOCT 1382
+ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="GEOMETRY.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.4=="ALGEBRA_I.EOCT"] # Exclude (194 total) cases with Fall 16 (YEAR.1) scores (Alg 1, 2 and Geometry)
+ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ALGEBRA_I.EOCT"] # Exclude cases with Fall 16 (YEAR.1) GEOMETRY scores (or Give that progression the higher priority)
+
+###
+###   Integrated Math 1
+###
+
+INTM1 <- math.prog$BACKWARD[['2016_2017.2']]$INTEGRATED_MATH_1.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "INTEGRATED_MATH_1.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
+INTM1 <- INTM1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "INTEGRATED_MATH_1.EOCT"]
+
+INTM1[COUNT > 100]  #  Major progressions
+
+###   Viable 1 Prior (Fall 16) GEOMETRY Progressions
+INTM1[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+### - NONE
+
+###   Viable 1 Prior (Spring 16) GEOMETRY Progressions (ENFORCE THAT NO Fall 16 TEST AVAILABLE?)
+INTM1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  Total
+# 1:                     ALGEBRA_I.EOCT   494		XXX
+# 2:                    ALGEBRA_II.EOCT     6		XXX
+# 3:                      GEOMETRY.EOCT   216		XXX
+# 4:             INTEGRATED_MATH_2.EOCT     2		XXX		No REGRESSORS
+# 5:                     MATHEMATICS.05     1		XXX
+# 6:                     MATHEMATICS.06   115		XXX
+# 7:                     MATHEMATICS.07  1323
+# 8:                     MATHEMATICS.08  7500
+
+###   Also establish config with ALGEBRA_I to MATHEMATICS.06 for the SGP_NOTE variables (NOT INTEGRATED_MATH_2.EOCT - No regressions)
+
+
+###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
+INTM1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & !is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 500]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  CONTENT_AREA_by_GRADE_PRIOR_YEAR.4   Total
+# 1:                     MATHEMATICS.07                      MATHEMATICS.06    1259
+# 2:                     MATHEMATICS.08                      MATHEMATICS.07    6871
+
+
+###
+###   Integrated Math 2
+###
+
+INTM2 <- math.prog$BACKWARD[['2016_2017.2']]$INTEGRATED_MATH_2.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "INTEGRATED_MATH_2.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
+INTM2 <- INTM2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "INTEGRATED_MATH_2.EOCT"]
+
+INTM2[COUNT > 100]  #  Major progressions
+
+###   Viable 1 Prior (Fall 16) INTEGRATED_MATH_2 Progressions
+INTM2[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+### - NONE
+
+###   Viable 1 Prior (Spring 16) INTEGRATED_MATH_2 Progressions (ENFORCE THAT NO Fall 16 TEST AVAILABLE?)
+INTM2[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  Total
+# 1:                     ALGEBRA_I.EOCT   161		XXX
+# 2:                    ALGEBRA_II.EOCT     9		XXX
+# 3:                      GEOMETRY.EOCT    54		XXX
+# 4:             INTEGRATED_MATH_1.EOCT  1098
+# 5:                     MATHEMATICS.06     1		XXX
+# 6:                     MATHEMATICS.07    15		XXX
+# 7:                     MATHEMATICS.08   446		XXX
+###   Also establish config with ALGEBRA_I to MATHEMATICS.08 for the SGP_NOTE variables
+
+###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
+INTM2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & !is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 500]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  CONTENT_AREA_by_GRADE_PRIOR_YEAR.4   Total
+# 1:             INTEGRATED_MATH_1.EOCT                     MATHEMATICS.07   822
+
+
+###
+###   Integrated Math 3
+###
+
+INTM3 <- math.prog$BACKWARD[['2016_2017.2']]$INTEGRATED_MATH_3.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "INTEGRATED_MATH_3.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
+INTM3 <- INTM3[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "INTEGRATED_MATH_3.EOCT"]
+
+INTM3[COUNT > 100]  #  Major progressions
+
+###   Viable 1 Prior (Fall 16) INTEGRATED_MATH_2 Progressions
+INTM3[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
+### - NONE
+
+###   Viable 1 Prior (Spring 16) INTEGRATED_MATH_2 Progressions (ENFORCE THAT NO Fall 16 TEST AVAILABLE?)
+INTM3[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
+#    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2  Total
+# 1:                     ALGEBRA_I.EOCT    23		XXX
+# 2:                    ALGEBRA_II.EOCT     6		XXX
+# 3:                      GEOMETRY.EOCT    29		XXX
+# 4:             INTEGRATED_MATH_1.EOCT    55		XXX
+# 5:             INTEGRATED_MATH_2.EOCT   330		XXX
+# 6:                     MATHEMATICS.08     5		XXX
+
+###   Establish configs for the SGP_NOTE variables
+
+
+###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
+INTM3[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & !is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][Total > 500]
+### - NONE
 
 
 ####
@@ -181,13 +293,10 @@ ALG2[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="GEOMETRY.EOCT" & CONTENT_AREA_by_GRADE
 ###  Find out which grades are present in the Fall ELA data
 names(ela.prog$BACKWARD[['2016_2017.2']])
 
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.08"]$COUNT)   # 4036
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #  176 (repeaters)
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   # 2575
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  361 (repeaters)
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   # 4159
-sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.11"]$COUNT)   # 6621 (repeaters)
-
-###   NM - None
-###   NJ - All 3 Grades
-###   MD - 11th Grade
+###  No Spring to FallBlock  -  Establish configs for the SGP_NOTE variable
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.08"]$COUNT)   #  0
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #  77 (repeaters)
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #  364
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  536 (repeaters)
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  579
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.11"]$COUNT)   #  533 (repeaters)
