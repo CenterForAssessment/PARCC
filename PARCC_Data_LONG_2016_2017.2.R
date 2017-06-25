@@ -125,7 +125,7 @@ setkey(PARCC_Data_LONG_2016_2017.2, CONTENT_AREA, GRADE)
 PARCC_Data_LONG_2016_2017.2 <- scaling.constants[PARCC_Data_LONG_2016_2017.2]
 
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM := (as.numeric(SummativeCSEM))/a] # NO -b here...
-# PARCC_Data_LONG_2016_2017.2[, IRTTheta := (as.numeric(SummativeScaleScore)-b)/a] # Fake it until Pearson provides IRTTheta 6/20/17
+# PARCC_Data_LONG_2016_2017.2[, IRTTheta := as.numeric(IRTTheta)]; PARCC_Data_LONG_2016_2017.2[is.na(IRTTheta), IRTTheta := (as.numeric(SummativeScaleScore)-b)/a] # Fake it until Pearson provides IRTTheta 6/20/17
 
 PARCC_Data_LONG_2016_2017.2[, c("a", "b", "ThetaSEM") := NULL]
 
@@ -142,7 +142,6 @@ require(RSQLite)
 parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
 db.order <- dbListFields(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2") # Use PARCC_Data_LONG_2015_2 table's var order for all future tables
 
-
 setcolorder(PARCC_Data_LONG_2016_2017.2, db.order) # To match original var order
 
 PARCC_Data_LONG_2016_2017.2[, GRADE := as.character(GRADE)]
@@ -151,8 +150,10 @@ PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
+PARCC_Data_LONG_2016_2017.2 <- SGP:::getAchievementLevel(PARCC_Data_LONG_2016_2017.2, state="PARCC")
+
 ####  Save Spring 2017 LONG Data
-# dir.create("./PARCC/Data/2016_2017.2")
+
 save(PARCC_Data_LONG_2016_2017.2, file = "./PARCC/Data/PARCC_Data_LONG_2016_2017.2.Rdata")
 
 

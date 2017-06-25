@@ -60,6 +60,10 @@ PARCC_2016_2017.2.config <- c(
 	INTEGRATED_MATH_3_SS.2016_2017.2.config
 )
 
+PARCC_Prior_Data <- SGP:::getAchievementLevel(PARCC_Prior_Data, state="PARCC")
+PARCC_Data_LONG_2016_2017.2 <- SGP:::getAchievementLevel(PARCC_Data_LONG_2016_2017.2, state="PARCC")
+
+SGPstateData[["PARCC"]][["SGP_Configuration"]]$return.projection.group.scale.scores <- TRUE
 
 ### abcSGP
 
@@ -83,7 +87,7 @@ PARCC_SGP <- abcSGP(
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
 		sgp.target.scale.scores=TRUE, # to combineSGP
-		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		# outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
 		outputSGP.directory="Data/Archive/2016_2017.2",
     parallel.config=list(
 			BACKEND = "FOREACH", TYPE = "doParallel", SNOW_TEST = TRUE,

@@ -94,7 +94,7 @@ GEOMETRY_SS.2016_2017.2.config <- list(
 	GEOMETRY_SS.2016_2017.2 = list(
 		sgp.content.areas=c("MATHEMATICS_SS", "ALGEBRA_I_SS", "GEOMETRY_SS"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2", "2016_2017.2"),
-		sgp.grade.sequences=list(c("6", "EOCT", "EOCT"), c("7", "EOCT", "EOCT")),
+		sgp.grade.sequences=list(c("6", "EOCT", "EOCT"), c("7", "EOCT", "EOCT")),  # Singular design matrix for 6th graders in test runs
 		sgp.exact.grade.progression=as.list(rep(TRUE, 2)), #  YES exact to avoid multiple "ALGEBRA_I_SS", "GEOMETRY_SS" matrices
 		# sgp.exclude.sequences = data.table(VALID_CASE = "VALID_CASE", CONTENT_AREA=PARCC.Math.Subjects,
 		# 	YEAR="2016_2017.1", GRADE="EOCT"),

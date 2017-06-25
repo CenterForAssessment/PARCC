@@ -11,7 +11,7 @@ MATHEMATICS.2016_2017.2.config <- list(
 		sgp.content.areas=rep("MATHEMATICS", 3),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2", "2016_2017.2"),
 		sgp.grade.sequences=list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8")),
-		sgp.projection.grade.sequences=as.list(rep("NO_PROJECTIONS", 5)),
+		sgp.projection.sequence = c("MATHEMATICS", "MATHEMATICS_INTGRT"), #  CANONICAL
 		sgp.norm.group.preference=1L)
 )
 
@@ -94,7 +94,7 @@ GEOMETRY.2016_2017.2.config <- list(
 	GEOMETRY.2016_2017.2 = list(
 		sgp.content.areas=c("MATHEMATICS", "ALGEBRA_I", "GEOMETRY"),
 		sgp.panel.years=c("2014_2015.2", "2015_2016.2", "2016_2017.2"),
-		sgp.grade.sequences=list(c("6", "EOCT", "EOCT"), c("7", "EOCT", "EOCT")),
+		sgp.grade.sequences=list(c("6", "EOCT", "EOCT"), c("7", "EOCT", "EOCT")), # Singular design matrix for 6th graders in test runs
 		sgp.exact.grade.progression=as.list(rep(TRUE, 2)), #  YES exact to avoid multiple "ALGEBRA_I", "GEOMETRY" matrices
 		# sgp.exclude.sequences = data.table(VALID_CASE = "VALID_CASE", CONTENT_AREA=PARCC.Math.Subjects,
 		# 	YEAR="2016_2017.1", GRADE="EOCT"),
@@ -373,7 +373,7 @@ INTEGRATED_MATH_3.2016_2017.2.config <- list(
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
 		# sgp.exclude.sequences = data.table(VALID_CASE = "VALID_CASE", CONTENT_AREA=PARCC.Math.Subjects,
 		# 	YEAR="2016_2017.1", GRADE="EOCT"),
-		# sgp.projection.grade.sequences=list("NO_PROJECTIONS"), # CANONICAL
+		sgp.projection.grade.sequences=list("NO_PROJECTIONS"), # CANONICAL  ::  NO_PROJECTIONS  --  <1000
 		sgp.norm.group.preference=0L),
 
 	INTEGRATED_MATH_3.2016_2017.2 = list( # Fall - Spring  --  <1000 :: Include for SGP_NOTE
