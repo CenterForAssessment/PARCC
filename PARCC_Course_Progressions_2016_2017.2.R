@@ -16,8 +16,12 @@ PARCC_Data_LONG <- rbindlist(list(
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2015_2"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_1"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_2"),
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1"), PARCC_Data_LONG_2016_2017.2[,list(ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation)]))
-			# dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1"), # PARCC_Data_LONG_2016_2017.2[,list(ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation)]))
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))
+
+###  States
+PARCC_Data_LONG <-
+		fetchPARCC(state="NJ", parcc.db = "./PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2015_2", "2016_2"), current.year="2017_2", fields="*")[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
@@ -29,6 +33,7 @@ Spring_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
 
 table(Spring_Data_LONG[!CONTENT_AREA %in% "ELA", CONTENT_AREA, YEAR])
 table(Spring_Data_LONG[CONTENT_AREA %in% "ELA", as.numeric(GRADE), YEAR])
+table(Spring_Data_LONG[YEAR=='2016_2017.2', GRADE, CONTENT_AREA])
 
 ###  Run courseProgressionSGP by content area subsets of the Spring_Data_LONG
 

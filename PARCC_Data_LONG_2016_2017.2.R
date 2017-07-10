@@ -36,9 +36,9 @@ all.var.names <- c(parcc.var.names[1:11], center.var.names[1:4], parcc.var.names
 
 ####   Function to read in individual state files
 
-read.parcc <- function(state, year, Fall=FALSE) {
+read.parcc <- function(state, year) {
 	if (state == "BI") tmp.name <- "Bureau_Indian_Affairs" else tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
-	if(tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
+	if (tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
 	tmp.files <- list.files(file.path(tmp.name, "Data/Base_Files"))
 	my.file <- gsub(".zip",  "", grep(year, tmp.files, value=TRUE))
 	tmp.dir <- getwd()
@@ -51,13 +51,13 @@ read.parcc <- function(state, year, Fall=FALSE) {
 	return(TMP)
 }
 
-####  Spring 2017
+####   Spring 2017
 
 PARCC_Data_LONG_2016_2017.2 <- rbindlist(list(
   read.parcc("BI", "D201706"), read.parcc("CO", "D201706"),
 	read.parcc("IL", "D201706"), read.parcc("MD", "D201706"),
   read.parcc("NJ", "D201706"), read.parcc("NM", "D201706"),
-  read.parcc("DC", "D201706"), read.parcc("RI", "D201706")))[, parcc.var.names, with=FALSE]
+  read.parcc("DC", "D201706"), read.parcc("RI", "D2017062")))[, parcc.var.names, with=FALSE] # RI keep the 'original' data submission (PARCC_RI_2016-2017_SGPO_D20170619.csv.zip) for example
 
 setkey(PARCC_Data_LONG_2016_2017.2, PARCCStudentIdentifier, TestCode, Period)
 
@@ -79,33 +79,12 @@ PARCC_Data_LONG_2016_2017.2[, GRADE := gsub("ELA|MAT", "", TestCode)]
 PARCC_Data_LONG_2016_2017.2[, GRADE := as.character(as.numeric(GRADE))]
 PARCC_Data_LONG_2016_2017.2[which(is.na(GRADE)), GRADE := "EOCT"]
 PARCC_Data_LONG_2016_2017.2[, GRADE := as.character(GRADE)]
-table(PARCC_Data_LONG_2016_2017.2[, GRADE, TestCode])
+# table(PARCC_Data_LONG_2016_2017.2[, GRADE, TestCode])
 
 ####  YEAR
 PARCC_Data_LONG_2016_2017.2[, YEAR := gsub("-", "_", AssessmentYear)]
 PARCC_Data_LONG_2016_2017.2[which(Period == "FallBlock"), YEAR := paste(YEAR, "1", sep=".")]
 PARCC_Data_LONG_2016_2017.2[which(Period == "Spring"), YEAR := paste(YEAR, "2", sep=".")]
-
-####  Valid Cases
-PARCC_Data_LONG_2016_2017.2[, VALID_CASE := "VALID_CASE"]
-
-####  Invalidate Cases with missing IDs - 0 invalid in FINAL data
-PARCC_Data_LONG_2016_2017.2[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
-
-####  Duplicates
-
-####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18/16
-
-#X#  52 dups in same grade
-setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SummativeScaleScore)
-setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-dups <- PARCC_Data_LONG_2016_2017.2[c(which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2))), which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1),]
-# PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1, VALID_CASE := "INVALID_CASE"]
-
-#X#  Duplicates if grade ignored  -  310
-setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, ID, SummativeScaleScore)
-setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, ID)
-# PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1, VALID_CASE := "INVALID_CASE"]
 
 
 ####
@@ -126,6 +105,7 @@ PARCC_Data_LONG_2016_2017.2 <- scaling.constants[PARCC_Data_LONG_2016_2017.2]
 
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM := (as.numeric(SummativeCSEM))/a] # NO -b here...
 # PARCC_Data_LONG_2016_2017.2[, IRTTheta := as.numeric(IRTTheta)]; PARCC_Data_LONG_2016_2017.2[is.na(IRTTheta), IRTTheta := (as.numeric(SummativeScaleScore)-b)/a] # Fake it until Pearson provides IRTTheta 6/20/17
+# summary(PARCC_Data_LONG_2016_2017.2[, as.numeric(IRTTheta)])
 
 PARCC_Data_LONG_2016_2017.2[, c("a", "b", "ThetaSEM") := NULL]
 
@@ -136,21 +116,64 @@ setnames(PARCC_Data_LONG_2016_2017.2, c("IRTTheta", "SummativeScaleScore", "Summ
 PARCC_Data_LONG_2016_2017.2 <- rbindlist(list(PARCC_Data_LONG_2016_2017.2, PARCC_Data_LONG_SS), fill=TRUE)
 PARCC_Data_LONG_2016_2017.2[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
+####  Valid Cases
+PARCC_Data_LONG_2016_2017.2[, VALID_CASE := "VALID_CASE"]
+
+####  Invalidate Cases with missing IDs - 0 invalid in FINAL data
+PARCC_Data_LONG_2016_2017.2[which(is.na(ID)), VALID_CASE := "INVALID_CASE"]
+
+####  ACHIEVEMENT_LEVEL
+PARCC_Data_LONG_2016_2017.2 <- SGP:::getAchievementLevel(PARCC_Data_LONG_2016_2017.2, state="PARCC")
+
+table(PARCC_Data_LONG_2016_2017.2[, ACHIEVEMENT_LEVEL, CONTENT_AREA], exclude=NULL)
+# gl <- c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS")
+# PARCC_Data_LONG_2016_2017.2[!CONTENT_AREA %in% gl, list(MAX= max(as.numeric(SCALE_SCORE))), keyby=c("CONTENT_AREA", "ACHIEVEMENT_LEVEL")] # summary(as.numeric(SCALE_SCORE))
+# PARCC_Data_LONG_2016_2017.2[CONTENT_AREA == "ELA", list(MIN= min(as.numeric(SCALE_SCORE))), keyby=c("CONTENT_AREA", "ACHIEVEMENT_LEVEL", "GRADE")]
+# SGPstateData[["PARCC"]][["Achievement"]][["Cutscores"]]$ELA.2015_2016.2
+
+####
+####  Duplicates
+####  DON'T FIX DUPLICATES!  Per email from Pat Taylor 7/18/16
+####
+
+#X#  Exact duplicates still need to be dealt with
+PARCC_Data_LONG_2016_2017.2[, EXACT_DUPLICATE := as.numeric(NA)]
+
+setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE_ACTUAL, SCALE_SCORE)
+dups <- PARCC_Data_LONG_2016_2017.2[c(which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2))), which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1),]
+setkeyv(dups, key(PARCC_Data_LONG_2016_2017.2))
+PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1, EXACT_DUPLICATE := 1]
+PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2))), EXACT_DUPLICATE := 2]
+PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2))), VALID_CASE := "INVALID_CASE"]
+
+#X#  25 dups in same grade
+# setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
+# setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
+# dups <- PARCC_Data_LONG_2016_2017.2[c(which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2))), which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1),]
+# PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1, VALID_CASE := "INVALID_CASE"]
+
+#X#  Duplicates if grade ignored  -  0 more (all same grade)
+# setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, ID, SCALE_SCORE)
+# setkey(PARCC_Data_LONG_2016_2017.2, VALID_CASE, YEAR, CONTENT_AREA, ID)
+### PARCC_Data_LONG_2016_2017.2[which(duplicated(PARCC_Data_LONG_2016_2017.2, by=key(PARCC_Data_LONG_2016_2017.2)))-1, VALID_CASE := "INVALID_CASE"]
+
+
 ####  Save Spring 2017 LONG Data
 
 require(RSQLite)
 parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
-db.order <- dbListFields(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2015_2") # Use PARCC_Data_LONG_2015_2 table's var order for all future tables
 
-setcolorder(PARCC_Data_LONG_2016_2017.2, db.order) # To match original var order
+con <- dbConnect(SQLite(), dbname = parcc.db)
+db.order <- dbListFields(con, name = "PARCC_Data_LONG_2015_2") # Use PARCC_Data_LONG_2015_2 table's var order for all future tables
+dbDisconnect(con)
+
+setcolorder(PARCC_Data_LONG_2016_2017.2, c(db.order, "ACHIEVEMENT_LEVEL", "EXACT_DUPLICATE")) # To match original var order
 
 PARCC_Data_LONG_2016_2017.2[, GRADE := as.character(GRADE)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE := as.numeric(SCALE_SCORE)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG_2016_2017.2[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
-
-PARCC_Data_LONG_2016_2017.2 <- SGP:::getAchievementLevel(PARCC_Data_LONG_2016_2017.2, state="PARCC")
 
 ####  Save Spring 2017 LONG Data
 
@@ -159,87 +182,6 @@ save(PARCC_Data_LONG_2016_2017.2, file = "./PARCC/Data/PARCC_Data_LONG_2016_2017
 
 #####  Add Spring 2017 LONG data to existing SQLite Database.  Tables stored by each year / period
 
-dbWriteTable(dbConnect(SQLite(), dbname = parcc.db), name = "PARCC_Data_LONG_2017_2", value=PARCC_Data_LONG_2016_2017.2, overwrite=TRUE)
-
-
-###
-###   INVALIDate Duplicate Prior Test scores
-###
-
-"~/Dropbox (SGP)/SGP/PARCC"
-"/media/Data/Dropbox (SGP)/SGP/PARCC"
-library(readxl)
-library(data.table)
-
-PARCC_2015_2016_duplicates <- rbindlist(
-  list(read_excel("./PARCC/Data/Base_Files/duplicate_priors/CO_2015_2016_duplicates.xlsx"),
-       read_excel("./PARCC/Data/Base_Files/duplicate_priors/MD_2015_2016_duplicates.xlsx"),
-       read_excel("./PARCC/Data/Base_Files/duplicate_priors/NJ_2015_2016_duplicates.xlsx"),
-       read_excel("./PARCC/Data/Base_Files/duplicate_priors/NM_2015_2016_duplicates.xlsx")))
-
-table(PARCC_2015_2016_duplicates[, is.na(SummativeScoreRecordUUID), is.na(StudentTestUUID)])
-
-PARCC_SGP_LONG_Data[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID]]
-
-# PARCC_2015_2016_duplicates[, YEAR := gsub("-", "_", AssessmentYear)]
-# PARCC_2015_2016_duplicates[which(Period == "FallBlock"), YEAR := paste(YEAR, "1", sep=".")]
-# PARCC_2015_2016_duplicates[which(Period == "Spring"), YEAR := paste(YEAR, "2", sep=".")]
-
-
-PARCC_Data_LONG <- copy(PARCC_SGP_LONG_Data[StateAbbreviation != "MA"])[, ID:=gsub("_DUPS_[0-9]*", "", ID)]#[,VALID_CASE := NULL]
-# dim(PARCC_Data_LONG)
-# dim(unique(PARCC_Data_LONG))
-setkeyv(PARCC_Data_LONG, names(PARCC_Data_LONG)[1:14])
-PARCC_Data_LONG <- unique(PARCC_Data_LONG, by=key(PARCC_Data_LONG)) # Get rid of exact duplicates created in prior analyses (old way of dealing with dups)
-
-PARCC_Data_LONG[SummativeScoreRecordUUID=="gwx+pj8yQDqP4oljnk0vzOTNgtUkGkRdiMwW",]
-
-table(PARCC_Data_LONG[, VALID_CASE])
-
-PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID) & KEEP_Duplicate =="Y", StudentTestUUID], VALID_CASE := "VALID_CASE"]
-PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID) & KEEP_Duplicate =="N", StudentTestUUID], VALID_CASE := "INVALID_CASE"]
-PARCC_Data_LONG[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID) & KEEP_Duplicate =="Y", SummativeScoreRecordUUID], VALID_CASE := "VALID_CASE"]
-PARCC_Data_LONG[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID) & KEEP_Duplicate =="N", SummativeScoreRecordUUID], VALID_CASE := "INVALID_CASE"]
-
-# table(PARCC_Data_LONG[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID) & KEEP_Duplicate =="Y", SummativeScoreRecordUUID], VALID_CASE])
-# table(PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID) & KEEP_Duplicate =="Y", StudentTestUUID], VALID_CASE])
-# PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID) & KEEP_Duplicate =="Y", StudentTestUUID] & VALID_CASE == "INVALID_CASE",]
-
-####
-# PARCC_Data_LONG[, VALID_CASE := "VALID_CASE"]
-
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-sum(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))
-
-PARCC_Data_LONG[c(which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))-1, which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))), VALID_CASE := "DUPLICATE_CASE"]
-table(PARCC_Data_LONG[, VALID_CASE])
-table(PARCC_Data_LONG[, VALID_CASE, StateAbbreviation])
-table(PARCC_Data_LONG[VALID_CASE== 'DUPLICATE_CASE', StateAbbreviation, YEAR])
-
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE, SCALE_SCORE_ACTUAL)
-setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-dups <- PARCC_Data_LONG[c(which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))-1, which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))),]
-setkeyv(dups, key(PARCC_Data_LONG))
-dups[VALID_CASE=='VALID_CASE' & StateAbbreviation=='MD',] # 3 unaddressed cases from MD - looks like they took the test twice and had same (SCALE) score (one had different Theta)
-PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))-1, VALID_CASE := "INVALID_CASE"]
-
-PARCC_Data_LONG[StateAbbreviation=='MD' & ID=="3e8674c0-cca7-4ece-8e4c-cf252b6d92a9" & TestCode=="ELA05",]
-# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID, SCALE_SCORE, SCALE_SCORE_ACTUAL)
-# setkey(PARCC_Data_LONG, VALID_CASE, YEAR, CONTENT_AREA, ID)
-# sum(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))
-# dups <- PARCC_Data_LONG[c(which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))-1, which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))),]
-# PARCC_Data_LONG[which(duplicated(PARCC_Data_LONG, by=key(PARCC_Data_LONG)))-1, VALID_CASE := "INVALID_CASE"]
-
-
-all(PARCC_2015_2016_duplicates[!is.na(StudentTestUUID), StudentTestUUID] %in% PARCC_Data_LONG[,StudentTestUUID])
-all(PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID] %in% PARCC_Data_LONG[,SummativeScoreRecordUUID])
-PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID][(!PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID] %in% PARCC_Data_LONG[,SummativeScoreRecordUUID])]
-
-table(PARCC_Data_LONG[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID], VALID_CASE])
-table(PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID), StudentTestUUID], VALID_CASE])
-
-PARCC_Data_LONG[StudentTestUUID %in% PARCC_2015_2016_duplicates[!is.na(StudentTestUUID), StudentTestUUID], VALID_CASE := "VALID_CASE"]
-PARCC_Data_LONG[SummativeScoreRecordUUID %in% PARCC_2015_2016_duplicates[!is.na(SummativeScoreRecordUUID), SummativeScoreRecordUUID], VALID_CASE := "VALID_CASE"]
-
-dim(PARCC_Data_LONG)
-dim(unique(PARCC_Data_LONG))
+con <- dbConnect(SQLite(), dbname = parcc.db)
+dbWriteTable(con, name = "PARCC_Data_LONG_2017_2", value=PARCC_Data_LONG_2016_2017.2, overwrite=TRUE)
+dbDisconnect(con)
