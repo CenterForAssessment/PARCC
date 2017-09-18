@@ -1,5 +1,5 @@
 ###  fetchPARCC function
-fetchPARCC <- function(state=NULL, prior.years, current.year, fields="*") {
+fetchPARCC <- function(state=NULL, parcc.db, prior.years, current.year, fields="*") {
 
 		if (!is.null(state)) {
 			pull_priors <-
