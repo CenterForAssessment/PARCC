@@ -10,20 +10,18 @@ library(RSQLite)
 
 
 ###  Location of PARCC SQLite Database (Spring 2017 added in Data Prep step)
-parcc.db <- "./Data/PARCC_Data_LONG.sqlite"
+parcc.db <- "/media/Data/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
 
 PARCC_Data_LONG <- rbindlist(list(
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2015_2"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_1"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2016_2"),
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_1"), # PARCC_Data_LONG_2016_2017.2[,list(ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation)]))
-			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))
+			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select ID, YEAR, CONTENT_AREA, GRADE, VALID_CASE, StateAbbreviation from PARCC_Data_LONG_2017_2")))[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 ###  States
-PARCC_Data_LONG <-
-		fetchPARCC(state="NJ", parcc.db = "./PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2015_2", "2016_2"), current.year="2017_2", fields="*")[grep("_SS", CONTENT_AREA, invert =TRUE),]
-
-PARCC_Data_LONG <- PARCC_Data_LONG[grep("_SS", CONTENT_AREA, invert =TRUE),]
+source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/PARCC/fetchPARCC.R")
+PARCC_Data_LONG <- fetchPARCC(state="MD", parcc.db = parcc.db, prior.years=c("2015_2", "2016_2"), current.year="2017_2", fields="*")[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 
 ###  Get subset of PARCC_Data_LONG with only IDs from Spring 2017
@@ -305,3 +303,24 @@ sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1
 sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  536 (repeaters)
 sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  579
 sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.11"]$COUNT)   #  533 (repeaters)
+
+
+sum(ela.prog$BACKWARD[['2016_2017.2']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  579
+
+
+ELA <- ela.prog$BACKWARD[['2016_2017.2']]$ELA.10
+# ELA <- ELA[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 != "ELA.10"]
+table(ELA$CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)
+ELA[COUNT > 100]  #  Major progressions
+
+###  PARCC consortium
+ELA[CONTENT_AREA_by_GRADE_PRIOR_YEAR.4 == "ELA.08"]
+ELA[, list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4)]
+ELA[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2) & is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.3),
+			list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.4")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.4)]
+
+###   Individual States
+ELA[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ELA.08"]
+ELA[, list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
+ELA[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1),
+			list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
