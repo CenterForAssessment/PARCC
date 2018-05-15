@@ -35,7 +35,7 @@ read.parcc <- function(state, tag, type="OUTPUT") {
 
 for (state in tmp.states) {
     tmp.ORIGINAL<-read.parcc(state, "2017-2018_SGPO_D20180208", "ORIGINAL")
-    tmp.OUTPUT <- read.parcc(state, "2017-2018_Fall_SGP-Results_20180219")
+    tmp.OUTPUT <- read.parcc(state, "2017-2018_Fall_SGP-Results_20180222")
     setkey(tmp.ORIGINAL, PARCCStudentIdentifier)
     setkey(tmp.OUTPUT, PARCCStudentIdentifier)
 
@@ -51,11 +51,11 @@ for (state in tmp.states) {
     tmp.sgp.parcc <- paste(as.character(summary(as.numeric(tmp.OUTPUT$StudentGrowthPercentileComparedtoPARCC))), collapse=" ")
     cat(paste("\n### Test of StudentGrowthPercentileComparedtoPARCC:", tmp.sgp.parcc), file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)
 
-    tmp.target.state <- paste(as.character(summary(as.numeric(tmp.OUTPUT$SGPTargetState))), collapse=" ")
-    cat(paste("\n### Test of SGPTargetState:", tmp.target.state), file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)
-
-    tmp.target.parcc <- paste(as.character(summary(as.numeric(tmp.OUTPUT$SGPTargetPARCC))), collapse=" ")
-    cat(paste("\n### Test of SGPTargetPARCC:", tmp.target.parcc), file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)
+    # tmp.target.state <- paste(as.character(summary(as.numeric(tmp.OUTPUT$SGPTargetState))), collapse=" ")
+    # cat(paste("\n### Test of SGPTargetState:", tmp.target.state), file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)
+    #
+    # tmp.target.parcc <- paste(as.character(summary(as.numeric(tmp.OUTPUT$SGPTargetPARCC))), collapse=" ")
+    # cat(paste("\n### Test of SGPTargetPARCC:", tmp.target.parcc), file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)
 
     tmp.simex.state <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexState)), as.list(summary(as.numeric(SGPRankedSimexState))), keyby="TestCode"]
     cat("\n\n### Test of SGPRankedSimexState:\n", file="PARCC_Output_Validation_2017_2018.1.out", append=TRUE)

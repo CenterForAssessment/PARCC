@@ -22,9 +22,9 @@ PARCC_Data_LONG <- rbindlist(list(
 		))[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 ###  States
-# source("~/Dropbox (SGP)/Github_Repos/Projects/PARCC/fetchPARCC.R")
-# PARCC_Data_LONG <-
-# 		fetchPARCC(state="NM", parcc.db = "./Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2"), current.year="2018_1", fields="*")[grep("_SS", CONTENT_AREA, invert =TRUE),]
+source("~/Dropbox (SGP)/Github_Repos/Projects/PARCC/fetchPARCC.R")
+PARCC_Data_LONG <-
+		fetchPARCC(state="NJ", parcc.db = "./Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2"), current.year="2018_1", fields="*")[grep("_SS", CONTENT_AREA, invert =TRUE),]
 
 
 ###  Get subset of PARCC_Data_LONG with only IDs from Fall 2017
@@ -42,21 +42,12 @@ math.prog<- courseProgressionSGP(Fall_Data_LONG[!CONTENT_AREA %in% "ELA"], lag.d
 ela.prog <- courseProgressionSGP(Fall_Data_LONG[CONTENT_AREA %in% "ELA"], lag.direction="BACKWARD", year='2017_2018.1')
 
 
-
-########
-###       NEED TO LOOK AT Fall 2016 Course Progressions script to make sure this is set up right
-###       Also need to add in 2nd prior investigation
-########
-
-
-
 ####
 ####     Mathematics
 ####
 
 ###  Find out which Math related content areas are present in the Fall data
 names(math.prog$BACKWARD[['2017_2018.1']])
-
 
 ###
 ###   Algebra I (No Repeaters or Regression)
@@ -89,7 +80,7 @@ ALG1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c(
 # 1:                     ALGEBRA_I.EOCT   169
 # 2:                    ALGEBRA_II.EOCT    21
 # 3:                      GEOMETRY.EOCT    13
-###   None - but establish configs with Geometry for the SGP_NOTE variables
+###   None - but establish configs with Geometry for the SGP_NOTE variables (No repeaters or regression from Alg2 to Alg1)
 
 
 ###   Viable 2 Prior (Spring 16 + Spring 15) ALGEBRA_I Progressions
@@ -113,6 +104,7 @@ ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="GEOMETRY.EOCT", list(Total=sum(COUNT))
 ###
 ###   Geometry (No Repeaters)
 ###
+
 GEOM <- math.prog$BACKWARD[['2017_2018.1']]$GEOMETRY.EOCT[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 != "GEOMETRY.EOCT" | is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)] #  Keep NA's for Fall to Fall checks
 
 table(GEOM$CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)
@@ -185,6 +177,17 @@ ALG2[, list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1")][!i
 ###   Geometry - Establish configs for the SGP_NOTE variables for all except G5 math
 ###   NJ - GEOMETRY.EOCT  1789
 
+###   Viable 2 Prior (Spring 16 + Spring 15) GEOMETRY Progressions
+ALG2[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.1", "CONTENT_AREA_by_GRADE_PRIOR_YEAR.3")][Total > 100]
+# CONTENT_AREA_by_GRADE_PRIOR_YEAR.1 CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 Total
+# 1:                     ALGEBRA_I.EOCT                                 NA   121
+# 2:                     ALGEBRA_I.EOCT                     MATHEMATICS.07   153
+# 3:                     ALGEBRA_I.EOCT                     MATHEMATICS.08   189
+# 4:                      GEOMETRY.EOCT                                 NA   543
+# 5:                      GEOMETRY.EOCT                     ALGEBRA_I.EOCT  1583
+# 6:                      GEOMETRY.EOCT                     MATHEMATICS.08   139
+# 7:             INTEGRATED_MATH_1.EOCT                      GEOMETRY.EOCT   139
+###   NJ - GEOMETRY.EOCT  <->  ALGEBRA_I.EOCT  1302
 
 ###   Viable 1 Prior (Fall 17) ALGEBRA_II Progressions (NO Spring 17 TEST AVAILABLE!)
 ALG2[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]

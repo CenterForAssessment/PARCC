@@ -82,7 +82,7 @@ state.tmp.split <- strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP), "; ")
 State_LONG_Data[, CONTENT_AREA_1PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
 State_LONG_Data[, CONTENT_AREA_2PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
 levels(State_LONG_Data$CONTENT_AREA_1PRIOR) <- c(NA, "ALG01", "ALG02", "ELA", "GEO01", "MAT1I", "MAT2I", "MAT3I", "MAT") #XX#
-levels(State_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ELA", "MAT") #XX#
+levels(State_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ALG01", "ELA", "MAT") #XX#
 State_LONG_Data[, GRADE_1PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
 State_LONG_Data[, GRADE_2PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), tail, 1)]
 State_LONG_Data[which(GRADE_1PRIOR=="EOCT"), GRADE_1PRIOR := ""]   #XX#
@@ -134,7 +134,7 @@ PARCC.tmp.split <- strsplit(as.character(PARCC_LONG_Data$SGP_NORM_GROUP), "; ")
 PARCC_LONG_Data[, CONTENT_AREA_1PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(PARCC.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
 PARCC_LONG_Data[, CONTENT_AREA_2PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(PARCC.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
 levels(PARCC_LONG_Data$CONTENT_AREA_1PRIOR) <- c(NA, "ALG01", "ALG02", "ELA", "GEO01", "MAT1I", "MAT2I", "MAT3I", "MAT")
-levels(PARCC_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ELA", "MAT")
+levels(PARCC_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ALG01", "ELA", "MAT")
 PARCC_LONG_Data[, GRADE_1PRIOR := sapply(strsplit(sapply(strsplit(sapply(PARCC.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
 PARCC_LONG_Data[, GRADE_2PRIOR := sapply(strsplit(sapply(strsplit(sapply(PARCC.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), tail, 1)]
 PARCC_LONG_Data[which(GRADE_1PRIOR=="EOCT"), GRADE_1PRIOR := ""]  #XX#
@@ -175,11 +175,19 @@ FINAL_LONG_Data[, c("SGPTargetState", "SGPTargetPARCC", "SGPTargetTestCodeState"
 
 
 ###  Coordinate missing SGP notes for small N states and set remaining missings as character "NA" (currently logical NA)
-# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
-# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
-# table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoPARCC == "<1000", StudentGrowthPercentileComparedtoState], exclude=NULL) #  None NA/NULL
-# table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", is.na(StudentGrowthPercentileComparedtoPARCC)], exclude=NULL)
-# summary(as.numeric(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", StudentGrowthPercentileComparedtoPARCC], exclude=NULL))
+FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
+FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
+table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoPARCC == "<1000", StudentGrowthPercentileComparedtoState], exclude=NULL) #  None NA/NULL
+table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", is.na(StudentGrowthPercentileComparedtoPARCC)], exclude=NULL)
+summary(as.numeric(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", StudentGrowthPercentileComparedtoPARCC], exclude=NULL))
+
+# table(FINAL_LONG_Data[TestCode=="ALG02", SGPPreviousTestCodeState!="", SGPPreviousTestCodePARCC!=""])
+# table(FINAL_LONG_Data[SGPPreviousTestCodeState=="" & SGPPreviousTestCodePARCC!="", SGPPreviousTestCodePARCC, TestCode])
+# table(FINAL_LONG_Data[SGPPreviousTestCodeState1Prior=="" & SGPPreviousTestCodePARCC1Prior!="", SGPPreviousTestCodePARCC, TestCode])
+table(FINAL_LONG_Data[TestCode=="ALG02", StateAbbreviation, SGPPreviousTestCodeState])
+FINAL_LONG_Data[which(SGPPreviousTestCodeState1Prior=="" & SGPPreviousTestCodePARCC1Prior!=""), SGPPreviousTestCodeState1Prior := SGPPreviousTestCodePARCC1Prior]
+FINAL_LONG_Data[which(SGPPreviousTestCodeState=="" & SGPPreviousTestCodePARCC!=""), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
+table(FINAL_LONG_Data[TestCode=="ALG02", StateAbbreviation, SGPPreviousTestCodeState])
 
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
@@ -197,14 +205,14 @@ setcolorder(FINAL_LONG_Data, all.var.names)
 # FINAL_LONG_Data[, list(cor(as.numeric(StudentGrowthPercentileComparedtoPARCC), as.numeric(StudentGrowthPercentileComparedtoState), use="complete")), keyby="TestCode"]
 # FINAL_LONG_Data[, list(cor(as.numeric(StudentGrowthPercentileComparedtoPARCC1Prior), as.numeric(StudentGrowthPercentileComparedtoState1Prior), use="complete")), keyby="TestCode"]
 # FINAL_LONG_Data[!is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC2Prior)), list(cor(as.numeric(StudentGrowthPercentileComparedtoPARCC1Prior), as.numeric(StudentGrowthPercentileComparedtoPARCC2Prior), use="complete")), keyby="TestCode"]
-
+#
 # x1 <- FINAL_LONG_Data[!is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC1Prior))]
 # x1[, Diff := as.numeric(StudentGrowthPercentileComparedtoPARCC1Prior) - as.numeric(StudentGrowthPercentileComparedtoPARCC2Prior)]
 # x1[, as.list(summary(Diff)), keyby="TestCode"]
 # x1[is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC2Prior)), as.list(summary(StudentGrowthPercentileComparedtoPARCC1Prior)), keyby=c("TestCode", "SGPPreviousTestCodeState1Prior")]
 # x1[TestCode != "ALG02", as.list(cor(Diff, SGPIRTThetaPARCC1Prior, use="complete")), keyby="TestCode"]
 # x1[TestCode != "ALG02", as.list(cor(Diff, SGPIRTThetaPARCC2Prior, use="complete")), keyby="TestCode"]
-
+#
 # table(FINAL_LONG_Data[, is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC1Prior)), is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC2Prior))])
 
 ###

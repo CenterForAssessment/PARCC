@@ -44,7 +44,7 @@ PARCC_2017_2018.1.config <- c(
 ### abcSGP
 
 PARCC_SGP <- abcSGP(
-		state="PARCC", #sgp_object=PARCC_Data_LONG_2017_2018.1,
+		state="PARCC", # sgp_object=PARCC_Data_LONG_2017_2018.1,
 		# sgp_object=rbindlist(list(PARCC_SGP_LONG_Data, PARCC_Data_LONG_2017_2018.1), fill=TRUE),
 		sgp_object=rbindlist(list(
 			PARCC_SGP_LONG_Data,
