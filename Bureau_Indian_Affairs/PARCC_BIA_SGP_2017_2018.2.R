@@ -47,7 +47,7 @@ PARCC_2017_2018.2.config <- c(
 
 Bureau_Indian_Affairs_SGP <- abcSGP(
 		state="BI",
-		sgp_object=fetchPARCC(state="BI", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*")[GRADE %in% 3:6 & CONTENT_AREA %in% c("ELA", "MATHEMATICS", "ELA_SS", "MATHEMATICS_SS")],
+		sgp_object=fetchPARCC(state="BI", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*"),
 		# content_areas = c("ELA", "ELA_SS", "MATHEMATICS", "MATHEMATICS_SS"),
 		sgp.config = PARCC_2017_2018.2.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
@@ -87,6 +87,7 @@ table(Bureau_Indian_Affairs_SGP@Data[YEAR=="2017_2018.2" & !is.na(SGP) & CONTENT
 SGPstateData[["BI"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS", ALGEBRA_II="MATHEMATICS")
 
 visualizeSGP(
+	state="BI",
 	Bureau_Indian_Affairs_SGP,
 	plot.types=c("growthAchievementPlot"),
 	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))

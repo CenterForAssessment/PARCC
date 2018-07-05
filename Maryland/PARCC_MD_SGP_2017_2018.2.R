@@ -21,8 +21,16 @@ source("../SGP_CONFIG/2017_2018.2/ELA_SS.R")
 source("../SGP_CONFIG/2017_2018.2/MATHEMATICS.R")
 source("../SGP_CONFIG/2017_2018.2/MATHEMATICS_SS.R")
 
-ELA.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"), c("7", "8", "9"))
-ELA_SS.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"), c("7", "8", "9"))
+ELA.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"), c("10", "11"))
+ELA_SS.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"), c("10", "11"))
+ELA.2017_2018.2.config[[3]] <- ELA_SS.2017_2018.2.config[[3]] <- NULL
+
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "10", "11") # Only 2249 8th to 9th.  Enough to calculate SGPs, but not good for projections.
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 8)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- c(rep(1L, 5), 2, 1)
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA_SS"]] <- c("3", "4", "5", "6", "7", "8", "10", "11")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA_SS"]] <- rep("ELA_SS", 8)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA_SS"]] <- c(rep(1L, 5), 2, 1)
 
 PARCC_2017_2018.2.config <- c(
 	ELA.2017_2018.2.config,
@@ -41,19 +49,11 @@ PARCC_2017_2018.2.config <- c(
 
 PARCC_2017_2018.2.config <- PARCC_2017_2018.2.config[!sapply(PARCC_2017_2018.2.config, function(f) any(grepl("INTEGRATED_MATH_", f)))]
 
-SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8")  #  Only a 2 thousand 9th graders.  Projections don't make sense
-SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 6)
-SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 5)
-SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA_SS"]] <- c("3", "4", "5", "6", "7", "8")
-SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA_SS"]] <- rep("ELA_SS", 6)
-SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA_SS"]] <- rep(1L, 5)
-
-
 ### abcSGP
 
 Maryland_SGP <- abcSGP(
 		state="MD",
-		sgp_object=fetchPARCC(state="MD", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*"),
+		sgp_object=fetchPARCC(state="MD", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*"), # MD_2018, #
 		sgp.config = PARCC_2017_2018.2.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
@@ -80,6 +80,15 @@ if (sgp.test) {
 	save(Maryland_SGP, file="./Data/SIM/Maryland_SGP-Test_PARCC_2017_2018.2.Rdata")
 } else save(Maryland_SGP, file="./Data/Archive/2017_2018.2/Maryland_SGP.Rdata")
 
+###   Fix SGP_TARGET_3_YEAR_CONTENT_AREA in combineSGP
+Maryland_SGP <- combineSGP(Maryland_SGP, sgp.target.content_areas = TRUE)
+"SGP_TARGET_3_YEAR_CONTENT_AREA" %in% names(Maryland_SGP@Data)
+table(Maryland_SGP@Data[, CONTENT_AREA, SGP_TARGET_3_YEAR_CONTENT_AREA])
+
+outputSGP(Maryland_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputSGP.directory="Data/Archive/2017_2018.2")
+save(Maryland_SGP, file="./Data/Archive/2017_2018.2/Maryland_SGP.Rdata")
+
+
 ### visualizeSGP
 
 ###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
@@ -92,6 +101,8 @@ table(Maryland_SGP@Data[YEAR=="2017_2018.2" & !is.na(SGP) & CONTENT_AREA=="ELA",
 SGPstateData[["MD"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(
 			ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS", ALGEBRA_II="MATHEMATICS",
 			ELA_SS="ELA_SS", MATHEMATICS_SS="MATHEMATICS_SS", ALGEBRA_I_SS="MATHEMATICS_SS", GEOMETRY_SS="MATHEMATICS_SS", ALGEBRA_II_SS="MATHEMATICS_SS")
+
+SGPstateData[["MD"]][["SGP_Configuration"]][["gaPlot.back.extrapolated.cuts"]][["ELA"]] <- NULL # Necessary for grade 8 to 10 skip year...
 
 visualizeSGP(
 	Maryland_SGP,

@@ -15,7 +15,7 @@ require(data.table)
 ###  PARCC SQLite database access function
 source("../fetchPARCC.R")
 
-###  Read in the Spring 2017 configuration code and combine into a single list.
+###  Read in the Spring 2018 configuration code and combine into a single list.
 source("../SGP_CONFIG/2017_2018.2/ELA.R")
 source("../SGP_CONFIG/2017_2018.2/ELA_SS.R")
 source("../SGP_CONFIG/2017_2018.2/MATHEMATICS.R")
@@ -23,6 +23,7 @@ source("../SGP_CONFIG/2017_2018.2/MATHEMATICS_SS.R")
 
 ELA.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
 ELA_SS.2017_2018.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
+ELA.2017_2018.2.config[[3]] <- ELA_SS.2017_2018.2.config[[3]] <- NULL
 ELA.2017_2018.2.config[[2]] <- ELA_SS.2017_2018.2.config[[2]] <- NULL
 
 PARCC_2017_2018.2.config <- c(
@@ -57,9 +58,11 @@ SGPstateData[["IL"]][["Student_Report_Information"]][["Content_Areas_Domains"]] 
 
 ### abcSGP
 
+IL.CA <- c("ELA", "MATHEMATICS", "ALGEBRA_I", "ELA_SS", "MATHEMATICS_SS", "ALGEBRA_I_SS")
+
 Illinois_SGP <- abcSGP(
 		state="IL",
-		sgp_object=fetchPARCC(state="IL", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*")[CONTENT_AREA %in% c("ELA", "MATHEMATICS", "ALGEBRA_I", "ELA_SS", "MATHEMATICS_SS", "ALGEBRA_I_SS")],
+		sgp_object=fetchPARCC(state="IL", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*")[CONTENT_AREA %in% IL.CA], # IL_2018, #
 		sgp.config = PARCC_2017_2018.2.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
@@ -79,7 +82,7 @@ Illinois_SGP <- abcSGP(
 		outputSGP.directory="Data/Archive/2017_2018.2",
     parallel.config=list(
 			BACKEND = "FOREACH", TYPE = "doParallel", SNOW_TEST = TRUE,
-			WORKERS = list(TAUS = workers, SIMEX = workers)))
+			WORKERS = list(TAUS = workers, SIMEX = workers, SGP_SCALE_SCORE_TARGETS=10)))
 
 ### Save results
 if (sgp.test) {

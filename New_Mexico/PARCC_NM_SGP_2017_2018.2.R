@@ -49,7 +49,7 @@ SGPstateData[["NM"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.
 
 New_Mexico_SGP <- abcSGP(
 		state="NM",
-		sgp_object=fetchPARCC(state="NM", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*"),
+		sgp_object=fetchPARCC(state="NM", parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite", prior.years=c("2016_2", "2017_1", "2017_2", "2018_1"), current.year="2018_2", fields="*"), # NM_2018, #
 		sgp.config = PARCC_2017_2018.2.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
@@ -76,14 +76,23 @@ if (sgp.test) {
 	save(New_Mexico_SGP, file="./Data/SIM/New_Mexico_SGP-Test_PARCC_2017_2018.2.Rdata")
 } else save(New_Mexico_SGP, file="./Data/Archive/2017_2018.2/New_Mexico_SGP.Rdata")
 
+###   Fix SGP_TARGET_3_YEAR_CONTENT_AREA in combineSGP
+New_Mexico_SGP <- combineSGP(New_Mexico_SGP, sgp.target.content_areas = TRUE)
+"SGP_TARGET_3_YEAR_CONTENT_AREA" %in% names(New_Mexico_SGP@Data)
+table(New_Mexico_SGP@Data[, CONTENT_AREA, SGP_TARGET_3_YEAR_CONTENT_AREA])
+
+outputSGP(New_Mexico_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputSGP.directory="Data/Archive/2017_2018.2")
+save(New_Mexico_SGP, file="./Data/Archive/2017_2018.2/New_Mexico_SGP.Rdata")
+
+
 ### visualizeSGP
 
 ###  Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
 ###  Accurately reflect the course taking patterns in the state (the
 ###  original meta-data are based on the entire PARCC Consortium).
 
-table(New_Mexico_SGP@Data[YEAR=="2016_2017.2" & !is.na(SGP), CONTENT_AREA])
-table(New_Mexico_SGP@Data[YEAR=="2016_2017.2" & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
+table(New_Mexico_SGP@Data[YEAR=="2017_2018.2" & !is.na(SGP), CONTENT_AREA])
+table(New_Mexico_SGP@Data[YEAR=="2017_2018.2" & !is.na(SGP) & CONTENT_AREA=="ELA", GRADE])
 
 SGPstateData[["NM"]][["Student_Report_Information"]][["Content_Areas_Domains"]] <- list(ELA="ELA", MATHEMATICS="MATHEMATICS", ALGEBRA_I="MATHEMATICS", GEOMETRY="MATHEMATICS", ALGEBRA_II="MATHEMATICS")
 

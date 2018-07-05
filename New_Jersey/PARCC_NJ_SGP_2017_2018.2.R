@@ -38,10 +38,10 @@ PARCC_2017_2018.2.config <- c(
 
 PARCC_2017_2018.2.config <- PARCC_2017_2018.2.config[!sapply(PARCC_2017_2018.2.config, function(f) any(grepl("INTEGRATED_MATH_", f)))]
 
-NJ.CA <- c("ELA", "MATHEMATICS", "ALGEBRA_I", "ALGEBRA_II", "GEOMETRY", "ELA_SS", "MATHEMATICS_SS", "ALGEBRA_I_SS", "ALGEBRA_II_SS", "GEOMETRY_SS")
-
 
 ### abcSGP
+
+NJ.CA <- c("ELA", "MATHEMATICS", "ALGEBRA_I", "ALGEBRA_II", "GEOMETRY", "ELA_SS", "MATHEMATICS_SS", "ALGEBRA_I_SS", "ALGEBRA_II_SS", "GEOMETRY_SS")
 
 New_Jersey_SGP <- abcSGP(
 		state="NJ",
@@ -50,8 +50,8 @@ New_Jersey_SGP <- abcSGP(
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
 		sgp.percentiles=TRUE,
-		sgp.projections=F,
-		sgp.projections.lagged=F,
+		sgp.projections=TRUE,
+		sgp.projections.lagged=TRUE,
 		sgp.percentiles.baseline=FALSE,
 		sgp.projections.baseline=FALSE,
 		sgp.projections.lagged.baseline=FALSE,
@@ -71,6 +71,15 @@ New_Jersey_SGP <- abcSGP(
 if (sgp.test) {
 	save(New_Jersey_SGP, file="./Data/SIM/New_Jersey_SGP-Test_PARCC_2017_2018.2.Rdata")
 } else save(New_Jersey_SGP, file="./Data/Archive/2017_2018.2/New_Jersey_SGP.Rdata")
+
+###   Fix SGP_TARGET_3_YEAR_CONTENT_AREA in combineSGP
+New_Jersey_SGP <- combineSGP(New_Jersey_SGP, sgp.target.content_areas = TRUE)
+"SGP_TARGET_3_YEAR_CONTENT_AREA" %in% names(New_Jersey_SGP@Data)
+table(New_Jersey_SGP@Data[, CONTENT_AREA, SGP_TARGET_3_YEAR_CONTENT_AREA])
+
+outputSGP(New_Jersey_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputSGP.directory="Data/Archive/2017_2018.2")
+save(New_Jersey_SGP, file="./Data/Archive/2017_2018.2/New_Jersey_SGP.Rdata")
+
 
 ### visualizeSGP
 
