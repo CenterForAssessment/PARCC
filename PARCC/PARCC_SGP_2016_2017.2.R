@@ -67,7 +67,7 @@ PARCC_2016_2017.2.config <- c(
 
 PARCC_SGP <- abcSGP(
 		state="PARCC",
-		sgp_object=PARCC_SGP, rbindlist(list(
+		sgp_object=rbindlist(list(
 			PARCC_SGP_LONG_Data,
 			dbGetQuery(dbConnect(SQLite(), dbname = parcc.db), "select * from PARCC_Data_LONG_2017_2")), fill=TRUE),
 		sgp.config = PARCC_2016_2017.2.config,
