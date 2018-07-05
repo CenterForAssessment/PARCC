@@ -16,9 +16,10 @@ ELA.2017_2018.2.config <- list(
 		sgp.panel.years=c("2015_2016.2", "2017_2018.2"),
 		sgp.grade.sequences=list(c("8", "10")),
 		sgp.exact.grade.progression=TRUE,
+		sgp.projection.grade.sequences=list("NO_PROJECTIONS"),
 		sgp.norm.group.preference=1L),
 
-	ELA.2017_2018.2 = list(
+	ELA.2017_2018.2 = list(  #  Fall - Spring
 		sgp.content.areas=rep("ELA", 2),
 		sgp.panel.years=c("2017_2018.1", "2017_2018.2"),
 		sgp.grade.sequences=list(c("9", "10"), c("10", "11")),
