@@ -37,7 +37,8 @@ all.var.names <- c(parcc.var.names[1:11], center.var.names[1:4], parcc.var.names
 ####   Function to read in individual state files
 
 read.parcc <- function(state, year) {
-	if (state == "BI") tmp.name <- "Bureau_Indian_Affairs" else tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
+	tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
+  if (state == "DD") tmp.name <- "Department_of_Defense" else tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
 	if (tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
 	tmp.files <- list.files(file.path(tmp.name, "Data/Base_Files"))
 	my.file <- gsub(".zip",  "", grep(year, tmp.files, value=TRUE))
@@ -51,17 +52,25 @@ read.parcc <- function(state, year) {
 	return(TMP)
 }
 
-####   Spring 2017
+####   Spring 2018
 
 PARCC_Data_LONG_2017_2018.2 <- rbindlist(list(
-  read.parcc("BI", "D201706"), read.parcc("CO", "D201706"),
-	read.parcc("IL", "D201706"), read.parcc("MD", "D201706"),
-  read.parcc("NJ", "D201706"), read.parcc("NM", "D201706"),
-  read.parcc("DC", "D201706"), read.parcc("RI", "D2017062")))[, parcc.var.names, with=FALSE] # RI keep the 'original' data submission (PARCC_RI_2016-2017_SGPO_D20170619.csv.zip) for example
+  read.parcc("BI", "D20180629"), read.parcc("DD", "D20180620"),
+	read.parcc("IL", "D20180629"), read.parcc("MD", "D20180629"),
+  read.parcc("NJ", "D20180629"), read.parcc("NM", "D20180629"),
+  read.parcc("DC", "D20180629")))[, parcc.var.names, with=FALSE]
 
 setkey(PARCC_Data_LONG_2017_2018.2, PARCCStudentIdentifier, TestCode, Period)
 
+old <- rbindlist(list(
+  read.parcc("BI", "D20180620"), read.parcc("DD", "D20180620"),
+	read.parcc("IL", "D20180620"), read.parcc("MD", "D20180620"),
+  read.parcc("NJ", "D20180625"), read.parcc("NM", "D20180620"),
+  read.parcc("DC", "D20180620")))[, parcc.var.names, with=FALSE]
 
+setkey(new, PARCCStudentIdentifier, TestCode, Period)
+setkey(old, PARCCStudentIdentifier, TestCode, Period)
+  
 ###
 ###       Data Cleaning  -  Create Required SGP Variables
 ###
@@ -83,7 +92,6 @@ PARCC_Data_LONG_2017_2018.2[, GRADE := as.character(GRADE)]
 
 ####  YEAR
 PARCC_Data_LONG_2017_2018.2[, YEAR := gsub("-", "_", AssessmentYear)]
-PARCC_Data_LONG_2017_2018.2[which(Period == "FallBlock"), YEAR := paste(YEAR, "1", sep=".")]
 PARCC_Data_LONG_2017_2018.2[which(Period == "Spring"), YEAR := paste(YEAR, "2", sep=".")]
 
 
@@ -104,7 +112,6 @@ setkey(PARCC_Data_LONG_2017_2018.2, CONTENT_AREA, GRADE)
 PARCC_Data_LONG_2017_2018.2 <- scaling.constants[PARCC_Data_LONG_2017_2018.2]
 
 PARCC_Data_LONG_2017_2018.2[, SCALE_SCORE_CSEM := (as.numeric(SummativeCSEM))/a] # NO -b here...
-# PARCC_Data_LONG_2017_2018.2[, IRTTheta := as.numeric(IRTTheta)]; PARCC_Data_LONG_2017_2018.2[is.na(IRTTheta), IRTTheta := (as.numeric(SummativeScaleScore)-b)/a] # Fake it until Pearson provides IRTTheta 6/20/17
 # summary(PARCC_Data_LONG_2017_2018.2[, as.numeric(IRTTheta)])
 
 PARCC_Data_LONG_2017_2018.2[, c("a", "b", "ThetaSEM") := NULL]
@@ -137,6 +144,13 @@ table(PARCC_Data_LONG_2017_2018.2[, ACHIEVEMENT_LEVEL, CONTENT_AREA], exclude=NU
 #  1. ELA09 will always be excluded
 #  2. Algebra I and Integrated Math I will be excluded when the "Grade Level When Assessed" field is = 09, 10, 11, 12, 13, 99, OS or PS
 #
+# table(PARCC_Data_LONG_2017_2018.2[StateAbbreviation == "DC", TestCode, GradeLevelWhenAssessed])
+
+PARCC_Data_LONG_2017_2018.2[StateAbbreviation == "DC" & TestCode == "ELA09", VALID_CASE := "INVALID_CASE"] # 6,912 cases
+PARCC_Data_LONG_2017_2018.2[StateAbbreviation == "DC" & TestCode == "ALG01" & GradeLevelWhenAssessed %in% c("09", "10", "11", "12", "99"), VALID_CASE := "INVALID_CASE"] # 5,528 cases
+# PARCC_Data_LONG_2017_2018.2[StateAbbreviation == "DC" & TestCode == "MAT1I" & GradeLevelWhenAssessed %in% c("09", "10", "11", "12", "99"), VALID_CASE := "INVALID_CASE"] # 0 cases
+
+
 ####
 
 ####
@@ -154,10 +168,10 @@ PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key
 PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2))), EXACT_DUPLICATE := 2]
 PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2))), VALID_CASE := "INVALID_CASE"]
 
-#X#  25 dups in same grade
-# setkey(PARCC_Data_LONG_2017_2018.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
-# setkey(PARCC_Data_LONG_2017_2018.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
-# dups <- PARCC_Data_LONG_2017_2018.2[c(which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2))), which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2)))-1),]
+#X#  48 (24?) dups in same grade.  Shouldn't be an issue and Pearson/PARCC requested duplicate results for current year as of ?2016?
+setkey(PARCC_Data_LONG_2017_2018.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
+setkey(PARCC_Data_LONG_2017_2018.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
+dups <- PARCC_Data_LONG_2017_2018.2[c(which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2))), which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2)))-1),]
 # PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2)))-1, VALID_CASE := "INVALID_CASE"]
 
 #X#  Duplicates if grade ignored  -  0 more (all same grade)
@@ -166,7 +180,7 @@ PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key
 ### PARCC_Data_LONG_2017_2018.2[which(duplicated(PARCC_Data_LONG_2017_2018.2, by=key(PARCC_Data_LONG_2017_2018.2)))-1, VALID_CASE := "INVALID_CASE"]
 
 
-####  Save Spring 2017 LONG Data
+####  Save Spring 2018 LONG Data
 
 require(RSQLite)
 parcc.db <- "./PARCC/Data/PARCC_Data_LONG.sqlite"
@@ -183,13 +197,13 @@ PARCC_Data_LONG_2017_2018.2[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 PARCC_Data_LONG_2017_2018.2[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 PARCC_Data_LONG_2017_2018.2[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
-####  Save Spring 2017 LONG Data
+####  Save Spring 2018 LONG Data
 
-save(PARCC_Data_LONG_2017_2018.2, file = "./PARCC/Data/PARCC_Data_LONG_2017_2018.2.Rdata")
+save(PARCC_Data_LONG_2017_2018.2, file = "./PARCC/Data/Archive/2017_2018.2/PARCC_Data_LONG_2017_2018.2.Rdata")
 
 
-#####  Add Spring 2017 LONG data to existing SQLite Database.  Tables stored by each year / period
+#####  Add Spring 2018 LONG data to existing SQLite Database.  Tables stored by each year / period
 
 con <- dbConnect(SQLite(), dbname = parcc.db)
-dbWriteTable(con, name = "PARCC_Data_LONG_2017_2", value=PARCC_Data_LONG_2017_2018.2, overwrite=TRUE)
+dbWriteTable(con, name = "PARCC_Data_LONG_2018_2", value=PARCC_Data_LONG_2017_2018.2, overwrite=TRUE)
 dbDisconnect(con)
