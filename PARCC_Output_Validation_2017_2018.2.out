@@ -1,0 +1,287 @@
+#########################################
+######### PARCC OUTPUT VALIDATION #######
+#########################################
+
+
+### Illinois Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9692777143567 75 99 345296
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 22 46 47.1787594466389 72 99 344144
+### Test of SGPTargetState: 1 45 68 64.1302278210527 87 99 348740
+### Test of SGPTargetPARCC: 1 45 61 59.7155273291211 76 99 348378
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      25     50 50.00813      75   99
+ 2:    ELA04    1      25     50 50.00269      75   99
+ 3:    ELA05    1      25     50 50.04426      75   99
+ 4:    ELA06    1      25     50 50.01926      75   99
+ 5:    ELA07    1      25     50 49.95272      75   99
+ 6:    ELA08    1      25     50 49.97178      75   99
+ 7:    MAT04    1      25     50 49.98908      75   99
+ 8:    MAT05    1      25     50 50.03171      75   99
+ 9:    MAT06    1      25     50 50.00776      75   99
+10:    MAT07    1      25     50 49.99681      75   99
+11:    MAT08    1      25     50 49.99363      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1   13.00     33 37.69495    60.0   99
+ 2:    ALG02    1   45.00     72 65.73874    90.5   99
+ 3:    ELA04    1   22.00     46 47.05369    71.0   99
+ 4:    ELA05    1   20.00     44 45.66047    70.0   99
+ 5:    ELA06    1   23.00     47 47.99767    72.0   99
+ 6:    ELA07    1   22.00     45 46.34970    70.0   99
+ 7:    ELA08    1   20.00     44 45.54553    69.0   99
+ 8:    ELA09   19   48.00     62 62.23529    80.0   97
+ 9:    ELA10   24   45.50     71 67.53333    89.0   94
+10:    GEO01    1   45.75     71 65.51582    88.0   99
+11:    MAT04    1   21.00     44 46.01202    70.0   99
+12:    MAT05    1   22.00     46 47.43896    72.0   99
+13:    MAT06    1   25.00     50 49.77472    75.0   99
+14:    MAT07    1   25.00     50 49.89655    75.0   99
+15:    MAT08    1   24.00     48 48.59516    73.0   99
+
+###   END  Illinois Output Validation   ###
+
+
+
+### Maryland Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9992961295341 75 99 228507
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 26 51 50.8371160329299 76 99 225196
+### Test of SGPTargetState: 1 39 57 56.396379705512 75 99 309968
+### Test of SGPTargetPARCC: 1 42 61 59.6730583602739 79 99 306085
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      25     50 49.91346      75   99
+ 2:    ALG02    1      25     50 49.91752      75   99
+ 3:    ELA04    1      25     50 50.00797      75   99
+ 4:    ELA05    1      25     50 50.14471      75   99
+ 5:    ELA06    1      25     50 50.05600      75   99
+ 6:    ELA07    1      25     50 50.03379      75   99
+ 7:    ELA08    1      25     50 49.97785      75   99
+ 8:    ELA10    1      25     50 49.99652      75   99
+ 9:    ELA11    1      25     50 49.99768      75   99
+10:    GEO01    1      25     50 50.07581      75   99
+11:    MAT04    1      25     50 50.00023      75   99
+12:    MAT05    1      25     50 50.19110      75   99
+13:    MAT06    1      25     50 50.09711      75   99
+14:    MAT07    1      25     50 50.13787      75   99
+15:    MAT08    1      25     50 50.00470      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      30     56 54.62272      80   99
+ 2:    ALG02    1      28     54 53.10180      79   99
+ 3:    ELA04    1      25     50 49.60372      74   99
+ 4:    ELA05    1      26     49 49.66431      74   99
+ 5:    ELA06    1      24     49 49.03470      73   99
+ 6:    ELA07    1      27     52 51.12745      75   99
+ 7:    ELA08    1      25     49 49.09039      73   99
+ 8:    ELA09    1      44     69 63.64413      88   99
+ 9:    ELA10    1      40     65 61.10176      85   99
+10:    ELA11    1      29     53 52.32616      76   99
+11:    GEO01    1      23     49 49.30210      75   99
+12:    MAT04    1      26     51 50.57300      75   99
+13:    MAT05    1      25     49 49.54057      74   99
+14:    MAT06    1      23     48 48.73066      74   99
+15:    MAT07    1      27     51 50.94252      76   99
+16:    MAT08    1      25     50 49.63609      74   99
+
+###   END  Maryland Output Validation   ###
+
+
+
+### New_Jersey Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9499426535736 75 99 312333
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 27 53 52.4434037565438 78 99 310620
+### Test of SGPTargetState: 1 33 52 53.3294972507658 73 99 367434
+### Test of SGPTargetPARCC: 1 34 55 54.7907286217985 74 99 367413
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      25     50 50.06465      75   99
+ 2:    ALG02    1      25     50 49.72790      75   99
+ 3:    ELA04    1      25     50 50.00100      75   99
+ 4:    ELA05    1      25     50 50.05615      75   99
+ 5:    ELA06    1      25     50 50.07087      75   99
+ 6:    ELA07    1      25     50 49.98156      75   99
+ 7:    ELA08    1      25     50 49.96183      75   99
+ 8:    ELA09    1      25     50 49.92075      75   99
+ 9:    ELA10    1      25     49 49.61138      75   99
+10:    ELA11    1      25     50 49.99652      75   99
+11:    GEO01    1      25     50 49.93619      75   99
+12:    MAT04    1      25     50 50.00421      75   99
+13:    MAT05    1      25     50 50.12710      75   99
+14:    MAT06    1      25     50 50.16159      75   99
+15:    MAT07    1      25     50 50.16506      75   99
+16:    MAT08    1      25     50 50.18394      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      24     48 48.76533      73   99
+ 2:    ALG02    1      23     47 47.99655      73   99
+ 3:    ELA04    1      31     58 55.38421      81   99
+ 4:    ELA05    1      31     58 55.59996      81   99
+ 5:    ELA06    1      28     54 52.96242      79   99
+ 6:    ELA07    1      31     58 55.42571      81   99
+ 7:    ELA08    1      32     59 56.10428      81   99
+ 8:    ELA09    1      24     49 49.03637      74   99
+ 9:    ELA10    1      23     47 48.00990      73   99
+10:    ELA11    1      21     44 46.11991      71   99
+11:    GEO01    1      23     48 48.50837      73   99
+12:    MAT04    1      32     58 55.58437      81   99
+13:    MAT05    1      29     55 53.58773      79   99
+14:    MAT06    1      27     53 51.93577      77   99
+15:    MAT07    1      25     51 50.75415      76   99
+16:    MAT08    1      28     54 52.88961      79   99
+
+###   END  New_Jersey Output Validation   ###
+
+
+
+### New_Mexico Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9998658426684 75 99 85614
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 27 52 51.1084591767675 76 99 84218
+### Test of SGPTargetState: 1 51 70 66.4033925527437 86 99 93526
+### Test of SGPTargetPARCC: 1 54 70 67.9237630944953 86 99 93526
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      25     50 49.95258      75   99
+ 2:    ALG02    1      25     50 49.97038      75   99
+ 3:    ELA04    1      25     50 50.01123      75   99
+ 4:    ELA05    1      25     50 50.02404      75   99
+ 5:    ELA06    1      25     50 49.99096      75   99
+ 6:    ELA07    1      25     50 50.13857      75   99
+ 7:    ELA08    1      25     50 49.98090      75   99
+ 8:    ELA09    1      25     50 50.01734      75   99
+ 9:    ELA10    1      25     50 49.84781      75   99
+10:    ELA11    1      25     50 49.90707      75   99
+11:    GEO01    1      25     51 50.39011      76   99
+12:    MAT04    1      25     50 50.01135      75   99
+13:    MAT05    1      25     50 49.98684      75   99
+14:    MAT06    1      25     50 50.07506      75   99
+15:    MAT07    1      25     50 50.17552      75   99
+16:    MAT08    1      25     50 50.01357      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1      21     44 45.85240      69   99
+ 2:    ALG02    1      33     58 55.59589      79   99
+ 3:    ELA04    1      22     45 46.51219      70   99
+ 4:    ELA05    1      32     57 55.15508      80   99
+ 5:    ELA06    1      29     55 53.22965      78   99
+ 6:    ELA07    1      21     45 46.26092      70   99
+ 7:    ELA08    1      31     56 53.90951      78   99
+ 8:    ELA09    1      29     53 52.20035      76   99
+ 9:    ELA10    1      31     55 53.78360      78   99
+10:    ELA11    1      44     65 62.06459      83   99
+11:    GEO01    1      31     58 55.51475      81   99
+12:    MAT04    1      25     50 49.84296      75   99
+13:    MAT05    1      28     54 53.19609      79   99
+14:    MAT06    1      23     48 48.70955      74   99
+15:    MAT07    1      22     45 46.66007      71   99
+16:    MAT08    1      27     53 52.17815      77   99
+
+###   END  New_Mexico Output Validation   ###
+
+
+
+### Washington_DC Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.8631275689959 75 99 25438
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 25 51 50.4910800471917 76 99 23992
+### Test of SGPTargetState: 1 45 66 62.4778884810348 82 99 28445
+### Test of SGPTargetPARCC: 1 49 67 64.0541935722612 82 99 25887
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ELA04    1      25     50 50.00523      75   99
+ 2:    ELA05    1      25     50 50.07262      75   99
+ 3:    ELA06    1      25     50 50.09906      75   99
+ 4:    ELA07    1      25     50 50.10321      75   99
+ 5:    ELA08    1      25     50 49.89081      75   99
+ 6:    ELA10    1      25     50 50.02899      75   99
+ 7:    GEO01    1      24     50 49.78849      75   99
+ 8:    MAT04    1      25     50 50.01593      75   99
+ 9:    MAT05    1      25     50 50.15137      75   99
+10:    MAT06    1      25     50 50.11767      75   99
+11:    MAT07    1      25     50 50.22166      75   99
+12:    MAT08    1      25     50 49.90357      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1    14.0   33.0 38.74507    59.5   99
+ 2:    ALG02    1    23.0   49.0 47.84063    75.0   99
+ 3:    ELA04    1    29.5   56.0 53.92816    79.0   99
+ 4:    ELA05    1    28.0   54.0 52.43448    77.0   99
+ 5:    ELA06    1    26.0   51.0 50.69919    75.0   99
+ 6:    ELA07    1    32.0   60.0 56.33265    82.0   99
+ 7:    ELA08    1    28.5   54.0 52.72741    77.0   99
+ 8:    ELA10    1    19.0   42.0 43.92538    67.0   99
+ 9:    ELA11    3    34.0   58.5 54.72917    78.0   96
+10:    GEO01    1    28.0   52.0 52.05079    77.0   99
+11:    MAT04    1    26.0   51.0 50.77095    75.0   99
+12:    MAT05    1    27.0   53.0 52.01946    78.0   99
+13:    MAT06    1    20.0   45.0 46.08372    71.0   99
+14:    MAT07    1    24.0   50.0 50.18548    76.0   99
+15:    MAT08    1    26.0   52.0 51.31781    77.0   99
+
+###   END  Washington_DC Output Validation   ###
+
+
+
+### Bureau_Indian_Affairs Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.4657651245552 75 99 10264
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 21.25 45 46.6273676756948 71 99 5991
+### Test of SGPTargetState: NA NA NA NaN NA NA 17289
+### Test of SGPTargetPARCC: 3 61 74 71.5345305101403 84 99 6096
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+1:    ELA04    1      25     50 50.05629      75   99
+2:    ELA05    1      25     50 50.18955      75   99
+3:    ELA06    1      25     50 50.04468      75   99
+4:    MAT04    1      25     50 50.04564      75   99
+5:    MAT05    1      25     50 50.11036      75   99
+6:    MAT06    1      25     50 50.02502      75   99
+
+
+### Test of SGPRankedSimexPARCC:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.
+ 1:    ALG01    1   20.25   41.5 43.91791   67.00   99
+ 2:    ALG02    1   25.00   43.0 48.81416   78.00   97
+ 3:    ELA04    1   16.75   40.0 41.81457   65.00   99
+ 4:    ELA05    1   24.00   48.0 48.76327   74.00   99
+ 5:    ELA06    1   29.00   55.0 52.58624   76.00   99
+ 6:    ELA07    1   19.00   41.0 43.19389   66.00   99
+ 7:    ELA08    1   28.00   53.0 51.39745   75.00   99
+ 8:    ELA09    5   32.00   52.5 53.12162   75.00   99
+ 9:    ELA10    1   33.00   58.0 54.50307   77.50   98
+10:    ELA11    6   39.00   58.0 57.78947   79.00   99
+11:    GEO01    3   32.25   64.5 58.64815   83.75   99
+12:    MAT04    1   15.00   36.0 39.34689   61.00   99
+13:    MAT05    1   23.00   46.0 47.39343   72.00   99
+14:    MAT06    1   31.00   56.0 55.13762   80.50   99
+15:    MAT07    1   19.25   42.0 44.27529   66.00   99
+16:    MAT08    1   28.75   53.0 52.42056   76.00   99
+
+###   END  Bureau_Indian_Affairs Output Validation   ###
+

@@ -14,7 +14,7 @@ require(data.table)
 
 
 ###  Set working directory to top level directory (PARCC) and Identify States
-tmp.states <- c("Colorado", "Illinois", "Maryland", "New_Jersey", "New_Mexico", "Rhode_Island", "Washington_DC", "Bureau_Indian_Affairs")
+tmp.states <- c("Illinois", "Maryland", "New_Jersey", "New_Mexico", "Washington_DC", "Bureau_Indian_Affairs")
 
 ####   Function to read in individual state files
 read.parcc <- function(state, tag, type="OUTPUT") {
@@ -34,8 +34,8 @@ read.parcc <- function(state, tag, type="OUTPUT") {
 ### Loop over states
 
 for (state in tmp.states) {
-    tmp.ORIGINAL<-read.parcc(state, "2017-2018_SGPO_D2017062", "ORIGINAL")
-    tmp.OUTPUT <- read.parcc(state, "2017-2018_Spring_SGP-Results_20170709")
+    tmp.ORIGINAL<-read.parcc(state, "2017-2018_SGPO_D20180629", "ORIGINAL")
+    tmp.OUTPUT <- read.parcc(state, "2017-2018_Spring_SGP-Results_20180706")
     setkey(tmp.ORIGINAL, PARCCStudentIdentifier)
     setkey(tmp.OUTPUT, PARCCStudentIdentifier)
 

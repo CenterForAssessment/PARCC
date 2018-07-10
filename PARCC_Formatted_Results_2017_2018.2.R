@@ -15,20 +15,20 @@ require(data.table)
 
 load("./PARCC/Data/Archive/2017_2018.2/PARCC_SGP_LONG_Data_2017_2018.2.Rdata")
 
-load("./Colorado/Data/Archive/2017_2018.2/Colorado_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./Illinois/Data/Archive/2017_2018.2/Illinois_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./Maryland/Data/Archive/2017_2018.2/Maryland_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./New_Jersey/Data/Archive/2017_2018.2/New_Jersey_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./New_Mexico/Data/Archive/2017_2018.2/New_Mexico_SGP_LONG_Data_2017_2018.2.Rdata")
-load("./Rhode_Island/Data/Archive/2017_2018.2/Rhode_Island_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./Washington_DC/Data/Archive/2017_2018.2/Washington_DC_SGP_LONG_Data_2017_2018.2.Rdata")
 load("./Bureau_Indian_Affairs/Data/Archive/2017_2018.2/Bureau_Indian_Affairs_SGP_LONG_Data_2017_2018.2.Rdata")
 
+
 ###  Amend State Files as needed
 
-Bureau_Indian_Affairs_SGP_LONG_Data_2017_2018.2 <- `_SGP_LONG_Data_2017_2018.2`; rm(`_SGP_LONG_Data_2017_2018.2`) # outputSGP naming issue with BIA
+#    Illinois only has percentiles/projections through grade 8 so no EOCT projection groups / need for SGP_TARGET_3_YEAR_CONTENT_AREA in combineSGP.
 Illinois_SGP_LONG_Data_2017_2018.2[, SGP_TARGET_3_YEAR_CONTENT_AREA := as.character(NA)]
 Illinois_SGP_LONG_Data_2017_2018.2[!is.na(SGP_TARGET_3_YEAR), SGP_TARGET_3_YEAR_CONTENT_AREA := CONTENT_AREA]
+
 
 ####  Set names based on Pearson file layout
 parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode", "TestFormat",
@@ -51,10 +51,9 @@ all.var.names <- c(parcc.var.names[1:11], center.var.names[1:4], parcc.var.names
 
 ####  Combine states' data into single data table
 State_LONG_Data <- rbindlist(list(
-  Colorado_SGP_LONG_Data_2017_2018.2, Illinois_SGP_LONG_Data_2017_2018.2,
+  Bureau_Indian_Affairs_SGP_LONG_Data_2017_2018.2, Illinois_SGP_LONG_Data_2017_2018.2,
   Maryland_SGP_LONG_Data_2017_2018.2, New_Jersey_SGP_LONG_Data_2017_2018.2,
-  New_Mexico_SGP_LONG_Data_2017_2018.2, Rhode_Island_SGP_LONG_Data_2017_2018.2,
-  Washington_DC_SGP_LONG_Data_2017_2018.2, Bureau_Indian_Affairs_SGP_LONG_Data_2017_2018.2), fill=TRUE)
+  New_Mexico_SGP_LONG_Data_2017_2018.2, Washington_DC_SGP_LONG_Data_2017_2018.2), fill=TRUE)
 
 ####    Remove rows associated with the Scale Score SGP
 State_LONG_Data <- State_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
@@ -106,11 +105,6 @@ State_LONG_Data[, SGPPreviousTestCodeState2Prior := factor(paste0(CONTENT_AREA_2
 State_LONG_Data[, SGPPreviousTestCodeState1Prior := gsub("NANA", "", SGPPreviousTestCodeState1Prior)]
 State_LONG_Data[, SGPPreviousTestCodeState2Prior := gsub("NANA", "", SGPPreviousTestCodeState2Prior)]
 # table(State_LONG_Data[, SGPPreviousTestCodeState1Prior, SGPPreviousTestCodeState])
-
-# State_LONG_Data[, CONTENT_AREA_1PRIOR := NULL]
-# State_LONG_Data[, CONTENT_AREA_2PRIOR := NULL]
-# State_LONG_Data[, GRADE_1PRIOR := NULL]
-# State_LONG_Data[, GRADE_2PRIOR := NULL]
 
 ###    Split SGP_NORM_GROUP_SCALE_SCORES to create 'SGPIRTThetaPARCC*' Variables
 State.score.split <- strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP_SCALE_SCORES), "; ")
@@ -173,11 +167,6 @@ PARCC_LONG_Data[, SGPPreviousTestCodePARCC1Prior := gsub("NANA", "", SGPPrevious
 PARCC_LONG_Data[, SGPPreviousTestCodePARCC2Prior := gsub("NANA", "", SGPPreviousTestCodePARCC2Prior)]
 # table(PARCC_LONG_Data[, SGPPreviousTestCodePARCC2Prior, SGPPreviousTestCodePARCC])
 
-# PARCC_LONG_Data[, CONTENT_AREA_1PRIOR := NULL]
-# PARCC_LONG_Data[, CONTENT_AREA_2PRIOR := NULL]
-# PARCC_LONG_Data[, GRADE_1PRIOR := NULL]
-# PARCC_LONG_Data[, GRADE_2PRIOR := NULL]
-
 ###    Split SGP_NORM_GROUP_SCALE_SCORES to create 'SGPIRTThetaPARCC*' Variables
 PARCC.score.split <- strsplit(as.character(PARCC_LONG_Data$SGP_NORM_GROUP_SCALE_SCORES), "; ")
 PARCC_LONG_Data[, SGPIRTThetaPARCC1Prior := as.numeric(sapply(PARCC.score.split, function(x) rev(x)[2]))]
@@ -200,30 +189,42 @@ PARCC_LONG_Data <- PARCC_LONG_Data[, names(PARCC_LONG_Data)[names(PARCC_LONG_Dat
 
 FINAL_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
 
-###  Fix EXACT_DUPLICATEs
+###  Fix EXACT_DUPLICATEs  (None in Spring 2018)
 FINAL_LONG_Data[EXACT_DUPLICATE==2, (center.var.names) := FINAL_LONG_Data[EXACT_DUPLICATE==1, center.var.names, with=FALSE]]
 FINAL_LONG_Data[, EXACT_DUPLICATE := NULL]
 
-###  Coordinate missing SGP notes for small N states and set remaining missings as character "NA" (currently logical NA)
+###  Coordinate missing SGP notes for small N states
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
 
-###  Fix remaining Dups issue
-FINAL_LONG_Data[PARCCStudentIdentifier=='5b0e7310-a3a0-4a6f-9de6-6f7ba1b4e7e1' & TestCode=="ALG02", StudentGrowthPercentileComparedtoPARCC := "<1000"] # Duplicate cases don't get SGP_NOTE merged in with combineSGP
-FINAL_LONG_Data[PARCCStudentIdentifier=='5b0e7310-a3a0-4a6f-9de6-6f7ba1b4e7e1' & TestCode=="ALG02", StudentGrowthPercentileComparedtoState := "<1000"]
 
 ###  Make sure no exact duplicates remain.
 setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode, SummativeScaleScore)
 setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode)
 table(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data))) # Should be FALSE
 findups <- FINAL_LONG_Data[c(which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))-1, which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))),]
-dim(findups) # Should be 0 rows!
+nrow(findups) # Should be 0 rows!
 
 setcolorder(FINAL_LONG_Data, head(all.var.names, -1))
 
+###   Final data QC checks
 FINAL_LONG_Data[, as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="TestCode"]
+table(FINAL_LONG_Data[, TestCode, SGPPreviousTestCodePARCC1Prior])
+table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", StateAbbreviation])
+FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="StateAbbreviation"]
+tbl <- FINAL_LONG_Data[grep("ELA04|ELA05|ELA06|ELA07|ELA08", TestCode), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), by=c("StateAbbreviation", "TestCode")]
+tbl[StateAbbreviation=="MD"]
+
+summary(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", as.numeric(StudentGrowthPercentileComparedtoPARCC)])
+table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", StateAbbreviation]) # No DC students!
+
+summary(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09", as.numeric(StudentGrowthPercentileComparedtoPARCC)])
+table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09", StateAbbreviation])
+FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09" & StateAbbreviation %in% c("MD", "NJ", "NM"), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="StateAbbreviation"]
+#  MD still has a high average
+
 
 ###
 ###  Save R object and Export/zip State specific .csv files
@@ -233,11 +234,14 @@ save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2017_2018.2
 
 ####  Loop on State Abbreviation to write out each state file in format that it was recieved and return requested
 tmp.wd <- getwd()
-for (abv in unique(FINAL_LONG_Data$StateAbbreviation)) {
-  if (abv=="BI") tmp.state <- "Bureau Indian Affairs" else tmp.state <- SGP:::getStateAbbreviation(abv, type="state")
+for (abv in c("DD", "DC", "BI")) { # unique(FINAL_LONG_Data$StateAbbreviation)) {
+  # if (abv=="BI") tmp.state <- "Bureau Indian Affairs" else
+  if (abv!="DD") {
+  tmp.state <- SGP:::getStateAbbreviation(abv, type="state")
 	fname <- paste0("PARCC_", abv, "_2017-2018_Spring_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
   setwd(paste0("./",  gsub(" ", "_", capwords(tmp.state, special.words="DC")), "/Data/Pearson"))
   fwrite(FINAL_LONG_Data[StateAbbreviation == abv], fname) #, col.names = FALSE
   zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mq") # -mq doesn't leave a csv copy.
   setwd(tmp.wd)
+  }
 }
