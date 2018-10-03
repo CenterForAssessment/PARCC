@@ -124,3 +124,20 @@ visualizeSGP(
 	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")
+
+
+###
+###   Remove DC Geometry results with ALGEBRA_I Prior.  9/18/18 Email from Kathy J.
+Washington_DC_SGP@Data[which(YEAR=="2017_2018.2"), grep("SGP", names(Washington_DC_SGP@Data), value=TRUE) := NA]
+
+dc.ids <- Washington_DC_SGP@Data[TestCode == "GEO01" & StateAbbreviation=="DC" & YEAR=="2017_2018.2", ID]
+Washington_DC_SGP@SGP$SGPercentiles$GEOMETRY.2017_2018.2 <- Washington_DC_SGP@SGP$SGPercentiles$GEOMETRY.2017_2018.2[-which(ID %in% dc.ids & grepl("/ALGEBRA_I_EOCT; 2017_2018.2/GEOMETRY_EOCT", SGP_NORM_GROUP)),]
+Washington_DC_SGP@SGP$SGPercentiles$GEOMETRY_SS.2017_2018.2 <- Washington_DC_SGP@SGP$SGPercentiles$GEOMETRY_SS.2017_2018.2[-which(ID %in% dc.ids & grepl("/ALGEBRA_I_SS_EOCT; 2017_2018.2/GEOMETRY_SS_EOCT", SGP_NORM_GROUP)),]
+
+Washington_DC_SGP <- combineSGP(Washington_DC_SGP)
+table(Washington_DC_SGP@Data[YEAR=="2017_2018.2", CONTENT_AREA, SGP_TARGET_3_YEAR_CONTENT_AREA])
+table(Washington_DC_SGP@Data[YEAR=="2017_2018.2" & TestCode=="GEO01", as.character(SGP_NORM_GROUP)])
+table(Washington_DC_SGP@Data[YEAR=="2017_2018.2" & TestCode=="GEO01" & StateAbbreviation=="DC", as.character(SGP_NORM_GROUP)])
+
+outputSGP(Washington_DC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputSGP.directory="Data/Archive/2017_2018.2")
+save(Washington_DC_SGP, file="./Data/Archive/2017_2018.2/Washington_DC_SGP.Rdata")

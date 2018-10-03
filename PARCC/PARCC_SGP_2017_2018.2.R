@@ -114,6 +114,24 @@ outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputS
 save(PARCC_SGP, file="./Data/Archive/2017_2018.2/PARCC_SGP.Rdata")
 
 
+
+###
+###   Remove DC Geometry results with ALGEBRA_I Prior.  9/18/18 Email from Kathy J.
+PARCC_SGP@Data[which(YEAR=="2017_2018.2"), grep("SGP", names(PARCC_SGP@Data), value=TRUE) := NA]
+
+dc.ids <- PARCC_SGP@Data[TestCode == "GEO01" & StateAbbreviation=="DC" & YEAR=="2017_2018.2", ID]
+PARCC_SGP@SGP$SGPercentiles$GEOMETRY.2017_2018.2 <- PARCC_SGP@SGP$SGPercentiles$GEOMETRY.2017_2018.2[-which(ID %in% dc.ids & grepl("/ALGEBRA_I_EOCT; 2017_2018.2/GEOMETRY_EOCT", SGP_NORM_GROUP)),]
+PARCC_SGP@SGP$SGPercentiles$GEOMETRY_SS.2017_2018.2 <- PARCC_SGP@SGP$SGPercentiles$GEOMETRY_SS.2017_2018.2[-which(ID %in% dc.ids & grepl("/ALGEBRA_I_SS_EOCT; 2017_2018.2/GEOMETRY_SS_EOCT", SGP_NORM_GROUP)),]
+
+PARCC_SGP <- combineSGP(PARCC_SGP)
+table(PARCC_SGP@Data[YEAR=="2017_2018.2" & StateAbbreviation=="DC", CONTENT_AREA, SGP_TARGET_3_YEAR_CONTENT_AREA])
+table(PARCC_SGP@Data[YEAR=="2017_2018.2" & TestCode=="GEO01", as.character(SGP_NORM_GROUP)])
+table(PARCC_SGP@Data[YEAR=="2017_2018.2" & TestCode=="GEO01" & StateAbbreviation=="DC", as.character(SGP_NORM_GROUP)])
+
+outputSGP(PARCC_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"), outputSGP.directory="Data/Archive/2017_2018.2")
+save(PARCC_SGP, file="./Data/Archive/2017_2018.2/PARCC_SGP.Rdata")
+
+
 ### visualizeSGP - faster without SNOW/SNOW_TEST
 
 visualizeSGP(
