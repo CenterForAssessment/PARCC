@@ -1,3 +1,4 @@
+
 .DS_Store
 .Rhistory
 .Rdata
@@ -5,3 +6,7 @@
 SGP_Reports/PARCC/2016/_drafts
 SGP_Reports/PARCC/2016/_cache
 SGP_Reports/Logs
+SGP_Reports/PARCC/2017/_cache
+SGP_Reports/PARCC/2018/_cache
+SGP_Reports/PARCC/2017/_drafts
+SGP_Reports/PARCC/2018/_drafts

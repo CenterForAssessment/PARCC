@@ -1,0 +1,2996 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<title></title>
+
+
+
+
+
+<link href="data:text/css;charset=utf-8,%0A%23document%20%7B%0Acounter%2Dreset%3A%20figure%200%20section%200%3B%0A%7D%0A%0A%2Econtent%2Dnode%2Eimage%2C%0A%2Econtent%2Dnode%2Eresource%20%7B%0Acounter%2Dincrement%3A%20figure%3B%0A%7D%0A%2Econtent%2Dnode%20%2Ecaption%20%7B%0Amargin%3A%200px%2080px%3B%0Apadding%3A%2015px%200%3B%0Atext%2Dalign%3Ajustify%3B%0Atext%2Dindent%3A%200px%3B%0Amargin%2Dbottom%3A%2025px%3B%0A%7D%0A%2Ecaption%20%3E%20p%20%7B%0A%7D%0A%2Econtent%2Dnode%20%2Ecaption%2Eempty%20%7B%0Adisplay%3A%20none%3B%0A%7D%0A%0A%2Econtent%2Dnode%2Eimage%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%2Ebreakbefore%20%7B%0Apage%2Dbreak%2Dbefore%3A%20always%3B%0A%7D%0A%2Ebreakafter%20%7B%0Apage%2Dbreak%2Dafter%3A%20always%3B%0A%7D%0A%2Ebreakboth%20%7B%0Apage%2Dbreak%2Dbefore%3A%20always%3B%0Apage%2Dbreak%2Dafter%3A%20always%3B%0A%7D%0A%2Eimage%2Dcontent%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Aposition%3A%20relative%3B%0Atext%2Dalign%3A%20center%3B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0A%7D%0A%0A%2Eimage%2Dcontent%20img%2C%20%2Eimage%2Dcontent%20div%20%7B%0Amargin%3A%200%3B%0Amax%2Dwidth%3A%20650px%3B%0Amin%2Dwidth%3A%20150px%3B%0Amin%2Dheight%3A%20150px%3B%0Adisplay%3A%20block%3B%0Apadding%3A%205px%205px%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%2Eimage%2Dcontent%2Eplaceholder%20%2Eimage%2Dfile%20%7B%0Abottom%3A%2030px%3B%0A%7D%0A%2Efigure%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Aposition%3A%20relative%3B%0Atext%2Dalign%3A%20center%3B%0Apadding%3A%200%3B%0Amargin%3A%2010px%3B%0A%7D%0A%2Efigure%20img%20%7B%0Amargin%3A%200px%20100px%3B%0Amax%2Dwidth%3A%20650px%3B%0Amin%2Dwidth%3A%20200px%3B%0Amin%2Dheight%3A%20150px%3B%0Adisplay%3A%20block%3B%0Apadding%3A%205px%205px%3B%0Atext%2Dalign%3A%20center%3B%0Afloat%3A%20center%3B%0A%7D%0A%23document%20%2Eresource%2Durl%2Darea%20%2Eurl%2Dlabel%20%7B%0Acolor%3A%20%23555%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%2010px%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%23document%20%2Eresource%2Durl%2Darea%20%7B%0Aposition%3A%20absolute%3B%0Atop%3A%200px%3B%0Abottom%3A%200px%3B%0Aright%3A%200px%3B%0Aleft%3A%200px%3B%0Apadding%3A%2020px%3B%0Aborder%3A%202px%20dashed%20%23aaa%3B%0A%2Dwebkit%2Dborder%2Dradius%3A%2010px%3B%0A%2Dmoz%2Dborder%2Dradius%3A%2010px%3B%0Aborder%2Dradius%3A%2010px%3B%0A%7D%0A%2Econtent%2Dnode%2Eresource%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%2Econtent%2Dnode%2Eresource%20img%20%7B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0Amax%2Dwidth%3A%20650px%3B%0Adisplay%3A%20block%3B%0Apadding%3A%205px%200%3B%0A%7D%0A%2Econtent%2Dnode%2Esection%20%7B%0Amargin%2Dbottom%3A%2010px%3B%0A%7D%0A%23document%20h1%20%7B%0Apage%2Dbreak%2Dbefore%3A%20always%3B%0Acounter%2Dreset%3A%20sub%2Dsection%3B%0Afont%2Dsize%3A%2024px%3B%0Aborder%2Dtop%3Anone%3B%0Aborder%2Dbottom%3Anone%3B%0Atext%2Dtransform%3Anone%3B%0Apadding%2Dtop%3A%20175px%3B%0A%7D%0A%23document%20h2%20%7B%0Acounter%2Dreset%3A%20composite%3B%0Aborder%2Dtop%3Anone%3B%0Aborder%2Dbottom%3Anone%3B%0Atext%2Dtransform%3Anone%3B%0A%7D%0A%23document%20%2Eheader%2Dsection%2Dnumber%20%7B%0Afont%2Dweight%3A%20bold%3B%0Amargin%2Dright%3A%2020px%3B%0A%7D%0A%0A%23document%20h1%2C%0A%23document%20h2%2C%0A%23document%20h3%2C%0A%23document%20h4%20%7B%0Afont%2Dweight%3A%20normal%3B%0Amargin%3A%20%2D100px%20100px%200%20100px%3B%0Apadding%2Dtop%3A%20125px%3B%0Apadding%2Dbottom%3A%2010px%3B%0Aline%2Dheight%3A%201%2E6em%3B%0Acolor%3A%20black%3B%0A%7D%0A%23document%20h5%2C%0A%23document%20h6%20%7B%0Afont%2Dweight%3A%20normal%3B%0Amargin%3A%20%2D100px%20100px%200%20100px%3B%0Apadding%2Dtop%3A%20110px%3B%0Apadding%2Dbottom%3A%2010px%3B%0Aline%2Dheight%3A%201%2E6em%3B%0Acolor%3A%20black%3B%0A%7D%0A%0A%23document%20h1%20a%2C%0A%23document%20h2%20a%2C%0A%23document%20h3%20a%2C%0A%23document%20h4%20a%20%7B%0Amargin%3A%20%2D100px%20100px%200%20100px%3B%0Apadding%3A%20100px%200px%200px%200px%3B%0Aline%2Dheight%3A%201%2E6em%3B%0A%7D%0A%23document%20h2%20%7B%0Afont%2Dsize%3A%2020px%3B%0A%7D%0A%23document%20h3%20%7B%0Afont%2Dsize%3A%2018px%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%23document%20%2Econtent%2Dnode%2Etext%20%2Econtent%20%7B%0Apadding%3A%2010px%200%3B%0A%7D%0A%2Econtent%2Dnode%2Esection%20%3E%20p%2C%20ol%20%7B%0Amargin%3A%200%20100px%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Monaco%2C%20Consolas%2C%20%22Lucida%20Console%22%2C%20monospace%3B%0Afont%2Dsize%3A%2012px%3B%0Apadding%3A%200px%203px%3B%0Abackground%3A%20white%3B%0Aborder%3A%201px%20solid%20%23DDD%3B%0Azoom%3A%201%3B%0A%7D%0A%23document%20strong%2C%0A%23document%20b%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%23document%20em%2C%0A%23document%20i%20%7B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%23document%20p%20%7B%0Amargin%3A%200px%20100px%205px%3B%0Amin%2Dheight%3A%2022px%3B%0Atext%2Dindent%3A35px%3B%0A%7D%0A%23document%20code%20%7B%0Atext%2Dindent%3A%200px%3B%0A%7D%0A%23document%20ol%20%7B%0Apadding%2Dleft%3A%2020px%3B%0Amargin%2Dbottom%3A%2010px%3B%0Amargin%2Dleft%3A%20100px%3B%0Amargin%2Dright%3A%2090px%3B%0Amin%2Dheight%3A%2022px%3B%0A%7D%0A%23document%20ul%2C%20li%20%7B%0Apadding%2Dleft%3A%2020px%3B%0Amargin%2Dtop%3A%2020px%3B%0Amargin%2Dbottom%3A%2010px%3B%0Amargin%2Dleft%3A%20100px%3B%0Amargin%2Dright%3A%2090px%3B%0Amin%2Dheight%3A%2022px%3B%0Amin%2Dwidth%3A%20300px%3B%0A%7D%0A%0A%23document%20ul%20ul%20%7B%0Amargin%3A%200px%200px%2020px%2020px%3B%0Atext%2Dindent%3A%20%2D20px%3B%0Amin%2Dheight%3A%2022px%3B%0A%2Dmoz%2Dpadding%2Dstart%3A%200px%3B%0A%2Dwebkit%2Dpadding%2Dstart%3A%200px%3B%0Alist%2Dstyle%2Dposition%3A%20inside%3B%0A%7D%0A%23document%20p%20%2B%20ul%2C%20ol%20%7B%0Amargin%2Dtop%3A%2015px%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%200%2010px%200%3B%0Atext%2Dalign%3Ajustify%3B%0A%7D%0Ap%2Einfo%20%7B%0Afont%2Dstyle%3A%20italic%3B%0Acolor%3A%20rgba%280%2C%200%2C%200%2C%200%2E7%29%3B%0A%7D%0Ah1%2C%0Ah2%2C%0Ah3%2C%0Ah4%2C%0Ah5%2C%0Ah6%20%7B%0Apadding%3A%2010px%200%205px%200%3B%0A%7D%0Ah3%2C%0Ah4%2C%0Ah5%2C%0Ah6%20%7B%0Apadding%2Dtop%3A%2020px%3B%0A%7D%0Ah2%20%7B%0Afont%2Dsize%3A%20160%25%3B%0Apadding%2Dbottom%3A%2015px%3B%0A%7D%0A%0A%0A%2Econtent%2Dnode%2Edocument%20%2Edocument%2Dtitle%20%7B%0Afont%2Dsize%3A%2030px%3B%0Aline%2Dheight%3A%2040px%3B%0Apadding%2Dtop%3A%20100px%3B%0Atext%2Dalign%3A%20center%3B%0Amargin%3A%20100px%20100px%2010px%20100px%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%2Edocument%2Dsubtitle%20%7B%0Afont%2Dsize%3A%2025px%3B%0Afont%2Dstyle%3A%20italic%3B%0Aline%2Dheight%3A%2030px%3B%0Atext%2Dalign%3A%20center%3B%0Amargin%3A%2020px%20100px%2050px%20100px%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%2Eauthors%20%7B%0Afont%2Dsize%3A%2018px%3B%0Aline%2Dheight%3A%2030px%3B%0Atext%2Dalign%3A%20center%3B%0Amargin%2Dtop%3A%2050px%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%2Eauthor%5Fafil%20%7B%0Afont%2Dsize%3A%2016px%3B%0Afont%2Dstyle%3A%20italic%3B%0Aline%2Dheight%3A%2030px%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%2Eauthor%5Femail%20%7B%0Afont%2Dsize%3A%2016px%3B%0Aline%2Dheight%3A%2030px%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%2Epublished%20%7B%0Afont%2Dsize%3A%2018px%3B%0Atext%2Dalign%3A%20center%3B%0Atext%2Dindent%3A%200px%3B%0Apadding%2Dtop%3A%2050px%3B%0Apadding%2Dbottom%3A%2050px%3B%0A%7D%0A%2Econtent%2Dnode%2Edocument%20%23document%5Flead%20%7B%0Afont%2Dsize%3A%2018px%3B%0Aline%2Dheight%3A%201%2E2%3B%0Afont%2Dstyle%3A%20italic%3B%0Amargin%2Dtop%3A%2050px%3B%0Atext%2Dalign%3A%20center%3B%0Amargin%2Dbottom%3A%20150px%3B%0Acolor%3A%20%23999%3B%0Apadding%3A%200%2025px%200%2025px%3B%0A%7D%0Ahr%20%7B%0Adisplay%3Anone%0A%7D%0A%0A%23document%20%2Ereferences%20p%20%7B%0Amargin%3A%200%20100px%3B%0Atext%2Dalign%3Ajustify%3B%0Amin%2Dheight%3A%2022px%3B%0Apadding%2Dbottom%3A%2015px%3B%0Apadding%2Dleft%3A%2035px%20%3B%0Atext%2Dindent%3A%20%2D35px%20%3B%0A%7D%0A%2Efootnotes%20ol%3Abefore%20%7B%0Acontent%3A%20%22Footnotes%22%3B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2024px%20%3B%0Afont%2Dfamily%3A%20%27Palatino%20Linotype%27%2C%20%27Book%20Antiqua%27%2C%20Palatino%2C%20FreeSerif%2C%20serif%3B%0Aline%2Dheight%3A%203em%3B%0A%7D%0A%23document%20%23document%5Flens%20%7B%0Adisplay%3Anone%3B%0A%7D%0A%2Efooter%7B%0Adisplay%3Anone%3B%0A%7D%0A%2Eui%2Dfont%20%7B%0Afont%2Dfamily%3A%20%22Helvetica%20Neue%22%2C%20Arial%2C%20Helvetica%2C%20Geneva%2C%20sans%2Dserif%3B%0Acolor%3A%20%23111%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0A%7D%0A%2Edocument%2Dfont%20%7B%0Afont%2Dfamily%3A%20%27Palatino%20Linotype%27%2C%20%27Book%20Antiqua%27%2C%20Palatino%2C%20FreeSerif%2C%20serif%3B%0Afont%2Dweight%3A%20lighter%3B%0Afont%2Dstyle%3A%20normal%3B%0A%7D%0Ahtml%2C%0Abody%2C%0Adiv%2C%0Aspan%2C%0Aapplet%2C%0Aobject%2C%0Aiframe%2C%0Ah1%2C%0Ah2%2C%0Ah3%2C%0Ah4%2C%0Ah5%2C%0Ah6%2C%0Ap%2C%0Ablockquote%2C%0Apre%2C%0Aa%2C%0Aabbr%2C%0Aacronym%2C%0Aaddress%2C%0Abig%2C%0Acite%2C%0Acode%2C%0Adel%2C%0Adfn%2C%0Aem%2C%0Afont%2C%0Aimg%2C%0Ains%2C%0Akbd%2C%0Aq%2C%0As%2C%0Asamp%2C%0Asmall%2C%0Astrike%2C%0Astrong%2C%0Att%2C%0Avar%2C%0Adl%2C%0Adt%2C%0Add%2C%0Aol%2C%0Aul%2C%0Ali%2C%0Afieldset%2C%0Aform%2C%0Alabel%2C%0Alegend%2C%0Atable%2C%0Acaption%2C%0Atbody%2C%0Atfoot%2C%0Athead%20%7B%0Amargin%3A%200%3B%0Apadding%3A%200%3B%0Aborder%3A%200%3B%0Aoutline%3A%200%3B%0Afont%2Dweight%3A%20inherit%3B%0Afont%2Dstyle%3A%20inherit%3B%0Afont%2Dsize%3A%20100%25%3B%0Afont%2Dfamily%3A%20inherit%3B%0Atext%2Dalign%3Ajustify%3B%0Avertical%2Dalign%3A%20baseline%3B%0A%7D%0A%3Afocus%20%7B%0Aoutline%3A%200%3B%0A%7D%0A%0Atable%7B%0Amargin%2Dleft%3A100px%3B%0Amargin%2Dright%3Aauto%3B%0Amargin%2Dtop%3A%2020px%3B%0Amargin%2Dbottom%3A%2020px%3B%0Aborder%2Dcollapse%3A%20separate%3B%0Aborder%2Dspacing%3A%200%3B%0Amin%2Dwidth%3A%20300px%3B%0Amax%2Dwidth%3A%20650px%3B%0Aline%2Dheight%3A%201%2E6em%3B%0A%7D%0A%2Efootnotes%20%7B%0Amargin%2Dtop%3A%203em%3B%0A%7D%0A%23document%20%2Efootnotes%20p%20%7B%0Amargin%2Dleft%3A%200px%3B%0A%7D%0Abody%20%7B%0Aline%2Dheight%3A%201%3B%0Acolor%3A%20black%3B%0Abackground%3A%20white%3B%0A%7D%0Aol%2C%20ul%20%7B%0Aline%2Dheight%3A%201%2E6em%3B%0A%7D%0Acaption%2C%0Ath%2C%0Atd%20%7B%0Afont%2Dweight%3A%20normal%3B%0Apadding%2Dleft%3A%207px%3B%0Apadding%2Dright%3A%207px%3B%0Apadding%2Dtop%3A%204px%3B%0A%7D%0Ath%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Ath%20%3E%20img%20%7B%0Amax%2Dwidth%3A%20320px%3B%0Afloat%3A%20left%3B%0A%7D%0Atd%20%3E%20img%20%7B%0Amax%2Dwidth%3A%20320px%3B%0Afloat%3A%20left%3B%0A%7D%0Ah5%20%2B%20p%20%3E%20img%20%7B%0Amax%2Dwidth%3A%20650px%3B%0Adisplay%3A%20block%3B%0Apadding%2Dleft%3A%2010px%3B%0Apadding%2Dbottom%3A%2050px%3B%0A%7D%0Ah6%20%2B%20p%20%3E%20img%20%7B%0Amax%2Dwidth%3A%20320px%3B%0Afloat%3A%20left%3B%0Adisplay%3A%20block%3B%0Apadding%2Dleft%3A%2010px%3B%0A%7D%0Acaption%20%7B%0Awidth%3A%20275%25%3B%0Amax%2Dwidth%3A%20650px%3B%0Apadding%2Dbottom%3A%2010px%3B%0Apadding%2Dleft%3A%2065px%20%3B%0Atext%2Dindent%3A%20%2D65px%20%3B%0A%7D%0Ablockquote%3Abefore%2C%0Ablockquote%3Aafter%2C%0Aq%3Abefore%2C%0Aq%3Aafter%20%7B%0Acontent%3A%20%22%22%3B%0A%7D%0Ablockquote%2C%0Aq%20%7B%0Aquotes%3A%20%22%22%20%22%22%3B%0A%7D%0A%0A%2A%20%7B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0A%2Dwebkit%2Dbox%2Dsizing%3A%20border%2Dbox%3B%0A%2Dmoz%2Dbox%2Dsizing%3A%20border%2Dbox%3B%0A%7D%0A%2Eclear%20%7B%0Aclear%3A%20both%3B%0A%7D%0A%2Ehidden%20%7B%0Adisplay%3A%20none%3B%0A%7D%0A%2Einvisible%20%7B%0Aopacity%3A%200%3B%0A%7D%0A%2Eright%20%7B%0Afloat%3A%20right%3B%0A%7D%0A%2Eleft%20%7B%0Afloat%3A%20left%3B%0A%7D%0A%2Enobr%20%7B%0Awhite%2Dspace%3A%20nowrap%3B%0A%7D%0A%2Eright%2Dalign%20%7B%0Atext%2Dalign%3A%20right%3B%0A%7D%0A%2Eserif%20%7B%0Afont%2Dfamily%3A%20%27Palatino%20Linotype%27%2C%20%27Book%20Antiqua%27%2C%20Palatino%2C%20FreeSerif%2C%20serif%3B%0Afont%2Dweight%3A%20lighter%3B%0Afont%2Dstyle%3A%20normal%3B%0A%7D%0A%2Eitalic%20%7B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ahtml%20%7B%0Amargin%3A%200%3B%0Apadding%3A%200%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0A%7D%0Aimg%20%7B%0Aborder%3A%20none%3B%0A%7D%0Abody%20%7B%0Afont%2Dfamily%3A%20%22Helvetica%20Neue%22%2C%20Arial%2C%20Helvetica%2C%20Geneva%2C%20sans%2Dserif%3B%0Acolor%3A%20%23111%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0Afont%2Dsize%3A%2014px%3B%0Amargin%3A%200%3B%0Apadding%3A%200%3B%0Abackground%3A%20%23F0F1EB%3B%0Acolor%3A%20%23444%3B%0Aline%2Dheight%3A%201%2E5em%3B%0A%7D%0Aa%20%7B%0Atext%2Ddecoration%3A%20none%3B%0Acolor%3A%20%230000CD%3B%0Apadding%3A%200%200%201px%200%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%23000%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23999%3B%0A%7D%0Ahr%2Eseparator%20%7B%0Adisplay%3A%20block%3B%0Aheight%3A%201px%3B%0Abackground%3A%20%23c1c1c1%3B%0Aborder%3A%200%3B%0Amargin%3A%200px%3B%0A%7D%0Ahr%2Eseparator%2Enomargin%20%7B%0Amargin%3A%200px%3B%0A%7D%0A%2Eborder%20%7B%0Aborder%2Dtop%3A%201px%20solid%20red%3B%0Aborder%2Dbottom%3A%201px%20solid%20green%3B%0Amargin%2Dbottom%3A%2015px%3B%0A%7D%0A%0Ali%20%7B%0A%2Dwebkit%2Dtransition%3A%20background%2C%20background%2Dcolor%2C%20border%2Dcolor%2C%20color%2C%20opacity%200%2E35s%20linear%3B%0A%7D%0Aa%20%7B%0A%2Dwebkit%2Dtransition%3A%20background%2C%20background%2Dcolor%2C%20border%2Dcolor%2C%20color%2C%20opacity%200%2E35s%20linear%3B%0A%7D%0Alabel%20%7B%0A%2Dwebkit%2Dtransition%3A%20background%2C%20background%2Dcolor%2C%20border%2Dcolor%2C%20color%2C%20opacity%200%2E35s%20linear%3B%0A%7D%0Ainput%20%7B%0A%2Dwebkit%2Dtransition%3A%20background%2C%20background%2Dcolor%2C%20border%2Dcolor%2C%20color%2C%20opacity%200%2E35s%20linear%3B%0A%7D%0Atextarea%20%7B%0A%2Dwebkit%2Dtransition%3A%20background%2C%20background%2Dcolor%2C%20border%2Dcolor%2C%20color%2C%20opacity%200%2E35s%20linear%3B%0A%7D%0Aimg%20%7B%0A%2Dwebkit%2Dtransition%3A%20opacity%200%2E35s%20linear%3B%0A%7D%0A%0A%23content%5Fwrapper%20%7B%0Aposition%3A%20relative%3B%0Amargin%3A%200%3B%0A%7D%0Ahtml%2C%0Abody%20%7B%0Aheight%3A%20100%25%3B%0A%7D%0Abody%20%7B%0Amin%2Dwidth%3A%201200px%3B%0A%7D%0A%23document%20%7B%0Afont%2Dfamily%3A%20%27Palatino%20Linotype%27%2C%20%27Book%20Antiqua%27%2C%20Palatino%2C%20FreeSerif%2C%20serif%3B%0Afont%2Dweight%3A%20lighter%3B%0Afont%2Dstyle%3A%20normal%3B%0Awidth%3A%20850px%3B%0Acolor%3A%20%23000%3B%0Aposition%3A%20relative%3B%0Amargin%3A%200%3B%0Amargin%2Dtop%3A%20100px%3B%0Amargin%2Dleft%3A%20320px%3B%0Apadding%3A%200px%200%200px%200%3B%0A%2Dwebkit%2Dbox%2Dshadow%3A%200px%201px%204px%20rgba%280%2C%200%2C%200%2C%200%2E35%29%2C%20inset%200px%200px%201px%20rgba%28255%2C%20255%2C%20255%2C%200%2E15%29%3B%0A%2Dmoz%2Dbox%2Dshadow%3A%200px%201px%204px%20rgba%280%2C%200%2C%200%2C%200%2E35%29%2C%20inset%200px%200px%201px%20rgba%28255%2C%20255%2C%20255%2C%200%2E15%29%3B%0Abox%2Dshadow%3A%200px%201px%204px%20rgba%280%2C%200%2C%200%2C%200%2E35%29%2C%20inset%200px%200px%201px%20rgba%28255%2C%20255%2C%20255%2C%200%2E15%29%3B%0Abackground%3A%20%23fff%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20subpixel%2Dantialiased%3B%0Afont%2Dsize%3A%2018px%3B%0Aline%2Dheight%3A%202em%3B%0A%7D%0A%23document%20%2Edocument%2Dseparator%20%7B%0Abackground%3A%20%23000%3B%0Awidth%3A%20300px%3B%0Aheight%3A%201px%3B%0Amargin%3A%2050px%20auto%3B%0A%7D%0A%0A%2Econtent%2Dfragment%20%7B%0Amargin%3A%200%20100px%3B%0A%7D%0Apre%20%7B%0Apadding%3A%202px%2010px%202px%2015px%3B%0Aborder%2Dleft%3A%204px%20solid%20%23BBB%3B%0Amargin%3A%2010px%20100px%3B%0A%7D%0A%0A%23TOC%20%7B%0Adisplay%3Ablock%3B%0A%2Dwebkit%2Dtransition%2Dproperty%3A%20top%3B%0A%2Dwebkit%2Dtransition%2Dduration%3A%200%2E6s%3B%0Aposition%3A%20fixed%3B%0Aoverflow%2Dx%3A%20scroll%3B%0Awidth%3A%20395px%3B%0Aleft%3A%20%2D75px%3B%0Atop%3A%20100px%3B%0Aheight%3A%20360px%3B%0Afont%2Dfamily%3A%20%22Helvetica%20Neue%22%2C%20Arial%2C%20Helvetica%2C%20Geneva%2C%20sans%2Dserif%3B%0Acolor%3A%20%23111%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2014px%3B%0A%7D%0A%23TOC%20%3E%20ul%20%7B%0Alist%2Dstyle%2Dtype%3A%20none%3B%0A%7D%0A%23TOC%20ul%20%3E%20li%20%7B%0Atext%2Dindent%3A%20%2D20px%3B%0Amargin%2Dleft%3A%2010px%3B%0Atext%2Dalign%3A%20left%3B%0A%7D%0A%23TOC%20%3E%20ul%20%3E%20li%20%3E%20ul%20%7B%0Amargin%2Dleft%3A%2010px%20%3B%0Amargin%2Dright%3A%2035px%20%3B%0Aline%2Dheight%3A%202em%3B%0Alist%2Dstyle%2Dtype%3A%20none%3B%0A%7D%0A%23TOC%20%3E%20ul%20a%20%7B%0Aborder%3A%20none%3B%0Acolor%3A%20%23939393%3B%0A%7D%0A%23TOC%20%3E%20ul%20a%3Ahover%20%7B%0Acolor%3A%20%23444%3B%0A%7D%0A%23TOC%20%3E%20ul%20%3E%20li%20%3E%20ul%20a%20%7B%0Aborder%3A%20none%3B%0Acolor%3A%20%23939393%3B%0A%7D%0A%23TOC%20%3E%20ul%20%3E%20li%20%3E%20ul%20a%3Ahover%20%7B%0Acolor%3A%20%23444%3B%0A%7D%0A%23TOC%20%3E%20p%20%7B%0Awhitespace%3A%20nowrap%3B%0Amargin%2Dleft%3A%2090px%20%3B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2016px%3B%0Acolor%3A%20%233a3a3a%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0A%23TOC%20%2Etoc%2Dsection%2Dnumber%20%7B%0Afont%2Dweight%3A%20bold%3B%0Amargin%2Dright%3A%205px%3B%0A%7D%0A%23document%20%2Esection%20%7B%0Aposition%3A%20relative%3B%0Amargin%3A%2010px%200%3B%0A%2Dwebkit%2Dtransition%3A%20min%2Dheight%200%2E5s%3B%0A%2Dmoz%2Dtransition%3A%20min%2Dheight%200%2E5s%3B%0A%7D%0A%2Esection%2Edocument%20%7B%0Amargin%3A%200%3B%0Apadding%2Dbottom%3A%2080px%3B%0A%7D%0A%0Ap%2Equestion%20%7B%0Afont%2Dsize%3A%2025px%3B%0Aline%2Dheight%3A%201%2E5em%3B%0Amargin%3A%200%20100px%200%20100px%3B%0Apadding%3A%2010px%200%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%2Esection%2Equote%20%3E%20p%20%7B%0Amargin%3A%200%20100px%3B%0Apadding%3A%2010px%200%3B%0A%7D%0Ablockquote%20%7B%0Adisplay%3A%20table%3B%0Amargin%3A%2010px%20140px%2010px%20140px%3B%0Afont%2Dsize%3A%201em%3B%0Aline%2Dheight%3A%201%2E3em%3B%0A%7D%0Ablockquote%20%3E%20div%20%7B%0Adisplay%3A%20table%2Drow%3B%0A%7D%0Ablockquote%20p%20%7B%0Amin%2Dwidth%3A%20200px%3B%0Adisplay%3A%20table%2Dcell%3B%0Apadding%3A%200%200%2010px%200%3B%0Afont%2Dsize%3A%201em%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0Ablockquote%20cite%2Equote%2Dauthor%20%7B%0Adisplay%3A%20table%2Dcell%3B%0Apadding%3A%2020px%200%200%3B%0Afont%2Dsize%3A%2011px%3B%0Atext%2Dalign%3A%20right%3B%0A%7D%0A%0Acode%2C%20pre%20%7B%0Afont%2Dfamily%3A%20Monaco%2C%20%22Bitstream%20Vera%20Sans%20Mono%22%2C%20%22Lucida%20Console%22%2C%20Terminal%2C%20monospace%3B%0Afont%2Dsize%3A12px%3B%0A%7D%0Apre%2C%20div%2Emeta%20%7B%0Apadding%3A%200px%203px%3B%0Abackground%3A%20%23FDFEFB%3B%0Aborder%2Dradius%3A%204px%3B%0Aborder%3A1px%20solid%20%23D7D8C8%3B%0Aoverflow%3A%20auto%3B%0Aoverflow%2Dy%3A%20hidden%3B%0Amargin%2Dbottom%3A%2012px%3B%0Aline%2Dheight%3A%201%2E5em%3B%0A%7D%0Ap%20code%2C%20li%20code%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Awhite%2Dspace%3A%20no%2Dwrap%3B%0Abackground%3A%20%23fff%3B%0Afont%2Dsize%3A%20%2E9em%3B%0Aline%2Dheight%3A%201%2E5em%3B%0Acolor%3A%20%23555%3B%0A%2Dmoz%2Dborder%2Dradius%3A%200%2E4em%3B%0A%2Dwebkit%2Dborder%2Dradius%3A%200%2E4em%3B%0A%2Do%2Dborder%2Dradius%3A%200%2E4em%3B%0A%2Dms%2Dborder%2Dradius%3A%200%2E4em%3B%0A%2Dkhtml%2Dborder%2Dradius%3A%200%2E4em%3B%0Apadding%3A%200px%203px%3B%0Amargin%3A%20%2D1px%200%3B%0A%7D%0A%2Eproper%2Dcode%20%7B%0Afont%2Dfamily%3A%20Monaco%2C%20Consolas%2C%20%22Lucida%20Console%22%2C%20monospace%3B%0Afont%2Dsize%3A%2012px%3B%0Apadding%3A%200px%203px%3B%0Abackground%3A%20white%3B%0Aborder%3A%201px%20solid%20%23DDD%3B%0A%7D%0A%2Efooter%7B%0Adisplay%3A%20block%3B%0Atext%2Dalign%3Acenter%3B%0Afont%2Dsize%3Asmall%3B%0Apadding%3A%2E5em%3B%0Amargin%2Dbottom%3A1em%3B%0A%7D%0A%2Esection%2Elevel1%20%3E%20p%2C%20ul%2C%20ol%20%7B%0Amargin%3A%200%20100px%3B%0A%7D%0A%2Esection%2Elevel2%20%3E%20p%2C%20ul%2C%20ol%20%7B%0Amargin%3A%200%20100px%3B%0A%7D%0A%2Esection%2Elevel3%20%3E%20p%2C%20ul%2C%20ol%20%7B%0Amargin%3A%200%20100px%3B%0A%7D%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+<div id="TOC" , class="TOC">
+<p>Table of Contents:</p>
+<ul>
+<li><a href="#mode-effects"><span class="toc-section-number">1</span> Mode Effects</a><ul>
+<li><a href="#spring-2017-results"><span class="toc-section-number">1.1</span> Spring 2017 Results</a></li>
+<li><a href="#comparison-of-2016-and-2017"><span class="toc-section-number">1.2</span> Comparison of 2016 and 2017</a></li>
+</ul></li>
+</ul>
+<!--
+<ul>
+<li></li>
+<li><a href="#references">References</a></li>
+<li></li>
+</ul>
+-->
+</div>
+
+<div id="document">
+
+
+<div class="content-node document selected">
+
+<div class="content">
+<div class="document-title">A Quick Investigation of Potential Mode Effects in PARCC Growth Analyses.</div>
+<div class="authors" id="authors">Adam R. VanIwaarden</div>
+<div class="authors" id="authors"><em>National Center for the Improvement<br /> of Educational Assessment (NCIEA)</em></div>
+<p class="published" style="text-indent: 0px;">July, 12 2017</p>
+</div>
+
+<div class="content-node section"><!--SGPreport-->
+<!-- 
+This document was written by Adam VanIwaarden for internal review by the NCIEA staff.
+
+    Original Draft:  July 11, 2017
+    Final Draft:     
+-->
+<div id="mode-effects" class="section level1">
+<h1><span class="header-section-number">1</span> Mode Effects</h1>
+<p>Differences in achievement and growth based on test format/administration (paper vs online) have been noted in previous years. The following provides descriptive statistics for the Spring 2016 and Spring 2017 test scores and growth analysis results.</p>
+<div id="spring-2017-results" class="section level2">
+<h2><span class="header-section-number">1.1</span> Spring 2017 Results</h2>
+<p>The following tables show the results by content area and grade, including both “standard” cohort referenced SGP and the Ranked SIMEX (measurement error corrected) SGPs</p>
+<!-- HTML_Start -->
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="10" style="text-align: left;">
+<strong>Table 1:</strong> Spring 2017 PARCC ELA Results by Grade.
+</td>
+</tr>
+<tr>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Ranked SIMEX
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Grade
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Test Mode
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median Ranked
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Ranked
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.72
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.73
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+352,574
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.42
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.47
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46,306
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+5
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.08
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.11
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+377,457
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48
+</td>
+<td style="text-align: right;">
+49.13
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.49
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13,938
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+6
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.07
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+366,579
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.51
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.52
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16,116
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+7
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.13
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.18
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+367,915
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.23
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.19
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+14,466
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+8
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.07
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+362,146
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46
+</td>
+<td style="text-align: right;">
+47.47
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+47
+</td>
+<td style="text-align: right;">
+47.78
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13,160
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+9
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.93
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.99
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+158,436
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+50.42
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+51.01
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+2,156
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+10
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.56
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.68
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+102,906
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+58
+</td>
+<td style="text-align: right;">
+54.85
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+60
+</td>
+<td style="text-align: right;">
+55.91
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+546
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+11
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.39
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.53
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+94,547
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+Paper
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+63
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+59.94
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+64
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+60.57
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+689
+</td>
+</tr>
+</tbody>
+</table>
+<!-- LaTeX_Start
+%latex.default(my_tbl, file = "", where = where, col.just = tex.align,     caption = tmp_caption, ...)%
+\begin{table}[H]
+\caption{**Table 1:** Spring 2017 PARCC ELA Results by Grade.\label{my}} 
+\begin{center}
+\begin{tabular}{rrcrrcrrcr}
+\hline\hline
+\multicolumn{2}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{2}{c}{\bfseries Standard SGP}&\multicolumn{1}{c}{\bfseries }&\multicolumn{2}{c}{\bfseries Ranked SIMEX}&\multicolumn{1}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }\tabularnewline
+\cline{1-10}
+\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median}&\multicolumn{1}{c}{Mean}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median Ranked}&\multicolumn{1}{c}{Mean Ranked}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{N}\tabularnewline
+\hline
+4&Online&&51&50.72&&51&50.73&&352,574\tabularnewline
+&Paper&&42&44.42&&42&44.47&&46,306\tabularnewline
+5&Online&&50&50.08&&50&50.11&&377,457\tabularnewline
+&Paper&&48&49.13&&49&49.49&&13,938\tabularnewline
+6&Online&&50&50.03&&50&50.07&&366,579\tabularnewline
+&Paper&&50&49.51&&50&49.52&&16,116\tabularnewline
+7&Online&&50&50.13&&50&50.18&&367,915\tabularnewline
+&Paper&&42&44.23&&42&44.19&&14,466\tabularnewline
+8&Online&&50&50.03&&50&50.07&&362,146\tabularnewline
+&Paper&&46&47.47&&47&47.78&&13,160\tabularnewline
+9&Online&&50&49.93&&50&49.99&&158,436\tabularnewline
+&Paper&&52&50.42&&52&51.01&&2,156\tabularnewline
+10&Online&&49&49.56&&50&49.68&&102,906\tabularnewline
+&Paper&&58&54.85&&60&55.91&&546\tabularnewline
+11&Online&&49&49.39&&49&49.53&&94,547\tabularnewline
+&Paper&&63&59.94&&64&60.57&&689\tabularnewline
+\hline
+\end{tabular}\end{center}
+\end{table}
+
+LaTeX_End -->
+<div id="section" class="section level4">
+<h4> </h4>
+<!-- HTML_Start -->
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="11" style="text-align: left;">
+<strong>Table 2:</strong> Spring 2017 PARCC Mathematics Results by Grade.
+</td>
+</tr>
+<tr>
+<th colspan="3" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Ranked SIMEX
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Content Area
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Grade
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Test Mode
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median Ranked
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Ranked
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">
+Mathematics
+</td>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+51.19
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+51.18
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+355,547
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+37
+</td>
+<td style="text-align: right;">
+40.96
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+37
+</td>
+<td style="text-align: right;">
+41.17
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+47,198
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+5
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.20
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.22
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+378,957
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+44
+</td>
+<td style="text-align: right;">
+45.71
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+45
+</td>
+<td style="text-align: right;">
+46.26
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+14,888
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+6
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.76
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.79
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+367,581
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+58
+</td>
+<td style="text-align: right;">
+55.59
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+58
+</td>
+<td style="text-align: right;">
+55.89
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16,303
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+7
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.07
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+356,687
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+48.68
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.00
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13,156
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+8
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.80
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.87
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+279,338
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+54.14
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+54.35
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+11,317
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Algebra I
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.06
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.09
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+207,020
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.58
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.11
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+4,746
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Geometry
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+51.03
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.59
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+119,557
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48
+</td>
+<td style="text-align: right;">
+48.10
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48
+</td>
+<td style="text-align: right;">
+48.19
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1,127
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Algebra II
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.38
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.52
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+92,194
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+Paper
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+61
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+57.52
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+60
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+57.16
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1,055
+</td>
+</tr>
+</tbody>
+</table>
+<!-- LaTeX_Start
+%latex.default(my_tbl, file = "", where = where, col.just = tex.align,     caption = tmp_caption, ...)%
+\begin{table}[H]
+\caption{**Table 2:** Spring 2017 PARCC Mathematics Results by Grade.\label{my}} 
+\begin{center}
+\begin{tabular}{rrrcrrcrrcr}
+\hline\hline
+\multicolumn{3}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{2}{c}{\bfseries Standard SGP}&\multicolumn{1}{c}{\bfseries }&\multicolumn{2}{c}{\bfseries Ranked SIMEX}&\multicolumn{1}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }\tabularnewline
+\cline{1-11}
+\multicolumn{1}{c}{Content Area}&\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median}&\multicolumn{1}{c}{Mean}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median Ranked}&\multicolumn{1}{c}{Mean Ranked}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{N}\tabularnewline
+\hline
+Mathematics&4&Online&&52&51.19&&52&51.18&&355,547\tabularnewline
+&&Paper&&37&40.96&&37&41.17&&47,198\tabularnewline
+&5&Online&&50&50.20&&50&50.22&&378,957\tabularnewline
+&&Paper&&44&45.71&&45&46.26&&14,888\tabularnewline
+&6&Online&&50&49.76&&50&49.79&&367,581\tabularnewline
+&&Paper&&58&55.59&&58&55.89&&16,303\tabularnewline
+&7&Online&&50&50.03&&50&50.07&&356,687\tabularnewline
+&&Paper&&49&48.68&&49&49.00&&13,156\tabularnewline
+&8&Online&&50&49.80&&50&49.87&&279,338\tabularnewline
+&&Paper&&57&54.14&&57&54.35&&11,317\tabularnewline
+Algebra I&&Online&&50&50.06&&50&50.09&&207,020\tabularnewline
+&&Paper&&50&49.58&&51&50.11&&4,746\tabularnewline
+Geometry&&Online&&51&51.03&&51&50.59&&119,557\tabularnewline
+&&Paper&&48&48.10&&48&48.19&&1,127\tabularnewline
+Algebra II&&Online&&49&49.38&&49&49.52&&92,194\tabularnewline
+&&Paper&&61&57.52&&60&57.16&&1,055\tabularnewline
+\hline
+\end{tabular}\end{center}
+\end{table}
+
+LaTeX_End -->
+</div>
+</div>
+<div id="comparison-of-2016-and-2017" class="section level2">
+<h2><span class="header-section-number">1.2</span> Comparison of 2016 and 2017</h2>
+<p>A side-by-side comparison of the two spring results mainly show consistent results between them with a few large differences (usually grade/subjects with small N size). There is also an interesting pattern of lower typical growth for paper test in the elementary grade subjects, mostly neutral or small positive and negative relationships in middle school grades and higher typical growth associated with paper tests in high school grades/subjects. Its an interesting generational trend…</p>
+<p>Spring 2016 analyses used only one prior, whereas 2017 used up to two priors for most configurations. Mean current and prior year scores (Theta estimates) are also provided for additional context.</p>
+<!-- HTML_Start -->
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="14" style="text-align: left;">
+<strong>Table 3:</strong> Spring 2016 and Spring 2017 PARCC ELA Results by Grade.
+</td>
+</tr>
+<tr>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP - 2016
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP - 2017
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Grade
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Test Mode
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median SGP 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean SGP 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score Prior 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N 16
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median SGP 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean SGP 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score Prior 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N 17
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.88
+</td>
+<td style="text-align: right;">
+0.07
+</td>
+<td style="text-align: right;">
+-0.02
+</td>
+<td style="text-align: right;">
+351,438
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.72
+</td>
+<td style="text-align: right;">
+0.07
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+352,574
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+44
+</td>
+<td style="text-align: right;">
+45.42
+</td>
+<td style="text-align: right;">
+0.02
+</td>
+<td style="text-align: right;">
+0.08
+</td>
+<td style="text-align: right;">
+67,426
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.42
+</td>
+<td style="text-align: right;">
+-0.11
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+46,306
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+5
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.65
+</td>
+<td style="text-align: right;">
+0.08
+</td>
+<td style="text-align: right;">
+-0.02
+</td>
+<td style="text-align: right;">
+378,582
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.08
+</td>
+<td style="text-align: right;">
+0.13
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+377,457
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+55
+</td>
+<td style="text-align: right;">
+53.62
+</td>
+<td style="text-align: right;">
+0.39
+</td>
+<td style="text-align: right;">
+0.22
+</td>
+<td style="text-align: right;">
+36,891
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48
+</td>
+<td style="text-align: right;">
+49.13
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+-0.15
+</td>
+<td style="text-align: right;">
+13,938
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+6
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.24
+</td>
+<td style="text-align: right;">
+0.08
+</td>
+<td style="text-align: right;">
+-0.02
+</td>
+<td style="text-align: right;">
+373,124
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style="text-align: right;">
+0.11
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+366,579
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+60
+</td>
+<td style="text-align: right;">
+57.07
+</td>
+<td style="text-align: right;">
+0.42
+</td>
+<td style="text-align: right;">
+0.16
+</td>
+<td style="text-align: right;">
+39,908
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.51
+</td>
+<td style="text-align: right;">
+0.10
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+16,116
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+7
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.04
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+364,943
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.13
+</td>
+<td style="text-align: right;">
+0.05
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+367,915
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.66
+</td>
+<td style="text-align: right;">
+0.23
+</td>
+<td style="text-align: right;">
+0.22
+</td>
+<td style="text-align: right;">
+41,218
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+44.23
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+0.05
+</td>
+<td style="text-align: right;">
+14,466
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+8
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.16
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+357,419
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+362,146
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+47
+</td>
+<td style="text-align: right;">
+48.48
+</td>
+<td style="text-align: right;">
+0.21
+</td>
+<td style="text-align: right;">
+0.24
+</td>
+<td style="text-align: right;">
+38,438
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46
+</td>
+<td style="text-align: right;">
+47.47
+</td>
+<td style="text-align: right;">
+-0.14
+</td>
+<td style="text-align: right;">
+-0.10
+</td>
+<td style="text-align: right;">
+13,160
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+9
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.95
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+220,822
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.93
+</td>
+<td style="text-align: right;">
+0.11
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+158,436
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.82
+</td>
+<td style="text-align: right;">
+0.22
+</td>
+<td style="text-align: right;">
+0.20
+</td>
+<td style="text-align: right;">
+12,093
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+50.42
+</td>
+<td style="text-align: right;">
+-0.22
+</td>
+<td style="text-align: right;">
+-0.32
+</td>
+<td style="text-align: right;">
+2,156
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+10
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.08
+</td>
+<td style="text-align: right;">
+0.02
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+102,968
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.56
+</td>
+<td style="text-align: right;">
+0.03
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+102,906
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+43
+</td>
+<td style="text-align: right;">
+45.11
+</td>
+<td style="text-align: right;">
+-0.25
+</td>
+<td style="text-align: right;">
+-0.14
+</td>
+<td style="text-align: right;">
+1,725
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+58
+</td>
+<td style="text-align: right;">
+54.85
+</td>
+<td style="text-align: right;">
+-0.44
+</td>
+<td style="text-align: right;">
+-0.59
+</td>
+<td style="text-align: right;">
+546
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+11
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.72
+</td>
+<td style="text-align: right;">
+0.05
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+83,982
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.39
+</td>
+<td style="text-align: right;">
+-0.05
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+94,547
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+Paper
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+64
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+59.98
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.47
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.16
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+2,276
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+63
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+59.94
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+-0.16
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+-0.41
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+689
+</td>
+</tr>
+</tbody>
+</table>
+<!-- LaTeX_Start
+%latex.default(my_tbl, file = "", where = where, col.just = tex.align,     caption = tmp_caption, ...)%
+\setlongtables\begin{longtable}{rrcrrrrrcrrrrr}\caption{**Table 3:** Spring 2016 and Spring 2017 PARCC ELA Results by Grade.} \tabularnewline
+\hline\hline
+\multicolumn{2}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2016}&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2017}\tabularnewline*
+\cline{1-14}
+\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 16}&\multicolumn{1}{c}{Mean SGP 16}&\multicolumn{1}{c}{Mean Score 16}&\multicolumn{1}{c}{Mean Score Prior 16}&\multicolumn{1}{c}{N 16}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 17}&\multicolumn{1}{c}{Mean SGP 17}&\multicolumn{1}{c}{Mean Score 17}&\multicolumn{1}{c}{Mean Score Prior 17}&\multicolumn{1}{c}{N 17}\tabularnewline
+\hline
+\endfirsthead\caption[]{\em (continued)} \tabularnewline*
+\hline
+\multicolumn{2}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2016}&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2017}\tabularnewline*
+\cline{1-14}
+\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 16}&\multicolumn{1}{c}{Mean SGP 16}&\multicolumn{1}{c}{Mean Score 16}&\multicolumn{1}{c}{Mean Score Prior 16}&\multicolumn{1}{c}{N 16}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 17}&\multicolumn{1}{c}{Mean SGP 17}&\multicolumn{1}{c}{Mean Score 17}&\multicolumn{1}{c}{Mean Score Prior 17}&\multicolumn{1}{c}{N 17}\tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\label{my}
+&&&&&&&&&&&&&\tabularnewline*
+4&Online&&51&50.88& 0.07&-0.02&351,438&&51&50.72& 0.07& 0.00&352,574\tabularnewline*
+&Paper&&44&45.42& 0.02& 0.08&67,426&&42&44.42&-0.11&-0.03&46,306\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+5&Online&&49&49.65& 0.08&-0.02&378,582&&50&50.08& 0.13& 0.01&377,457\tabularnewline*
+&Paper&&55&53.62& 0.39& 0.22&36,891&&48&49.13&-0.01&-0.15&13,938\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+6&Online&&49&49.24& 0.08&-0.02&373,124&&50&50.03& 0.11& 0.00&366,579\tabularnewline*
+&Paper&&60&57.07& 0.42& 0.16&39,908&&50&49.51& 0.10& 0.00&16,116\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+7&Online&&50&50.04& 0.00&-0.03&364,943&&50&50.13& 0.05& 0.00&367,915\tabularnewline*
+&Paper&&50&49.66& 0.23& 0.22&41,218&&42&44.23&-0.03& 0.05&14,466\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+8&Online&&50&50.16&-0.01&-0.03&357,419&&50&50.03&-0.01& 0.00&362,146\tabularnewline*
+&Paper&&47&48.48& 0.21& 0.24&38,438&&46&47.47&-0.14&-0.10&13,160\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+9&Online&&50&49.95& 0.01&-0.01&220,822&&50&49.93& 0.11& 0.00&158,436\tabularnewline*
+&Paper&&51&50.82& 0.22& 0.20&12,093&&52&50.42&-0.22&-0.32&2,156\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+10&Online&&50&50.08& 0.02& 0.00&102,968&&49&49.56& 0.03& 0.00&102,906\tabularnewline*
+&Paper&&43&45.11&-0.25&-0.14&1,725&&58&54.85&-0.44&-0.59&546\tabularnewline
+\hline
+&&&&&&&&&&&&&\tabularnewline*
+11&Online&&50&49.72& 0.05& 0.00&83,982&&49&49.39&-0.05& 0.00&94,547\tabularnewline*
+&Paper&&64&59.98& 0.47& 0.16&2,276&&63&59.94&-0.16&-0.41&689\tabularnewline
+\hline
+\end{longtable}
+
+LaTeX_End -->
+<div id="section-1" class="section level4">
+<h4> </h4>
+<!-- HTML_Start -->
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="15" style="text-align: left;">
+<strong>Table 4:</strong> Spring 2016 and Spring 2017 PARCC Mathematics Results by Grade.
+</td>
+</tr>
+<tr>
+<th colspan="3" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP - 2016
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Standard SGP - 2017
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Content Area
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Grade
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Test Mode
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median SGP 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean SGP 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score Prior 16
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N 16
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Median SGP 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean SGP 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+Mean Score Prior 17
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+N 17
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">
+Mathematics
+</td>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.79
+</td>
+<td style="text-align: right;">
+-0.10
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+353,687
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+51.19
+</td>
+<td style="text-align: right;">
+-0.09
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+355,547
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+44
+</td>
+<td style="text-align: right;">
+45.90
+</td>
+<td style="text-align: right;">
+-0.19
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+68,739
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+37
+</td>
+<td style="text-align: right;">
+40.96
+</td>
+<td style="text-align: right;">
+-0.40
+</td>
+<td style="text-align: right;">
+-0.08
+</td>
+<td style="text-align: right;">
+47,198
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+5
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+50.47
+</td>
+<td style="text-align: right;">
+-0.11
+</td>
+<td style="text-align: right;">
+-0.02
+</td>
+<td style="text-align: right;">
+379,232
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.20
+</td>
+<td style="text-align: right;">
+-0.15
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+378,957
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+43
+</td>
+<td style="text-align: right;">
+45.22
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+0.17
+</td>
+<td style="text-align: right;">
+38,119
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+44
+</td>
+<td style="text-align: right;">
+45.71
+</td>
+<td style="text-align: right;">
+-0.41
+</td>
+<td style="text-align: right;">
+-0.22
+</td>
+<td style="text-align: right;">
+14,888
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+6
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.84
+</td>
+<td style="text-align: right;">
+-0.11
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+374,900
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.76
+</td>
+<td style="text-align: right;">
+-0.15
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+367,581
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+52
+</td>
+<td style="text-align: right;">
+51.47
+</td>
+<td style="text-align: right;">
+0.06
+</td>
+<td style="text-align: right;">
+0.13
+</td>
+<td style="text-align: right;">
+39,601
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+58
+</td>
+<td style="text-align: right;">
+55.59
+</td>
+<td style="text-align: right;">
+-0.14
+</td>
+<td style="text-align: right;">
+-0.13
+</td>
+<td style="text-align: right;">
+16,303
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+7
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.10
+</td>
+<td style="text-align: right;">
+-0.07
+</td>
+<td style="text-align: right;">
+-0.02
+</td>
+<td style="text-align: right;">
+351,265
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.03
+</td>
+<td style="text-align: right;">
+-0.09
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+356,687
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.04
+</td>
+<td style="text-align: right;">
+0.16
+</td>
+<td style="text-align: right;">
+0.21
+</td>
+<td style="text-align: right;">
+39,831
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+48.68
+</td>
+<td style="text-align: right;">
+-0.25
+</td>
+<td style="text-align: right;">
+-0.12
+</td>
+<td style="text-align: right;">
+13,156
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+8
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.44
+</td>
+<td style="text-align: right;">
+-0.09
+</td>
+<td style="text-align: right;">
+-0.04
+</td>
+<td style="text-align: right;">
+279,994
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.80
+</td>
+<td style="text-align: right;">
+-0.11
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+279,338
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+54.76
+</td>
+<td style="text-align: right;">
+0.36
+</td>
+<td style="text-align: right;">
+0.30
+</td>
+<td style="text-align: right;">
+32,793
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+54.14
+</td>
+<td style="text-align: right;">
+-0.05
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+11,317
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Algebra I
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.52
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+240,652
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50.06
+</td>
+<td style="text-align: right;">
+0.12
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+207,020
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+61
+</td>
+<td style="text-align: right;">
+57.56
+</td>
+<td style="text-align: right;">
+0.30
+</td>
+<td style="text-align: right;">
+0.16
+</td>
+<td style="text-align: right;">
+14,960
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.58
+</td>
+<td style="text-align: right;">
+0.05
+</td>
+<td style="text-align: right;">
+-0.22
+</td>
+<td style="text-align: right;">
+4,746
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Geometry
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.93
+</td>
+<td style="text-align: right;">
+0.01
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+111,706
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+51.03
+</td>
+<td style="text-align: right;">
+0.07
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+119,557
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Paper
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+54.50
+</td>
+<td style="text-align: right;">
+0.24
+</td>
+<td style="text-align: right;">
+0.10
+</td>
+<td style="text-align: right;">
+3,414
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48
+</td>
+<td style="text-align: right;">
+48.10
+</td>
+<td style="text-align: right;">
+-0.03
+</td>
+<td style="text-align: right;">
+-0.08
+</td>
+<td style="text-align: right;">
+1,127
+</td>
+</tr>
+<tr>
+<td style="text-align: right;">
+Algebra II
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+Online
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+49.91
+</td>
+<td style="text-align: right;">
+0.06
+</td>
+<td style="text-align: right;">
+0.00
+</td>
+<td style="text-align: right;">
+81,410
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+49.38
+</td>
+<td style="text-align: right;">
+0.06
+</td>
+<td style="text-align: right;">
+-0.01
+</td>
+<td style="text-align: right;">
+92,194
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+Paper
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+58
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+55.88
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.95
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.13
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1,130
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+61
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+57.52
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.49
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.29
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1,055
+</td>
+</tr>
+</tbody>
+</table>
+<!-- LaTeX_Start
+%latex.default(my_tbl, file = "", where = where, col.just = tex.align,     caption = tmp_caption, ...)%
+\setlongtables\begin{longtable}{rrrcrrrrrcrrrrr}\caption{**Table 4:** Spring 2016 and Spring 2017 PARCC Mathematics Results by Grade.} \tabularnewline
+\hline\hline
+\multicolumn{3}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2016}&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2017}\tabularnewline*
+\cline{1-15}
+\multicolumn{1}{c}{Content Area}&\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 16}&\multicolumn{1}{c}{Mean SGP 16}&\multicolumn{1}{c}{Mean Score 16}&\multicolumn{1}{c}{Mean Score Prior 16}&\multicolumn{1}{c}{N 16}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 17}&\multicolumn{1}{c}{Mean SGP 17}&\multicolumn{1}{c}{Mean Score 17}&\multicolumn{1}{c}{Mean Score Prior 17}&\multicolumn{1}{c}{N 17}\tabularnewline
+\hline
+\endfirsthead\caption[]{\em (continued)} \tabularnewline*
+\hline
+\multicolumn{3}{c}{\bfseries }&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2016}&\multicolumn{1}{c}{\bfseries }&\multicolumn{5}{c}{\bfseries Standard SGP - 2017}\tabularnewline*
+\cline{1-15}
+\multicolumn{1}{c}{Content Area}&\multicolumn{1}{c}{Grade}&\multicolumn{1}{c}{Test Mode}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 16}&\multicolumn{1}{c}{Mean SGP 16}&\multicolumn{1}{c}{Mean Score 16}&\multicolumn{1}{c}{Mean Score Prior 16}&\multicolumn{1}{c}{N 16}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Median SGP 17}&\multicolumn{1}{c}{Mean SGP 17}&\multicolumn{1}{c}{Mean Score 17}&\multicolumn{1}{c}{Mean Score Prior 17}&\multicolumn{1}{c}{N 17}\tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\label{my}
+&&&&&&&&&&&&&&\tabularnewline*
+Mathematics&4&Online&&51&50.79&-0.10& 0.00&353,687&&52&51.19&-0.09& 0.01&355,547\tabularnewline*
+&&Paper&&44&45.90&-0.19& 0.01&68,739&&37&40.96&-0.40&-0.08&47,198\tabularnewline*
+&5&Online&&51&50.47&-0.11&-0.02&379,232&&50&50.20&-0.15& 0.01&378,957\tabularnewline*
+&&Paper&&43&45.22&-0.03& 0.17&38,119&&44&45.71&-0.41&-0.22&14,888\tabularnewline*
+&6&Online&&50&49.84&-0.11&-0.01&374,900&&50&49.76&-0.15& 0.01&367,581\tabularnewline*
+&&Paper&&52&51.47& 0.06& 0.13&39,601&&58&55.59&-0.14&-0.13&16,303\tabularnewline*
+&7&Online&&50&50.10&-0.07&-0.02&351,265&&50&50.03&-0.09& 0.00&356,687\tabularnewline*
+&&Paper&&49&49.04& 0.16& 0.21&39,831&&49&48.68&-0.25&-0.12&13,156\tabularnewline*
+&8&Online&&49&49.44&-0.09&-0.04&279,994&&50&49.80&-0.11& 0.00&279,338\tabularnewline*
+&&Paper&&57&54.76& 0.36& 0.30&32,793&&57&54.14&-0.05&-0.01&11,317\tabularnewline
+\hline
+&&&&&&&&&&&&&&\tabularnewline*
+Algebra I&&Online&&49&49.52&-0.01&-0.01&240,652&&50&50.06& 0.12& 0.01&207,020\tabularnewline*
+&&Paper&&61&57.56& 0.30& 0.16&14,960&&50&49.58& 0.05&-0.22&4,746\tabularnewline
+\hline
+&&&&&&&&&&&&&&\tabularnewline*
+Geometry&&Online&&50&49.93& 0.01& 0.00&111,706&&51&51.03& 0.07& 0.00&119,557\tabularnewline*
+&&Paper&&57&54.50& 0.24& 0.10&3,414&&48&48.10&-0.03&-0.08&1,127\tabularnewline
+\hline
+&&&&&&&&&&&&&&\tabularnewline*
+Algebra II&&Online&&50&49.91& 0.06& 0.00&81,410&&49&49.38& 0.06&-0.01&92,194\tabularnewline*
+&&Paper&&58&55.88& 0.95& 0.13&1,130&&61&57.52& 0.49& 0.29&1,055\tabularnewline
+\hline
+\end{longtable}
+
+LaTeX_End -->
+</div>
+</div>
+</div></div>
+
+</div>
+
+
+
+</body>
+</html>

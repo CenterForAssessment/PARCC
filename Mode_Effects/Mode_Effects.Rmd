@@ -1,0 +1,147 @@
+---
+title: "A Quick Investigation of Potential Mode Effects in PARCC Growth Analyses."
+author:
+  - name: Adam R. VanIwaarden
+  - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
+date: "July, 12 2017"
+---
+
+<!--SGPreport-->
+
+<!-- 
+This document was written by Adam VanIwaarden for internal review by the NCIEA staff.
+
+	Original Draft:  July 11, 2017
+	Final Draft:     
+-->
+
+
+```{r, echo=FALSE, include=FALSE}
+  ## set a universal Cache path
+  knitr::opts_chunk$set(cache.path = "_cache/Mode_Effects", fig.path="img", warning=FALSE, message=FALSE)
+
+  ##  Load some R packages and functions required for HTML table creation silently.  
+  ##  Load SGP and other packages here to avoid messages.
+  require(SGP)
+	require(data.table)
+	require(Gmisc)
+  require(htmlTable)
+
+  ##  Set Table, Figure and Equation Counters
+  setCounters()
+	options(fig_caption_no_sprintf = "**Figure %s:**  %s")
+
+	### Lists of grade level subjects.  Used to subset summary tables and data below.
+	Math_subjects <- c("MATHEMATICS", "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II")
+
+	# require(Literasee)
+	# 
+	# renderMultiDocument(rmd_input = "Mode_Effects.Rmd", 	report_format = c("HTML", "PDF"))
+										# literasee_template="html_report_simple.html",
+										# pandoc_args = "--webtex") #,
+										# cleanup_aux_files = FALSE)
+
+```
+
+# Mode Effects
+
+Differences in achievement and growth based on test format/administration (paper vs online) have been noted in previous years.  The following provides descriptive statistics for the Spring 2016 and Spring 2017 test scores and growth analysis results.
+
+
+##  Spring 2017 Results 
+
+The following tables show the results by content area and grade, including both "standard" cohort referenced SGP and the Ranked SIMEX (measurement error corrected) SGPs
+
+```{r, results='asis', echo=FALSE, ELA_2017}
+	e_tmp_tbl <- tbl.g.ca[CONTENT_AREA == "ELA"]
+	invisible(e_tmp_tbl[, GRADE := as.numeric(GRADE)])
+	invisible(e_tmp_tbl[, CONTENT_AREA := NULL])
+	invisible(e_tmp_tbl[, TestFormat := gsub("O", "Online", TestFormat)])
+	invisible(e_tmp_tbl[, TestFormat := gsub("P", "Paper", TestFormat)])
+	setkey(e_tmp_tbl, GRADE)
+	
+	# e_tmp_tbl <- e_tmp_tbl[][order(match(e_tmp_tbl$CONTENT_AREA, Math_subjects))]
+
+	tmp.cap <- "Spring 2017 PARCC ELA Results by Grade."
+	e_tmp_tbl$GRADE[duplicated(e_tmp_tbl$GRADE)] <- ""
+
+	# e_tmp_tbl$CONTENT_AREA <- sapply(e_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	# e_tmp_tbl$CONTENT_AREA[duplicated(e_tmp_tbl$CONTENT_AREA)] <- ""
+	# setnames(e_tmp_tbl, c(1), sapply(names(e_tmp_tbl)[c(1)], capwords))
+	setnames(e_tmp_tbl, c("GRADE", "TestFormat"), c("Grade", "Test Mode"))
+  cat(dualTable(as.matrix(e_tmp_tbl), align=paste(rep('r', dim(e_tmp_tbl)[2]), collapse=''), 
+  							n.cgroup=c(2, 2, 2, 1), cgroup=c("", "Standard SGP", "Ranked SIMEX", ""), caption = tmp.cap))
+
+```
+
+
+####
+
+```{r, results='asis', echo=FALSE, Math_2017}
+	m_tmp_tbl <- tbl.g.ca[CONTENT_AREA %in% Math_subjects]
+	invisible(m_tmp_tbl[, GRADE := as.numeric(GRADE)])
+	invisible(m_tmp_tbl[, TestFormat := gsub("O", "Online", TestFormat)])
+	invisible(m_tmp_tbl[, TestFormat := gsub("P", "Paper", TestFormat)])
+	setkey(m_tmp_tbl, GRADE)
+	
+	m_tmp_tbl <- m_tmp_tbl[][order(match(m_tmp_tbl$CONTENT_AREA, Math_subjects))]
+
+	tmp.cap <- "Spring 2017 PARCC Mathematics Results by Grade."
+	m_tmp_tbl$GRADE[duplicated(m_tmp_tbl$GRADE)] <- ""
+
+	m_tmp_tbl$CONTENT_AREA <- sapply(m_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	m_tmp_tbl$CONTENT_AREA[duplicated(m_tmp_tbl$CONTENT_AREA)] <- ""
+	setnames(m_tmp_tbl, c("CONTENT_AREA", "GRADE", "TestFormat"), c("Content Area", "Grade", "Test Mode"))
+  cat(dualTable(as.matrix(m_tmp_tbl), align=paste(rep('r', dim(m_tmp_tbl)[2]), collapse=''), 
+  							n.cgroup=c(3, 2, 2, 1), cgroup=c("", "Standard SGP", "Ranked SIMEX", ""), caption = tmp.cap))
+
+```
+
+##  Comparison of 2016 and 2017
+
+A side-by-side comparison of the two spring results mainly show consistent results between them with a few large differences (usually grade/subjects with small N size).  There is also an interesting pattern of lower typical growth for paper test in the elementary grade subjects, mostly neutral or small positive and negative relationships in middle school grades and higher typical growth associated with paper tests in high school grades/subjects.  Its an interesting generational trend...
+
+Spring 2016 analyses used only one prior, whereas 2017 used up to two priors for most configurations.  Mean current and prior year scores (Theta estimates) are also provided for additional context.
+
+```{r, results='asis', echo=FALSE, ELA_2yr}
+	e_yr_tmp_tbl <- tbl.g.ca.yr[CONTENT_AREA == "ELA"]
+	invisible(e_yr_tmp_tbl[, GRADE := as.numeric(GRADE)])
+	invisible(e_yr_tmp_tbl[, CONTENT_AREA := NULL])
+	invisible(e_yr_tmp_tbl[, TestFormat := gsub("O", "Online", TestFormat)])
+	invisible(e_yr_tmp_tbl[, TestFormat := gsub("P", "Paper", TestFormat)])
+	setkey(e_yr_tmp_tbl, GRADE)
+	
+	# e_yr_tmp_tbl <- e_yr_tmp_tbl[][order(match(e_yr_tmp_tbl$CONTENT_AREA, Math_subjects))]
+
+	tmp.cap <- "Spring 2016 and Spring 2017 PARCC ELA Results by Grade."
+	e_yr_tmp_tbl$GRADE[duplicated(e_yr_tmp_tbl$GRADE)] <- ""
+
+	# e_yr_tmp_tbl$CONTENT_AREA <- sapply(e_yr_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	# e_yr_tmp_tbl$CONTENT_AREA[duplicated(e_yr_tmp_tbl$CONTENT_AREA)] <- ""
+	# setnames(e_yr_tmp_tbl, c(1), sapply(names(e_yr_tmp_tbl)[c(1)], capwords))
+	setnames(e_yr_tmp_tbl, c("GRADE", "TestFormat"), c("Grade", "Test Mode"))
+  cat(dualTable(as.matrix(e_yr_tmp_tbl), align=paste(rep('r', dim(e_yr_tmp_tbl)[2]), collapse=''), n.rgroup=rep(2, 8),
+  							n.cgroup=c(2, 5, 5), cgroup=c("", "Standard SGP - 2016", "Standard SGP - 2017"), caption = tmp.cap, longtable=TRUE))
+```
+
+
+####
+
+```{r, results='asis', echo=FALSE, Math_2yr}
+	m_yr_tmp_tbl <- tbl.g.ca.yr[CONTENT_AREA %in% Math_subjects]
+	invisible(m_yr_tmp_tbl[, GRADE := as.numeric(GRADE)])
+	invisible(m_yr_tmp_tbl[, TestFormat := gsub("O", "Online", TestFormat)])
+	invisible(m_yr_tmp_tbl[, TestFormat := gsub("P", "Paper", TestFormat)])
+	setkey(m_yr_tmp_tbl, GRADE)
+	
+	m_yr_tmp_tbl <- m_yr_tmp_tbl[][order(match(m_yr_tmp_tbl$CONTENT_AREA, Math_subjects))]
+
+	tmp.cap <- "Spring 2016 and Spring 2017 PARCC Mathematics Results by Grade."
+	m_yr_tmp_tbl$GRADE[duplicated(m_yr_tmp_tbl$GRADE)] <- ""
+
+	m_yr_tmp_tbl$CONTENT_AREA <- sapply(m_yr_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	m_yr_tmp_tbl$CONTENT_AREA[duplicated(m_yr_tmp_tbl$CONTENT_AREA)] <- ""
+	setnames(m_yr_tmp_tbl, c("CONTENT_AREA", "GRADE", "TestFormat"), c("Content Area", "Grade", "Test Mode"))
+  cat(dualTable(as.matrix(m_yr_tmp_tbl), align=paste(rep('r', dim(m_yr_tmp_tbl)[2]), collapse=''), n.rgroup=c(10, rep(2, 3)),
+  							n.cgroup=c(3, 5, 5), cgroup=c("", "Standard SGP - 2016", "Standard SGP - 2017"), caption = tmp.cap, longtable=TRUE))
+```

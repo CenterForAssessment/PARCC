@@ -1,0 +1,680 @@
+---
+title: "The PARCC Consortium Student Growth Model"
+subtitle: "A Technical Overview of the Fall 2017 Student Growth Percentile Calculations"
+author:
+  - name: Damian W. Betebenner
+  - name: Adam R. VanIwaarden
+  - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
+date: February 1, 2018
+abstract: "DRAFT REPORT - DO NOT CITE! <br></br> This report provides details about the PARCC consortium Student Growth Model methodology and presents a descriptive analysis of the 2017 SGP calculation process and results."
+---
+
+<!--SGPreport-->
+
+<!-- 
+This document was written by Damian Betebenner & Adam VanIwaarden for the PARCC consortium and Pearson Education.
+
+	Original Draft:  January 31, 2018
+	Final Draft:     January 31, 2018
+-->
+
+
+```{r, echo=FALSE, include=FALSE}
+  ## set a universal Cache path
+  knitr::opts_chunk$set(cache.path = "_cache/PARCC_SGP_2017")
+
+  ##  Load some R packages and functions required for HTML table creation silently.  
+  ##  Load SGP and other packages here to avoid messages.
+  require(SGP)
+	require(data.table)
+	require(Gmisc)
+  require(htmlTable)
+
+  ##  Set Table, Figure and Equation Counters
+  options(table_number=0)
+  options("fig_caption_no"=0)
+	options(fig_caption_no_sprintf = "**Figure %s:**   %s")
+	options("fig_caption_no_roman"=FALSE)
+	options("equation_counter" = 0)
+
+  ###
+	### Lists of grade level and EOCT subjects.  Used to subset summary tables and data below.
+	###
+
+  subject_order<-c("ELA", "MATHEMATICS", 
+									 "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II", "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
+	GL_subjects <- c("ELA", "MATHEMATICS")
+	EOCT_subjects <-c("ALGEBRA_I", "ALGEBRA_II", "GEOMETRY", "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
+
+```
+
+# Introduction
+
+This report contains details on the Fall 2017 implementation of the student growth percentiles (SGP) model for the [Partnership for Assessment of Readiness for College and Careers (PARCC) consortium](https://parcc-assessment.org/) and Pearson Education ([Pearson](https://www.pearson.com/us/)).  The National Center for the Improvement of Educational Assessment ([NCIEA](http://www.nciea.org)) contracted with Pearson to implement the SGP methodology using data derived from the PARCC assessments to create the PARCC Student Growth Model.  The goal of the engagement with Pearson is to create a set of open source analytic techniques to conduct growth analyses for both Fall and Spring test administration periods.
+
+The SGP methodology is an open source norm- and criterion-referenced student growth analysis that produces student growth percentiles and student growth projections/targets for each student in the PARCC consortium with adequate longitudinal data.  This methodology can be used for many purposes including parent/student diagnostic reporting, institutional improvement, and school and educator accountability.  Specifics about the manner in which growth is included in each PARCC member states' accountability systems can be provided by their respective state education agencies.   
+
+This report includes four sections:
+
+- ***Data - *** includes details on the decision rules used in the raw data preparation and student record validation.
+- ***Analytics - *** introduces some of the basic statistical methods and the computational process implemented in the 2017 analyses.^[More in-depth treatment of the SGP Methodology can be found [here](https://github.com/CenterForAssessment/SGP_Resources/tree/master/articles) and in Appendix B of this report.]
+- ***Goodness of Fit - *** investigates how well the statistical models used to produce SGPs fit PARCC consortium students' data.  This includes discussion of goodness of fit plots and the student-level correlations between SGPs and prior achievement.
+- ***SGP Results - *** provides basic descriptive statistics from the 2017 analyses at the consortium and state levels.
+
+This report also includes multiple appendices.  Appendix A displays Goodness of Fit plots for each analysis conducted in 2017.  Appendix B provides a more comprehensive discussion of the SGP methodology.  Appendix C is an investigation of potential ceiling and/or floor effects present in the PARCC consortium assessment data and growth analyses.
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+
+# Data
+
+Data for the PARCC grade level and end-of-course tests (EOCT) used in the SGP analyses were supplied by Pearson to the NCIEA for analysis in the summer of 2017.  These PARCC test records were added to PARCC assessment program data from all previous test administrations to create the longitudinal data set from which the Fall 2017 SGPs were calculated.  Subsequent SGP analyses will augment this multi-year data set allowing Pearson to maintain a comprehensive longitudinal data set for all students taking the PARCC assessments.
+
+Student Growth Percentiles have been produced for students that have a current score and at least one prior score in either the same subject or a related content area.  For the 2017 academic year SGPs were produced for grade-level English Language Arts (ELA) and Mathematics, as well as for EOCT subjects including Algebra I, Algebra II, Geometry, and Integrated Mathematics 1 and 2.
+
+## Longitudinal Data
+Growth analyses of assessment data require test scores that are linked to individual students over time.  Student growth percentile analyses require, at a minimum two (and preferably more) years of assessment data for analysis of student progress.  To this end it is necessary that a unique student identifier be available so that student data records across years can be merged with one another and subsequently examined.
+
+Table `r tblNum(1)` shows the number of valid grade level student records available for analysis after applying a set of general business rules.  The final raw data submissions provided by Pearson contained no duplicate records or other problematic cases, and therefore these records are all considered valid for use in the SGP models.^[This number does not represent the number of SGPs produced, however, because students are required to have at least one prior score available as well.]
+
+
+```{r, cache=TRUE, echo=FALSE, include=FALSE}
+	n_tbl_EOG <- table(PARCC_SGP@Data[YEAR=='2016_2017.2' & CONTENT_AREA %in% GL_subjects & VALID_CASE=='VALID_CASE']$CONTENT_AREA, PARCC_SGP@Data[YEAR=='2016_2017.2' & CONTENT_AREA %in% GL_subjects & VALID_CASE=='VALID_CASE']$GRADE)
+```
+```{r, results='asis', echo=FALSE, N_tableEOG}
+	n_tbl_EOG_B <- n_tbl_EOG[match(GL_subjects, row.names(n_tbl_EOG)) ,]
+	n_tbl_EOG_B <- cbind('Content Area'=sapply(GL_subjects, capwords, special.words=c("ELA", "US")), n_tbl_EOG_B)
+	n_tbl_EOG_B <- prettyNum(n_tbl_EOG_B, preserve.width = "individual",big.mark=',')
+	n_tbl_EOG_B[which(n_tbl_EOG_B==0)] <- ''
+	n_tbl_EOG_B <- n_tbl_EOG_B[, match(c('Content Area', sort(as.numeric(colnames(n_tbl_EOG_B)[-1]))), colnames(n_tbl_EOG_B))]
+	row.names(n_tbl_EOG_B) <- NULL
+
+  cat(dualTable(as.matrix(n_tbl_EOG_B), 
+  	align=paste(rep('r', dim(n_tbl_EOG_B)[2]), collapse=''),
+		n.cgroup=c(1, dim(n_tbl_EOG_B)[2]-1), cgroup=c("", "Grades"),
+		caption='Number of Valid Grade Level Student Records by Grade and Subject for 2017'))
+```
+
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+
+Table `r tblNum(1)` shows the total number of valid EOCT student records from fall 2017 available for analysis.
+
+```{r, cache=TRUE, echo=FALSE, include=FALSE}
+	n_tbl_EOC <- table(PARCC_SGP@Data[YEAR=='2016_2017.2' & CONTENT_AREA %in% EOCT_subjects & VALID_CASE=='VALID_CASE']$CONTENT_AREA, PARCC_SGP@Data[YEAR=='2016_2017.2' & CONTENT_AREA %in% EOCT_subjects & VALID_CASE=='VALID_CASE']$GRADE)
+```
+```{r, results='asis', echo=FALSE, N_tableEOC}
+	n_tbl_EOC_B <- n_tbl_EOC[match(EOCT_subjects, row.names(n_tbl_EOC)) ,]
+	n_tbl_EOC_B <- cbind('Content Area'=sapply(EOCT_subjects, capwords, special.words=c("ELA", "II", "US")), 'Valid Records' = n_tbl_EOC_B)
+	n_tbl_EOC_B <- prettyNum(n_tbl_EOC_B, preserve.width = "individual",big.mark=',')
+	row.names(n_tbl_EOC_B) <- NULL
+
+  cat(dualTable(as.matrix(n_tbl_EOC_B), align=paste(rep('r', dim(n_tbl_EOC_B)[2]), collapse=''), 
+		caption='Total Number of Valid EOCT Student Records by Subject for 2017'))
+```
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+
+# Analytics
+
+This section provides basic details about the calculation of student growth percentiles from PARCC consortium assessment data using the [`R` Software Environment](http://www.r-project.org/) [@Rsoftware] in conjunction with the [`SGP` package](http://sgp.io) [@sgp2017].  More in depth treatment of the data analysis process with code examples has been provided to Pearson staff directly.
+
+Broadly, the SGP analysis of the PARCC consortium longitudinal student assessment data takes place in two steps:
+
+1. Data Preparation
+2. Data Analysis
+
+Those familiar with data analysis know that the bulk of the effort in the above two step process lies with Step 1: Data Preparation.  Following thorough data cleaning and preparation, data analysis using the `SGP` package takes clean data and makes it as easy as possible to calculate, output and visualize the results from SGP analyses.
+
+
+## Data Preparation
+
+The data preparation step involves taking PARCC consortium assessment data provided by the Pearson Education Corporation and producing a single file that will be subsequently analyzed in Step 2. This process is carried out as new data becomes available after each assessment interval.  Data from the fall 2017 testing period was provided to the Center for Assessment in July 2017.  An individual comma separated values (.csv) file was provided for each state in the PARCC consortium. 
+
+A custom function was used to read each state specific file into `R` and simultaneously combine them into a single data table.  The data was then cleaned up variable by variable to ensure that it conforms to data naming and variable format conventions used in the `SGP` software package.  The result is a `.Rdata` file containing data in the format suitable for analysis with the `SGP` package.  With an appropriate longitudinal data set prepared, we continued on with the calculation of student-level SGPs.
+
+## Data Analysis
+
+The objective of the student growth percentile (SGP) analysis is to describe how (a)typical a student's growth is by examining his/her current achievement relative to students with a similar achievement history; i.e his/her *academic peers* - those students beginning at the same place (see [this presentation](https://github.com/CenterForAssessment/SGP_Resources/blob/master/presentations/Academic_Peer_Slides.pdf) for a detailed description of this concept). This norm-referenced growth quantity is estimated using quantile regression [@Koenker:2005] to model curvilinear functional relationships between student's prior and current scores.  One hundred such regression models are calculated for each separate analysis (defined as a unique ***year** by **content area** by **grade** by **prior order*** combination).  The end product of these 100 separate regression models is a single coefficient matrix, which serves as a look-up table to relate prior student achievement to current achievement for each percentile. This process ultimately leads to tens of thousands of model calculations during each of the PARCC consortium's seasonal batch of analyses (and many more when simulation-extrapolation, or SIMEX, methods of measurement error corrections are performed).  For a more in-depth discussion of SGP calculation, see Betebenner [-@Betebenner:2009] and Appendix B of this report, and see Shang, VanIwaarden and Betebenner [-@ShangVanIBet:2015] for further information on the SIMEX measurement error correction methodology.
+
+The Fall 2017 PARCC SGP analyses follow a work flow that includes the following four steps:
+
+1. Update the PARCC assessment meta-data required for SGP calculations using the `SGP` package.
+2. Create SGP configurations for analyses.
+3. Conduct all grade level and EOCT SGP analyses.
+4. Combine results into the master longitudinal data set and output data in the format requested by Pearson.
+
+### Update PARCC meta-data
+
+The use of higher-level functions included in the `SGP` package (e.g. `analyzeSGP`) requires the availability of assessment specific information.  The meta-data for all assessment programs is compiled in a `R` data file named `SGPstateData` that is housed in the package.  The initial PARCC meta-data entry included *a)* the knots and boundary values for each assessment score distribution, *b)* the proficiency level cutscores designated by Pearson and the PARCC consortium members, and *c)* a table that identifies an ordered preference for norm groups from which SGPs might be produced.  Other SGP configuration metadata was ultimately included in the PARCC `SGPstateData` entry, which can be viewed [here on Github](https://github.com/CenterForAssessment/SGPstateData/blob/6f37e88868530c4bc512d5c2ff9b8ca07bdefb2f/SGPstateData.R#L19).
+
+<div class='caption'>**Knots and boundaries**</div>
+Cubic B-spline basis functions are used in the calculation of SGPs to more adequately model the heteroscedasticity and non-linearity found in assessment data.  These functions require the selection of boundary and interior knots.  Boundary knots (i.e. "boundaries") are end-points outside of the test score distribution that anchor the B-spline basis.  These are typically selected by extending the entire range of test scores by 10%.  That is, they are defined as lying 10% below the lowest obtainable/observed scale score (LOSS) and 10% above the highest obtainable/observed scale score (HOSS).  The interior knots (i.e. "knots") are the *internal* breakpoints that define the spline.  The default choice in the `SGP` package is to select the 20<sup>th</sup>, 40<sup>th</sup>, 60<sup>th</sup> and 80<sup>th</sup> quantiles of the observed scale score distribution.
+
+In general the knots and boundaries are computed from a distribution comprised of several years of test data (i.e. multiple cohorts combined into a single distribution) so that any irregularities in a single year are smoothed out.  This is important because subsequent annual analyses use these same knots and boundaries as well.  All defaults were used to compile the knots and boundaries for PARCC using the two available years of test data.
+
+<div class='caption'>**Proficiency level cutscores**</div>
+Cutscores, which are set externally by the PARCC consortium through standard-setting processes, are mainly required for student growth projections.  Cutscores for all content areas and grade levels were added.  Additionally, cutscores corresponding to both the scaled scores and the base scores (Item Response Theory "theta" values) are included in the PARCC meta-data entry. 
+
+<div class='caption'>**Norm group preferences**</div>
+The process through which some SGP analyses are run can produce multiple SGPs for some students (particularly in EOCT math where students may have multiple prior math test scores).  In order to identify which quantity will be used as the students' "official" SGP and subsequently merged into the master longitudinal data set, a system of norm group preferencing is established and is encoded into a lookup table included in the `SGPstateData`.  In general, preference is given to:
+
+- Progressions with the most recent prior scale score.
+- Progressions with the most common course progression, which is generally also used in student growth projections (in order to ensure correspondence between their reported growth percentile and projection).
+- Progressions with the greatest number of prior scale scores.
+
+The next section describes the process that establishes individual course progressions with analyses configuration code, which incorporates the preferencing system within it.
+
+
+### Specify SGP configurations
+
+Many SGP analyses are specialized enough that it is necessary to specify each analyses to be performed via explicit configuration code.  Such configurations were required to conduct the EOCT mathematics SGP analyses for the PARCC consortium.  Although not necessary for the grade level content areas, explicit configuration code were also used for these analyses to provide greater coding consistency and allow for all analyses to be run concurrently.
+
+Configurations are `R` code scripts that are used primarily in the SGP analysis to be discussed later, but are also used initially to construct the norm group preference object prior to analysis.  They are broken up into four separate `R` scripts based on content domain (ELA and mathematics) and test score metric (IRT theta and scaled scores).  Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined.  Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level.  Therefore, every configuration used contains the first three elements and some analyses also contain the fourth and/or fifth elements:
+
+- **`sgp.content.areas`:** The ordered progression of content areas to be looked at.
+- **`sgp.panel.years`:** The progression of the years associated with the content area progression (`sgp.content.areas`), potentially allowing for skipped or repeated years, fall to spring within year analyses, etc.  Because some PARCC states administer tests in both Fall and Spring, a season or period indicator is required as well.  This is encoded here as either a ".1" or ".2" suffix to the academic year ("2016_2017.1" for Fall 2016 and "2016_2017.2" for Fall 2017). 
+- **`sgp.grade.sequences`:** The grade progression associated with the configuration content areas and years. The value **'EOCT'** stands for 'End Of Course Test'.  The use of the generic 'EOCT' allows for secondary students to be compared based on the pattern of course taking rather than being dependent upon grade-level designation.
+- **`sgp.projection.grade.sequences`:** This element is used to identify the grade sequence that will be used to produce student growth projections.  It can either be left out or set explicitly to `NULL` to produce projections based on the values provided in the `sgp.content.areas` and `sgp.grade.sequences` elements.  Alternatively, when set to "`NO_PROJECTIONS`", no projections will be produced.  For EOCT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections.  The canonical progressions are codified in the `SGP` package here: [`SGPstateData[["PARCC"]][["SGP_Configuration"]][["content_area.projection.sequence"]]`](https://github.com/CenterForAssessment/SGPstateData/blob/052fc248ffa7fbe196cb75a58efdfac3cfae3c1d/SGPstateData.R#L115).  Note also that grade level Mathematics can have two different EOCT trajectories - one that follows the Integrated Math courses and another that goes from Algebra I to Geometry to Algebra II.   
+- **`sgp.norm.group.preference`:** Because a student can potentially be included in more than one analysis/configuration, multiple SGPs will be produced for some students and a system is required to identify the preferred SGP that will be matched with the student in the `combineSGP` step.  This argument provides a numeric ranking that specifies how preferable SGPs produced from the analysis in question is relative to other possible analyses.  ***Lower numbers correspond with higher preference.***
+
+
+As an example, here is the Algebra I configuration used to define the 2017 SGP analysis with the highest preference:
+
+```R
+...
+
+	ALGEBRA_I.2016_2017.2 = list(
+		sgp.content.areas=c("MATHEMATICS", "ALGEBRA_I"),
+		sgp.panel.years=c("2015_2016.2", "2016_2017.2"),
+		sgp.grade.sequences=list(c("8", "EOCT")),
+		sgp.norm.group.preference=0),
+
+...
+
+```
+
+
+### Conduct SGP analyses
+
+All cohort-referenced (unadjusted) and SIMEX corrected grade level and EOCT SGPs were calculated concurrently.  Data analysis is conducted using the [`R` Software Environment](http://www.r-project.org/) in conjunction with the [`SGP` package](http://sgp.io/). Broadly, the analysis takes place in 6 steps.
+
+1. `prepareSGP`
+2. `analyzeSGP`
+3. `combineSGP`
+4. `summarizeSGP`
+5. `visualizeSGP`
+6. `outputSGP`
+
+Because these steps are almost always conducted simultaneously, the `SGP` package has wrapper functions `abcSGP` and `updateSGP` that "wrap" the above 6 steps into a single function call and simplify the source code associated with the analysis.  Documentation for all SGP functions are [available online.](https://cran.r-project.org/web/packages/SGP/SGP.pdf)
+
+SGP analyses were conducted at both the consortium and state level.  In the consortium analyses we use the `updateSGP` function to ***a)*** do the final preparation and addition of the cleaned and formatted Fall 2017 data to an `SGP` class object created for the Fall 2016 analyses (`prepareSGP` step) and ***b)*** calculate SGP estimates (`analyzeSGP` step).  In the individual state analyses, these two steps were performed using the individual functions separately in order to establish the states' `SGP` class objects (i.e. Fall state-level analyses were not feasible due to small cohort sizes).
+
+### Merge, output, summarize and visualize results
+
+Once all analyses were completed the results were merged into the master longitudinal data set (`combineSGP` step).  A pipe delimited version of the complete long data is output (`outputSGP` step) and submitted to Pearson after some additional formatting to add requested information.  Finally, visualizations (such as growth achievement charts) are produced from the results data using the `visualizeSGP` function.
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+
+# Goodness of Fit
+
+Despite the use of B-splines to accommodate heteroscedasticity and skewness of the test score distributions, assumptions that are made in the statistical modeling process can impact how well the percentile curves fit the data.  Examination of goodness-of-fit was conducted by first inspecting model fit plots the `SGP` software package produces for each analysis, and subsequently inspecting student level correlations between growth and achievement.  Discussion of the model fit plots in general and examples of them are provided below, as are tables of the correlation results.  The complete portfolio of model fit plots is provided in Appendix A of this report.
+
+## Model Fit Plots
+
+Using all available grade level and EOCT scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score).  Each analysis is defined by the grade and content area for the grade-level analyses and exact content area (and grade when relevant) sequences for the EOCT subjects.  A goodness of fit plot is produced for each unique analysis run in 2017 and are all provided in Appendix A to this report.
+
+As an example, Figure `r getOption("fig_caption_no")+1` shows the results for 8<sup>th</sup> grade ELA as an example of good model fit.  Figure `r getOption("fig_caption_no")+2` demonstrates minor model misfit in the Integrated Math 2 analyses that uses Integrated Math 1 for its prior scores.
+
+The "Ceiling/Floor Effects Test" panel is intended to help identify potential problems in SGP estimation at the Highest and Lowest Obtainable (or Observed) Scale Scores (HOSS and LOSS).  Most often these effects are caused when it is relatively typical for extremely high (low) achieving students to consistently score at or near the HOSS (LOSS) each year leading to the SGPs for these students to be unexpectedly low (high).  That is, for example, if a sufficient number of students maintain performance at the HOSS over time, this performance will be estimated as typical, and therefore SGP estimates will reflect typical growth (e.g. 50th percentile).  In some cases small deviations from these extreme score values might even yield low growth estimates.  Although these score patterns can legitimately be estimated as typical or low growth percentile, it is potentially an unfair description of student growth (and by proxy teacher or school, etc. performance metrics that use them).  Ultimately this is an artifact of the assessments' inability to adequately measure student performance at extreme ability levels.  
+
+The table of values here shows whether the current year scores at both extremes yield the expected SGPs.^[Note that the prior year scores are not represented here, but are also a critical factor in ceiling effects.]  The expectation is that the majority of SGPs for students scoring at or near the LOSS will be low (preferably less than 5 and not higher than 10), and that SGPs for students scoring at or near the HOSS will be high (preferably higher than 95 and not less than 90).  Because few students may score *exactly* at the HOSS/LOSS, the top/bottom 50 students are selected and any student scoring within their range of scores are selected for inclusion in these tables.  Consequently, there may be a range of scores at the HOSS/LOSS rather than a single score, and there may be more than 50 students included in the HOSS/LOSS row if the 50 students at the extremes only contain the single HOSS/LOSS score.
+
+This table is meant to serve more as a "canary in the coal mine" than as a detailed, conclusive indicator of ceiling or floor effects, and a more fine grained analysis that considers the relationship between score histories and SGPs may be necessary.  Appendix C of this report provides a more in depth investigation of potential ceiling effects.
+
+The two bottom panels compare the observed conditional density of the SGP estimates with the theoretical (uniform) density.  The bottom left panel shows the empirical distribution of SGPs given prior scale score deciles in the form of a 10 by 10 cell grid.  Percentages of student growth percentiles between the 10<sup>th</sup>, 20<sup>th</sup>, 30<sup>th</sup>, 40<sup>th</sup>, 50<sup>th</sup>, 60<sup>th</sup>, 70<sup>th</sup>, 80<sup>th</sup>, and 90<sup>th</sup> percentiles were calculated based upon the empirical decile of the cohort's prior year scaled score distribution^[The total students in each analysis varies depending on grade and subject, and prior score deciles are based only on scores for students used in the SGP calculations.].  With an infinite population of test takers, at each prior scaled score, with perfect model fit, the expectation is to have 10 percent of the estimated growth percentiles between 1 and 9, 10 and 19, 20 and 29, ..., and 90 and 99.  Deviations from 10 percent, indicated by red and blue shading, suggests lack of model fit.  The further *above* 10 the darker the red, and the further *below* 10 the darker the blue.  
+
+When large deviations occur, one likely cause is a clustering of scale scores that makes it impossible to "split" the score at a dividing point forcing a majority of the scores into an adjacent cell.  This occurs more often in lowest grade levels where fewer prior scores are available (particularly in the lowest grade when only a single prior is available).  Another common cause of this is small cohort size (e.g. fewer than 5,000 students).
+
+The bottom right panel of each plot is a Q-Q plot which compares the observed distribution of SGPs with the theoretical (uniform) distribution.  An ideal plot here will show black step function lines that do not deviate greatly from the ideal, red line which traces the 45 degree angle of perfect fit.
+
+```{r, cache=TRUE, echo=FALSE, message=FALSE, include=FALSE, GOFplots}
+  ##    Create goodness of fit plots for tech report example
+	dir.create("../img", recursive=TRUE, showWarnings=FALSE)
+  setwd("../img")
+
+  setkeyv(PARCC_SGP@Data, SGP:::getKey(PARCC_SGP))
+
+	### ELA Grade 8 as example of GOOD fit ...
+  ##  Choice of 8th grade and ELA are arbitrary ...
+  ##  Keep using that from year to year to show it IS arbitrary - no need to change year to year ... ...
+
+  dat <- PARCC_SGP@Data[SGP_NORM_GROUP %in% c("2015_2016.2/ELA_7; 2016_2017.2/ELA_8", "2014_2015.2/ELA_6; 2015_2016.2/ELA_7; 2016_2017.2/ELA_8"),
+  				 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX_RANKED", "SCALE_SCORE", "SCALE_SCORE_PRIOR", "SGP_NORM_GROUP"), with=FALSE]
+
+	gofSGP(dat, state="PARCC", years='2016_2017.2', content_areas="ELA", use.sgp="SGP", output.format="PNG")
+	gofSGP(dat, state="PARCC", years='2016_2017.2', content_areas="ELA", use.sgp="SGP_SIMEX_RANKED", output.format="PNG")
+
+  dat <- PARCC_SGP@Data[SGP_NORM_GROUP %in% "2015_2016.2/INTEGRATED_MATH_1_EOCT; 2016_2017.2/INTEGRATED_MATH_2_EOCT", 
+  				 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX_RANKED", "SCALE_SCORE", "SCALE_SCORE_PRIOR", "SGP_NORM_GROUP"), with=FALSE]
+
+	gofSGP(dat, state="PARCC", years='2016_2017.2', content_areas='INTEGRATED_MATH_2', use.sgp="SGP", output.format="PNG")
+	gofSGP(dat, state="PARCC", years='2016_2017.2', content_areas='INTEGRATED_MATH_2', use.sgp="SGP_SIMEX_RANKED", output.format="PNG")
+
+	###  HAVE TO RENAME THE GoFit PLOTS CONTAINING A "." IN NAME !!!
+	invisible(file.rename(
+		"Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2/2016_2017.2_INTEGRATED_MATH_2_EOCT;2015_2016.2_INTEGRATED_MATH_1_EOCT.png",
+		"Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2/2016_2017_2_INTEGRATED_MATH_2_EOCT;2015_2016_2_INTEGRATED_MATH_1_EOCT.png"))
+	invisible(file.rename(
+		"Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2.RANKED_SIMEX/2016_2017.2_INTEGRATED_MATH_2_EOCT;2015_2016.2_INTEGRATED_MATH_1_EOCT.png",
+		"Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2.RANKED_SIMEX/2016_2017_2_INTEGRATED_MATH_2_EOCT;2015_2016_2_INTEGRATED_MATH_1_EOCT.png"))
+
+		setwd("../2017")
+```
+
+
+###  Unadjusted model fit
+
+The model fit plots for the unadjusted, cohort-referenced model results in all subjects are excellent with few exceptions (see Appendix A for all model fit plots).  Figure `r getOption("fig_caption_no")+1` displays the 8<sup>th</sup> grade ELA model as an exemplar of model fit, and Figure `r getOption("fig_caption_no")+2` is an Integrated Math 2 progression which exemplifies the extent to which model misfit is present in the PARCC SGP analyses.
+
+
+```{r, results="asis", echo=FALSE, G8_ELA_GoF_Cohort}
+		placeFigure(page.break= TRUE,
+			files = "../img/Goodness_of_Fit/ELA.2016_2017.2/gofSGP_Grade_8.png",
+			caption = "Goodness of Fit Plot for 2017 ***Uncorrected*** 8<sup>th</sup> Grade ELA:  Example of good model fit.")
+```
+
+Misfit in the Integrated Math 2 model is likely due to the relatively small cohort size (1,098 students).  The indication of a potential ceiling effect in this plot is probably overstated given the range of scores included in the HOSS (bottom) row.  That is, the low SGPs are likely attributed to students scoring just below the HOSS, and therefore less concerning.  This situation is investigated in greater detail in Appendix C of this report.
+
+```{r, results="asis", echo=FALSE, IntMath2_GoF_Cohort}
+		placeFigure(page.break= TRUE,
+			files = "../img/Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2/2016_2017_2_INTEGRATED_MATH_2_EOCT;2015_2016_2_INTEGRATED_MATH_1_EOCT.png",
+			caption = "Goodness of Fit Plot for 2017 ***Uncorrected*** Integrated Math 2 Progression: Example of model mis-fit.")
+```
+
+
+###  SIMEX model fit
+
+Although the *official* PARCC SGPs do not incorporate SIMEX measurement error correction, we provide the adjusted model fit plots here to compare with unadjusted models.  Note that both models presented here use the same student data as those in the section above.  
+
+SIMEX model fit is not expected to be perfect.  In these models we ***expect misfit*** in the form of increased high SGPs for students with lower prior performance (and a complementary decrease in low SGPs for those students), and the reverse expectation for high achieving students.  This effect is alleviated to some extent through the ranking of the SIMEX SGPs [@CastMcCaf:2017].  This shift is visible in the goodness of fit plots in Figure `r getOption("fig_caption_no")+1` where the Ranked SIMEX correction method has been applied to the 8<sup>th</sup> grade ELA model, and Figure `r getOption("fig_caption_no")+2` for the same Geometry progression as presented above.  Most notable is the shift from blue to red in the top half (and red to blue in the bottom half) of the "Student Growth Percentile Range" panel.
+
+The patterns observed in these two charts suggest that the SIMEX model adjustments are behaving as expected.
+
+
+<p></p>
+```{r, results="asis", echo=FALSE, G8_ELA_GoF_RSIMEX}
+		placeFigure(page.break= TRUE,
+			files = "../img/Goodness_of_Fit/ELA.2016_2017.2.RANKED_SIMEX/gofSGP_Grade_8.png",
+			caption = "Goodness of Fit Plot for 2017 ***SIMEX Corrected*** 8<sup>th</sup> Grade ELA:  Example of good model fit.")
+```
+
+
+```{r, results="asis", echo=FALSE, IntMath2_GoF_RSIMEX}
+		placeFigure(page.break= TRUE,
+			files = "../img/Goodness_of_Fit/INTEGRATED_MATH_2.2016_2017.2.RANKED_SIMEX/2016_2017_2_INTEGRATED_MATH_2_EOCT;2015_2016_2_INTEGRATED_MATH_1_EOCT.png",
+			caption = "Goodness of Fit Plot for 2017 ***SIMEX Corrected*** Integrated Math 2 Progression: Example of model mis-fit.")
+```
+
+
+## Growth and Prior Achievement at the Student Level
+
+To investigate the possibility that individual level misfit might impact summary level results, student level SGP results were examined relative to prior achievement.  With perfect fit to data, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero (i.e., the goodness of fit tables would have a uniform distribution of percentiles across all previous scale score levels).  To investigate in another way, correlations between **a)** prior and current scale scores (achievement) and **b)** prior score and student growth percentiles were calculated.  Evidence of good model fit begins with a strong positive relationship between prior and current achievement, which suggests that growth is detectable and modeling it is reasonable.  A lack of relationship (zero correlation) between prior achievement and growth confirms that the model has fit the data well and produced a uniform distribution of percentiles across all previous scale score levels.
+
+Student-level correlation coefficients ($r$) for grade level subjects are presented in Table `r tblNum(1)`, and the results are generally as expected.  Strong relationships exist between prior and current scale scores for the grade level analyses (column 3).  With cohort-referenced (unadjusted) percentiles, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero when the model is perfectly fit to the data.  This also indicates that students can demonstrate high (or low) growth regardless of prior achievement.  Correlations for the PARCC consortium's unadjusted SGPs are all essentially zero (column 4).
+
+SIMEX corrected SGPs induce a negative correlation between growth and prior achievement.  Rather than a uniform distribution, SIMEX produces a distribution in which growth for lower prior achieving students' is weighted upward and higher achieving students' growth is weighted down.  In theory, this bias in student-level SGPs may decrease the bias in aggregate growth measures [@ShangVanIBet:2015].  Subsequently, the correlations between both student- and aggregate-level "unadjusted" SGPs and prior achievement are typically higher than those with SIMEX corrected SGPs.^[Note that correlations that are initially negative will become increasingly negative rather than return to zero.]
+
+
+### Grade level subjects
+
+```{r, results='asis', echo=FALSE, Student_EOG}
+	student.cor.grd <- PARCC_SGP@Data[YEAR=='2016_2017.2' & VALID_CASE=='VALID_CASE' & CONTENT_AREA %in% GL_subjects][, list(
+		`$\\\rr_ {  Test Scores}$` = round(cor(SCALE_SCORE, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		`$\\\rr_ {  SGP}$` = format(round(cor(SGP, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), nsmall = 2), 
+		`$\\\rr_ {  SIMEX SGP}$` = round(cor(SGP_SIMEX_RANKED, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		N_Size = sum(!is.na(SGP))), keyby = list(CONTENT_AREA, GRADE)]
+	
+	gl_tmp_tbl <- student.cor.grd[!is.na(student.cor.grd[["$\\\rr_ {  Test Scores}$"]])]
+	invisible(gl_tmp_tbl[, GRADE := as.numeric(GRADE)])
+	setkey(gl_tmp_tbl, CONTENT_AREA, GRADE)
+	gl_tmp_tbl <- gl_tmp_tbl[][order(match(gl_tmp_tbl$CONTENT_AREA, GL_subjects))]
+
+	tmp.cap <- "Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Score, 2) SGP and 3) SIMEX SGP."
+	gl_tmp_tbl$CONTENT_AREA <- sapply(gl_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	gl_tmp_tbl$CONTENT_AREA[duplicated(gl_tmp_tbl$CONTENT_AREA)] <- ""
+	gl_tmp_tbl$N_Size <- prettyNum(gl_tmp_tbl$N_Size, preserve.width = "individual", big.mark=',')
+	setnames(gl_tmp_tbl, c(1:2,6), sapply(names(gl_tmp_tbl)[c(1:2,6)], capwords))
+
+  cat(dualTable(as.matrix(gl_tmp_tbl), align=paste(rep('r', dim(gl_tmp_tbl)[2]), collapse=''), caption = tmp.cap))
+
+```
+
+### EOCT Subjects
+
+Each EOCT subject is analyzed using more than one sequence of prior subjects, grades and years, and these unique progressions are disaggregated in Table `r tblNum(1)` using the most recent prior available for each norm group (although more prior years' scores can be used in SGP calculations when available).  Unless otherwise noted, all priors are from the Spring of 2017.  The correlations between current EOCT and prior test score are generally lower than in the grade level norm groups, and overall lower correlations may be expected in EOCT subjects due to the change in specific subject from one course to the next.  
+
+The relationships between growth and prior achievement reported in Table `r tblNum(1)` are still non-existent for cohort referenced SGPs and slightly negative after SIMEX correction.  These results are as expected for appropriate fit to the respective models as discussed in the grade level section above.
+
+```{r, cache=TRUE, echo=FALSE, include=FALSE, Student_EOCT}
+	student.cor.eoct <- PARCC_SGP@Data[YEAR=='2016_2017.2' & VALID_CASE=='VALID_CASE' & CONTENT_AREA %in% EOCT_subjects][, list(
+		`$\\\rr_ {  Test Scores}$` = round(cor(SCALE_SCORE, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		`$\\\rr_ {  SGP}$` = format(round(cor(SGP, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), nsmall = 2), 
+		`$\\\rr_ {  SIMEX}$` = round(cor(SGP_SIMEX_RANKED, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		N_Size = sum(!is.na(SGP))), keyby = list(CONTENT_AREA, Most_Recent_Prior)]
+```
+```{r, results='asis', echo=FALSE, Student_EOCT_1}
+	eoct_tmp_tbl <- student.cor.eoct[!is.na(student.cor.eoct[["$\\\rr_ {  Test Scores}$"]])] # use "Test Scores" cor if using `format` in SGP or others.
+
+	eoct_tmp_tbl <- eoct_tmp_tbl[][order(match(eoct_tmp_tbl$CONTENT_AREA, EOCT_subjects))]
+	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+
+	tmp.cap <- "EOCT Student Level Correlations between Prior Standardized Scale Score and 1) Current Scale Score, 2) SGP and 3) SIMEX SGP - Disaggregated by Norm Group."
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := sapply(gsub("/", " ", Most_Recent_Prior), capwords)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub("2015 2016 2", "", Most_Recent_Prior)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub("2016 2017 1", "Fall 2016", Most_Recent_Prior)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub(" Eoct", "", Most_Recent_Prior)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub(" 8", " Grade 8", Most_Recent_Prior)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub(" 7", " Grade 7", Most_Recent_Prior)])
+	invisible(eoct_tmp_tbl[, Most_Recent_Prior := gsub(" 6", " Grade 6", Most_Recent_Prior)])
+
+	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	eoct_tmp_tbl$CONTENT_AREA[duplicated(eoct_tmp_tbl$CONTENT_AREA)] <- ""
+	eoct_tmp_tbl$N_Size <- prettyNum(eoct_tmp_tbl$N_Size, preserve.width = "individual", big.mark=',')
+	setnames(eoct_tmp_tbl, c(1:2,6), sapply(names(eoct_tmp_tbl)[c(1:2,6)], capwords))
+
+	cat(dualTable(as.matrix(eoct_tmp_tbl), align=paste(rep('r', dim(eoct_tmp_tbl)[2]), collapse=''), caption = tmp.cap))
+```
+
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+# SGP Results
+
+In the following sections basic descriptive statistics from the 2017 analyses are provided, including the consortium-level mean and median growth percentiles.  Currently the PARCC consortium uses unadjusted cohort-referenced SGPs as the official student-level growth metric.  Descriptive statistics from the unadjusted and SIMEX corrected SGP results are both presented here.  The interested reader can find more in depth discussions of the SGP methodology in Appendix B of this report as well as other [available literature](https://github.com/CenterForAssessment/SGP_Resources/tree/master/articles), and information about the SIMEX measurement error correction methodology is available in recent academic articles [see @ShangVanIBet:2015].
+
+## Unadjusted SGPs
+
+Growth percentiles, being quantities associated with each individual student, can be easily summarized across numerous grouping indicators to provide summary results regarding growth.  The median and mean of a collection of growth percentiles are used as measures of central tendency that summarize the distribution as a single number.  With perfect data fit, we expect the consortium-wide median of all student growth percentiles in any grade to be 50 because the data are norm-referenced across all students in PARCC.  Median (and mean) growth percentiles well below 50 represent growth less than the consortium "average" and median growth percentiles well above 50 represent growth in excess of the PARCC "average".
+
+To demonstrate the norm-referenced nature of the growth percentiles viewed at the consortium level, Tables `r tblNum(1)` and  `r tblNum(2)` present the cohort-referenced growth percentile medians and means for the grade level and EOCT content areas respectively.
+
+```{r, results='asis', echo=FALSE, SumEOG}
+	EOG_smry <- PARCC_SGP@Data[CONTENT_AREA %in% GL_subjects & YEAR=='2016_2017.2'][, list(MEDIAN = median(as.numeric(SGP), na.rm=TRUE), MEAN = round(mean(SGP, na.rm=TRUE), 1)), by=c('CONTENT_AREA', 'GRADE')][!is.na(MEDIAN)]
+	invisible(EOG_smry[, GRADE := as.numeric(GRADE)])
+	setkey(EOG_smry)
+
+	EOG_smryB <- data.frame()
+	for (ca in GL_subjects){
+		tmp_EOG_smry <- paste(t(as.matrix(EOG_smry[CONTENT_AREA==ca,][, list(MEDIAN)])), " (", t(as.matrix(EOG_smry[CONTENT_AREA==ca,][, list(MEAN)])), ")", sep="")
+		tmp_EOG_smry <- data.frame(matrix(c(capwords(ca), tmp_EOG_smry), 1, length(tmp_EOG_smry)+1), stringsAsFactors = FALSE)
+		names(tmp_EOG_smry) <- c("Content Area", t(as.matrix(EOG_smry[CONTENT_AREA==ca,][, list(GRADE)])))
+		EOG_smryB <- rbindlist(list(EOG_smryB, tmp_EOG_smry), fill=TRUE)
+	}
+	EOG_smryB[is.na(EOG_smryB)] <- ""
+	
+  cat(dualTable(as.matrix(EOG_smryB), title="", n.cgroup=c(1, dim(EOG_smryB)[2]-1), cgroup=c("", "Grades"),
+  	align=paste(rep('r', dim(EOG_smryB)[2]), collapse=''),
+		caption='Fall 2017 Grade Level Median (Mean) Student Growth Percentile by Grade and Content Area.'))
+```
+
+```{r, results='asis', echo=FALSE, SumEOC}
+	EOC_smry <- PARCC_SGP@Data[CONTENT_AREA %in% EOCT_subjects & YEAR=='2016_2017.2'][,list("Median SGP"=median(as.numeric(SGP), na.rm=TRUE), "Mean SGP"=round(mean(SGP, na.rm=TRUE), 1)), by='CONTENT_AREA']
+	setkey(EOC_smry)
+
+	EOC_smry_B <- EOC_smry[match(EOCT_subjects, EOC_smry[["CONTENT_AREA"]]) ,]
+	EOC_smry_B <- EOC_smry_B[!is.na(`Median SGP`)]
+	invisible(EOC_smry_B[, CONTENT_AREA := sapply(CONTENT_AREA, capwords, special.words=c("II", "US"))])
+	setnames(EOC_smry_B, "CONTENT_AREA", "Content Area")
+	
+  cat(dualTable(as.matrix(EOC_smry_B), align='rcc',
+		caption='Fall 2017 EOCT Median and Mean Student Growth Percentile by Content Area.'))
+```
+
+Based upon perfect model fit to the data, the median of all state growth percentiles in each grade by year by subject combination should be 50.  That is, in the conditional distributions, 50 percent of growth percentiles should be less than 50 and 50 percent should be greater than 50.  Deviations from 50 indicate imperfect model fit to the data.  Imperfect model fit can occur for a number of reasons, some due to issues with the data (e.g., floor and ceiling effects leading to a "bunching" up of the data) as well as issues due to the way that the SGP function fits the data.  The results in Tables `r tblNum(-1)` and `r tblNum()` are close to perfect, with almost all values equal to 50.
+
+The results are coarse in that they are aggregated across hundreds of thousands of students.  More refined fit analyses were presented in the Goodness-of-Fit section.  Depending upon feedback from Pearson, it may be desirable to tweak some operational parameters and attempt to improve fit even further.  The impact upon the operational results based on better fit is expected to be extremely minor.
+
+It is important to note how, at the entire consortium level, the *norm-referenced* growth information returns little information on annual trends due to its norm-reference nature.  What the results indicate is that a typical (or average) student in the state demonstrates 50<sup>th</sup> percentile growth.  That is, "typical students" demonstrate "typical growth".  One benefit of the norm-referenced results follows when subgroups are examined (e.g., schools, district, demographic groups, etc.) Examining subgroups in terms of the mean or median of their student growth percentiles, it is then possible to investigate why some subgroups display lower/higher student growth than others.  Moreover, because the subgroup summary statistic (i.e., the median) is composed of many individual student growth percentiles, one can break out the result and further examine the distribution of individual results.  
+
+
+## Ranked SIMEX Adjusted SGPs
+
+The use of error-prone standardized test scores in statistical models can lead to numerous problems.  Understanding the effects of measurement error and correcting for it is particularly difficult in the SGP model given that it is based on non-parametric quantile regression.  Preliminary investigations suggest that the use of error-prone measures may lead SGP estimates to be inflated for students with high prior achievement and underestimated for students with lower prior achievement.  This bias at the individual student-level can translate to bias in aggregate measures (such as median and mean SGPs) when student sorting based on prior achievement exists at the level of aggregation (e.g.  classrooms or schools).  As a result, growth and prior achievement are (positively) correlated, giving schools and teachers with higher achieving students an undue advantage and disadvantaging those with lower achieving students [@ShangVanIBet:2015].  
+
+Simulation-extrapolation (SIMEX) methods of correcting for measurement error induced bias in the SGP estimation has been proposed and tested in other states.  This correction has been applied to the 2017 SGPs in addition to a system of ranking the SIMEX SGPs in order to improve some student level properties of the growth measure [@CastMcCaf:2017].  Descriptive statistics from the uncorrected and Ranked SIMEX corrected SGP results are both presented here.  The interested reader can find more in depth discussions of the SGP methodology in the [available literature](https://github.com/CenterForAssessment/SGP_Resources/tree/master/articles), and information about the SIMEX measurement error correction methodology is available in recent academic articles [@ShangVanIBet:2015; @CastMcCaf:2017].
+
+
+```{r, results='asis', echo=FALSE, SIMEX_SumEOG}
+	EOG_SIMEX_smry <- PARCC_SGP@Data[CONTENT_AREA %in% GL_subjects & YEAR=='2016_2017.2'][,list("Median SGP"=median(as.numeric(SGP_SIMEX_RANKED), na.rm=TRUE), "Mean SGP"=round(mean(SGP_SIMEX_RANKED, na.rm=TRUE), 1)), by=c('CONTENT_AREA', 'GRADE')][!is.na(`Median SGP`)]
+	invisible(EOG_SIMEX_smry[, GRADE := as.numeric(GRADE)])
+	setkey(EOG_SIMEX_smry)
+	
+	EOG_SIMEX_smryB <- data.frame()
+	for (ca in GL_subjects){
+		tmp_EOG_smry <- paste(t(as.matrix(EOG_SIMEX_smry[CONTENT_AREA==ca,][, list(`Median SGP`)])), " (", t(as.matrix(EOG_SIMEX_smry[CONTENT_AREA==ca,][, list(`Mean SGP`)])), ")", sep="")
+		tmp_EOG_smry <- data.frame(matrix(c(capwords(ca), tmp_EOG_smry), 1, length(tmp_EOG_smry)+1), stringsAsFactors = FALSE)
+		names(tmp_EOG_smry) <- c("Content Area", t(as.matrix(EOG_SIMEX_smry[CONTENT_AREA==ca,][, list(GRADE)])))
+		EOG_SIMEX_smryB <- rbindlist(list(EOG_SIMEX_smryB, tmp_EOG_smry), fill=TRUE)
+	}
+	EOG_SIMEX_smryB[is.na(EOG_SIMEX_smryB)] <- ""
+	
+  cat(dualTable(as.matrix(EOG_SIMEX_smryB), title="", n.cgroup=c(1, dim(EOG_SIMEX_smryB)[2]-1), cgroup=c("", "Grades"),
+  	align=paste(rep('r', dim(EOG_SIMEX_smryB)[2]), collapse=''),
+		caption='SIMEX Corrected Grade Level Median (Mean) Student Growth Percentile by Grade and Content Area for Fall 2017'))
+```
+
+
+```{r, results='asis', echo=FALSE, SIMEX_SumEOC}
+	EOC_SIMEX_smry <- PARCC_SGP@Data[CONTENT_AREA %in% EOCT_subjects & YEAR=='2016_2017.2'][,list("Median SGP"=median(as.numeric(SGP_SIMEX_RANKED), na.rm=TRUE), "Mean SGP"=round(mean(SGP_SIMEX_RANKED, na.rm=TRUE), 1)), by='CONTENT_AREA']
+	setkey(EOC_SIMEX_smry)
+	
+	EOC_SIMEX_smry_B <- EOC_SIMEX_smry[match(EOCT_subjects, EOC_SIMEX_smry[["CONTENT_AREA"]]) ,]
+	EOC_SIMEX_smry_B <- EOC_SIMEX_smry_B[!is.na(`Median SGP`)]
+	invisible(EOC_SIMEX_smry_B[, CONTENT_AREA := sapply(CONTENT_AREA, capwords, special.words=c("II", "US"))])
+	setnames(EOC_SIMEX_smry_B, "CONTENT_AREA", "Content Area")
+
+  cat(dualTable(as.matrix(EOC_SIMEX_smry_B), align='rcc',
+		caption='SIMEX Corrected EOCT Median (Mean) Student Growth Percentile by Content Area for Fall 2017'))
+```
+
+A comparison of the unadjusted (Tables `r tblNum(-3)` and `r tblNum(-2)`) and Ranked SIMEX corrected (Tables `r tblNum(-1)` and `r tblNum()`) shows very little difference in the medians and means.  This is not surprising as the majority of the growth percentiles for students in the middle of the prior score distributions change very little, and the larger changes that occur for students in the extremes of the prior score distributions tend to even out.  
+
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+## Group Level Results
+
+Unlike when reporting SGPs at the individual level, when aggregating to the group level (e.g., school) the correlation between aggregate prior student achievement and aggregate growth is rarely zero. The correlation between prior student achievement and growth at the school level is a compelling descriptive statistic because it indicates whether students attending schools serving higher achieving students grow faster (on average) than those students attending schools serving lower achieving students. Results from previous state analyses show a correlation between prior achievement of students associated with a current school (quantified as percent at/above proficient) and the median SGP are typically between 0.1 and 0.3 (although higher numbers have been observed in some states as well). That is, these results indicate that on average, students attending schools serving lower achieving students tend to demonstrate less exemplary growth than those attending schools serving higher achieving students. Equivalently, based upon ordinary least squares (OLS) regression assumptions, the prior achievement level of students attending a school accounts for between 1 and 10 percent of the variability observed in student growth. There are no definitive numbers on what this correlation should be, but recent studies on value-added models show similar results [@MccaLock:2008].
+
+
+###  States
+In this section we aggregate test score and SGP results by state.  At present, district, school or other group identification has not been attached to the student records provided to the Center for Assessment.  Smaller group level analyses are therefore left to the individual consortium members to perform.  In addition to mean SGP values, mean prior test scores are given using both the IRT Theta and PARCC scale metrics.  This mean prior achievement value is given further context by providing percentile value it corresponds with in that test score distribution.  
+
+Summary values are provided in the following tables only when a state has *1,000 students or greater* in a norm group.  A randomized (i.e. non-alphabetical) letter has been attached to each state in order to protect the identity of the member states.  As in previous tables of SGP results in this report, ELA and Mathematics results are disaggregated by grade level and EOCT Math tables are disaggregated by the most recent prior ensuring that all SGPs included in the summary statistics include only results from one analysis (norm group).  Tables for the Integrated Mathematics SGPs are not presented as only two states had any one cohort with greater than 1,000 students, and therefore presenting these tables may compromise state anonymity.
+
+```{r, results='asis', echo=FALSE, State_Summary}
+	smry.grd <- PARCC_SGP@Data[!is.na(SGP),
+		list(Mean_SGP=mean(SGP, na.rm=T), Median_SGP=median(as.numeric(SGP), na.rm=T),
+  	     Mean_SIMEX=mean(SGP_SIMEX_RANKED, na.rm=T), Median_SIMEX=median(as.numeric(SGP_SIMEX_RANKED), na.rm=T),
+    	   Current_TS=mean(SCALE_SCORE, na.rm=T), Prior_TS=mean(SCALE_SCORE_PRIOR, na.rm=T),
+      	 Current_STD=mean(SCALE_SCORE_CURRENT_STANDARDIZED, na.rm=T), Prior_STD=mean(SCALE_SCORE_PRIOR_STANDARDIZED, na.rm=T),
+       	Current_SS=mean(SCALE_SCORE_ACTUAL, na.rm=T), Prior_SS=mean(SCALE_SCORE_PRIOR_ACTUAL, na.rm=T), N=.N),
+		keyby=c("StateAbbreviation", "CONTENT_AREA", "GRADE", "Most_Recent_Prior", "YEAR")] #
+
+	invisible(smry.grd[, PRIOR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"])
+	invisible(smry.grd[, PRIOR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"])
+	invisible(smry.grd[, PRIOR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"])
+
+	setnames(smry.grd, c("CONTENT_AREA", "GRADE", "YEAR"), c("CURNT_CONTENT_AREA", "CURNT_GRADE", "CURNT_YEAR"))
+	# smry.grd[, CURRENT_ACHIEVEMENT_PERCENTILE:=ecdf(PARCC_SGP@Data[!is.na(SGP) & CONTENT_AREA==CURNT_CONTENT_AREA[1] & GRADE == CURNT_GRADE[1] & 
+	# 							YEAR == 	CURNT_YEAR[1]][["SCALE_SCORE"]])(Current_TS)*100, by=c("CURNT_CONTENT_AREA", "CURNT_GRADE", "CURNT_YEAR")]
+	invisible(smry.grd[, PRIOR_ACHIEVEMENT_PERCENTILE := ecdf(PARCC_SGP@Data[!is.na(SGP) & PR_CONTENT_AREA==PRIOR_CONTENT_AREA[1] & PR_GRADE == PRIOR_GRADE[1] & 
+																										PR_YEAR == PRIOR_YEAR[1]][["SCALE_SCORE_PRIOR"]])(Prior_TS)*100, by=c("PRIOR_CONTENT_AREA", "PRIOR_GRADE", "PRIOR_YEAR")])
+	invisible(smry.grd[, STATE := factor(StateAbbreviation)])
+
+	set.seed(719)
+	levels(smry.grd$STATE) <- sample(LETTERS[1:8])
+
+	###  2017  ###
+	
+	#  table(smry.grd[, StateAbbreviation, STATE])
+	#     StateAbbreviation  
+	# STATE BI CO DC IL MD NJ NM RI
+	#     E 22  0  0  0  0  0  0  0
+	#     C  0 22  0  0  0  0  0  0
+	#     A  0  0 22  0  0  0  0  0
+	#     F  0  0  0 19  0  0  0  0
+	#     B  0  0  0  0 23  0  0  0
+	#     H  0  0  0  0  0 24  0  0
+	#     G  0  0  0  0  0  0 26  0
+	#     D  0  0  0  0  0  0  0 20
+```
+
+```{r, results='asis', echo=FALSE, State_Smry_ELA}
+	tmp.tbl <- smry.grd[CURNT_CONTENT_AREA == "ELA" & CURNT_YEAR == '2016_2017.2' & N > 999][, 
+			list(Grade = as.numeric(CURNT_GRADE), State = as.character(STATE), `Mean Prior\n Scale Score` = round(Prior_SS, 1), 
+					 `Mean Prior\n Theta Score` = round(Prior_TS, 2), `PARCC %ile\n (Mean Prior Theta)` = round(PRIOR_ACHIEVEMENT_PERCENTILE, 0), 
+					 `Mean SGP` = round(Mean_SGP, 1), `Mean SIMEX` = round(Mean_SIMEX, 1))]
+	setkey(tmp.tbl, Grade, State)
+
+	tmp.tbl1 <- tmp.tbl[Grade %in% c(4:6)]
+	tmp.tbl2 <- tmp.tbl[Grade %in% c(7:11)]
+	tbl1.rgroup <- as.numeric(table(tmp.tbl1$Grade))
+	tbl2.rgroup <- as.numeric(table(tmp.tbl2$Grade))
+	tmp.tbl1$Grade[duplicated(tmp.tbl1$Grade)] <- ""
+	tmp.tbl2$Grade[duplicated(tmp.tbl2$Grade)] <- ""
+
+	cat(dualTable(as.matrix(tmp.tbl1), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''),
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: ELA', n.rgroup=tbl1.rgroup))
+
+	cat(dualTable(as.matrix(tmp.tbl2), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''),
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: ELA (<em>Continued</em>)', n.rgroup=tbl2.rgroup))
+```
+
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+```{r, results='asis', echo=FALSE, State_Smry_MATH}
+	tmp.tbl <- smry.grd[CURNT_CONTENT_AREA == "MATHEMATICS" & CURNT_YEAR == '2016_2017.2' & N > 999][, 
+			list(Grade = as.numeric(CURNT_GRADE), State = as.character(STATE), `Mean Prior\n Scale Score` = round(Prior_SS, 1), 
+					 `Mean Prior\n Theta Score` = round(Prior_TS, 2), `PARCC %ile\n (Mean Prior Theta)` = round(PRIOR_ACHIEVEMENT_PERCENTILE, 0), 
+					 `Mean SGP` = round(Mean_SGP, 1), `Mean SIMEX` = round(Mean_SIMEX, 1))]
+	setkey(tmp.tbl, Grade, State)
+
+	tmp.tbl1 <- tmp.tbl[Grade %in% c(4:6)]
+	tmp.tbl2 <- tmp.tbl[Grade %in% c(7,8)]
+	tbl1.rgroup <- as.numeric(table(tmp.tbl1$Grade))
+	tbl2.rgroup <- as.numeric(table(tmp.tbl2$Grade))
+	tmp.tbl1$Grade[duplicated(tmp.tbl1$Grade)] <- ""
+	tmp.tbl2$Grade[duplicated(tmp.tbl2$Grade)] <- ""
+
+	cat(dualTable(as.matrix(tmp.tbl1), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''),
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: Mathematics', n.rgroup=tbl1.rgroup))
+
+	cat(dualTable(as.matrix(tmp.tbl2), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''), n.rgroup=tbl2.rgroup,
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: Mathematics (<em>Continued</em>)'))
+```
+
+
+```{r, results='asis', echo=FALSE, State_Smry_ALG1}
+	tmp.tbl <- smry.grd[CURNT_CONTENT_AREA == "ALGEBRA_I" & CURNT_YEAR == '2016_2017.2' & N > 999][, 
+			list(Most_Recent_Prior = Most_Recent_Prior, State = as.character(STATE), `Mean Prior\n Scale Score` = round(Prior_SS, 1), 
+					 `Mean Prior\n Theta Score` = round(Prior_TS, 2), `PARCC %ile\n (Mean Prior Theta)` = round(PRIOR_ACHIEVEMENT_PERCENTILE, 0), 
+					 `Mean SGP` = round(Mean_SGP, 1), `Mean SIMEX` = round(Mean_SIMEX, 1))]
+
+	invisible(tmp.tbl[, Most_Recent_Prior := sapply(gsub("/", " ", Most_Recent_Prior), capwords)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("2015 2016 2", "", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("Mathematics", "Math", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 8", " Grade 8", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 7", " Grade 7", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 6", " Grade 6", Most_Recent_Prior)])
+
+	setkey(tmp.tbl, Most_Recent_Prior, State)
+	tbl.rgroup <- as.numeric(table(tmp.tbl$Most_Recent_Prior))
+	tmp.tbl$Most_Recent_Prior[duplicated(tmp.tbl$Most_Recent_Prior)] <- ""
+	setnames(tmp.tbl, "Most_Recent_Prior", "Most Recent Prior")
+	
+	cat(dualTable(as.matrix(tmp.tbl), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''), n.rgroup=tbl.rgroup,
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: Algebra I'))
+```
+
+```{r, results='asis', echo=FALSE, State_Smry_ALG2}
+	tmp.tbl <- smry.grd[CURNT_CONTENT_AREA == "ALGEBRA_II" & CURNT_YEAR == '2016_2017.2' & N > 999][, 
+			list(Most_Recent_Prior = Most_Recent_Prior, State = as.character(STATE), `Mean Prior\n Scale Score` = round(Prior_SS, 1), 
+					 `Mean Prior\n Theta Score` = round(Prior_TS, 2), `PARCC %ile\n (Mean Prior Theta)` = round(PRIOR_ACHIEVEMENT_PERCENTILE, 0), 
+					 `Mean SGP` = round(Mean_SGP, 1), `Mean SIMEX` = round(Mean_SIMEX, 1))]
+
+	invisible(tmp.tbl[, Most_Recent_Prior := sapply(gsub("/", " ", Most_Recent_Prior), capwords)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("2015 2016 2", "", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("2016 2017 1", "Fall 2016", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("Mathematics", "Math", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" Eoct", "", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 8", " Grade 8", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 7", " Grade 7", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 6", " Grade 6", Most_Recent_Prior)])
+
+	setkey(tmp.tbl, Most_Recent_Prior, State)
+	tbl.rgroup <- as.numeric(table(tmp.tbl$Most_Recent_Prior))
+	tmp.tbl$Most_Recent_Prior[duplicated(tmp.tbl$Most_Recent_Prior)] <- ""
+	setnames(tmp.tbl, "Most_Recent_Prior", "Most Recent Prior")
+	
+	cat(dualTable(as.matrix(tmp.tbl), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''), n.rgroup=tbl.rgroup,
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: Algebra II'))
+```
+
+```{r, results='asis', echo=FALSE, State_Smry_GEOM}
+	tmp.tbl <- smry.grd[CURNT_CONTENT_AREA == "GEOMETRY" & CURNT_YEAR == '2016_2017.2' & N > 999][, 
+			list(Most_Recent_Prior = Most_Recent_Prior, State = as.character(STATE), `Mean Prior\n Scale Score` = round(Prior_SS, 1), 
+					 `Mean Prior\n Theta Score` = round(Prior_TS, 2), `PARCC %ile\n (Mean Prior Theta)` = round(PRIOR_ACHIEVEMENT_PERCENTILE, 0), 
+					 `Mean SGP` = round(Mean_SGP, 1), `Mean SIMEX` = round(Mean_SIMEX, 1))]
+
+	invisible(tmp.tbl[, Most_Recent_Prior := sapply(gsub("/", " ", Most_Recent_Prior), capwords)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("2015 2016 2", "", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("2016 2017 1", "Fall 2016", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub("Mathematics", "Math", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" Eoct", "", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 8", " Grade 8", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 7", " Grade 7", Most_Recent_Prior)])
+	invisible(tmp.tbl[, Most_Recent_Prior := gsub(" 6", " Grade 6", Most_Recent_Prior)])
+
+	setkey(tmp.tbl, Most_Recent_Prior, State)
+	tbl.rgroup <- as.numeric(table(tmp.tbl$Most_Recent_Prior))
+	tmp.tbl$Most_Recent_Prior[duplicated(tmp.tbl$Most_Recent_Prior)] <- ""
+	setnames(tmp.tbl, "Most_Recent_Prior", "Most Recent Prior")
+	
+	cat(dualTable(as.matrix(tmp.tbl), title="", align=paste(rep('r', dim(tmp.tbl)[2]), collapse=''), n.rgroup=tbl.rgroup,
+		caption='Fall 2017 Typical Prior Achievement and Growth by State: Geometry'))
+```
+
+<!-- HTML_Start -->
+<!-- LaTeX_Start 
+\pagebreak
+LaTeX_End -->
+
+
+# References
