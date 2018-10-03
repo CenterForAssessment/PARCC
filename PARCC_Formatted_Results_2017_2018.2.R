@@ -213,15 +213,20 @@ setcolorder(FINAL_LONG_Data, head(all.var.names, -1))
 FINAL_LONG_Data[, as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="TestCode"]
 table(FINAL_LONG_Data[, TestCode, SGPPreviousTestCodePARCC1Prior])
 table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", StateAbbreviation])
+table(FINAL_LONG_Data[TestCode=="GEO01" & SGPPreviousTestCodePARCC1Prior=="MAT08", StateAbbreviation])
 FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="StateAbbreviation"]
+FINAL_LONG_Data[TestCode=="GEO01" & SGPPreviousTestCodePARCC1Prior=="MAT08", as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="StateAbbreviation"]
 tbl <- FINAL_LONG_Data[grep("ELA04|ELA05|ELA06|ELA07|ELA08", TestCode), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), by=c("StateAbbreviation", "TestCode")]
 tbl[StateAbbreviation=="MD"]
 
 summary(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", as.numeric(StudentGrowthPercentileComparedtoPARCC)])
-table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", StateAbbreviation]) # No DC students!
+table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA08", StateAbbreviation])
+table(FINAL_LONG_Data[TestCode=="GEO01" & SGPPreviousTestCodePARCC1Prior=="MAT08", StateAbbreviation])
 
 summary(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09", as.numeric(StudentGrowthPercentileComparedtoPARCC)])
-table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09", StateAbbreviation])
+table(FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09", StateAbbreviation]) # No DC students!
+table(FINAL_LONG_Data[TestCode=="GEO01" & SGPPreviousTestCodePARCC1Prior=="ALG01", StateAbbreviation]) # No DC students!
+
 FINAL_LONG_Data[TestCode=="ELA10" & SGPPreviousTestCodePARCC1Prior=="ELA09" & StateAbbreviation %in% c("MD", "NJ", "NM"), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="StateAbbreviation"]
 #  MD still has a high average
 
