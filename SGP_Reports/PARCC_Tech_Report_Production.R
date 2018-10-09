@@ -102,22 +102,22 @@ use.data.table()
 load("../../../Data/PARCC_SGP-Tech_Reports.Rdata")
 
 renderMultiDocument(rmd_input = "PARCC_SGP_Report_2016.Rmd",
-										output_format = c("HTML", "PDF"), # 
+										report_format = c("HTML", "PDF"), # 
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE, 
 										# cleanup_aux_files = FALSE,
 										pandoc_args = "--webtex")
 
 renderMultiDocument(rmd_input = "Appendix_A_2016.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# report_format = c("HTML"),
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										# cleanup_aux_files = FALSE,
 										add_cover_title=TRUE)
 
 renderMultiDocument(rmd_input = "Appendix_C_2016.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# report_format = c("HTML"),
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE)
 
@@ -212,33 +212,40 @@ PARCC_SGP <- prepareSGP(PARCC_LONG_Data, create.additional.variables = FALSE)
 
 save(PARCC_SGP, file="../Data/PARCC_SGP-Tech_Reports_2017.2.Rdata")
 
-setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PARCC/2017")
-
-library(Literasee)
 
 #####
 #####			PARCC Consortium
 #####
 
+library(Literasee)
+
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PARCC/2017")
+
 load("../../../Data/PARCC_SGP-Tech_Reports_2017.2.Rdata")
 
 renderMultiDocument(rmd_input = "PARCC_SGP_Report_2017.Rmd",
-										output_format = c("HTML", "PDF"), # 
+										report_format = c("HTML", "PDF"), # 
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE, 
 										# cleanup_aux_files = FALSE,
 										pandoc_args = "--webtex")
 
 renderMultiDocument(rmd_input = "Appendix_A_2017.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# report_format = c("HTML"),
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										# cleanup_aux_files = FALSE,
 										add_cover_title=TRUE)
 
+renderMultiDocument(rmd_input = "Appendix_B_2017.Rmd",
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# cleanup_aux_files = FALSE,
+										# html_template = 'simple',
+										pandoc_args = "--webtex")
+
 renderMultiDocument(rmd_input = "Appendix_C_2017.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# report_format = c("HTML"),
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE)
 
@@ -265,8 +272,7 @@ setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PAR
 
 
 renderMultiDocument(rmd_input = "Appendix_C_Fall_2017.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE)
 
@@ -377,8 +383,8 @@ load ("../../../Data/PARCC_SGP-Tech_Reports_2018.2.Rdata")
 
 
 renderMultiDocument(rmd_input = "Appendix_C_Spring_2018.Rmd",
-										# output_format = c("HTML"),
-										output_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
+										# report_format = c("HTML"),
+										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE)
 

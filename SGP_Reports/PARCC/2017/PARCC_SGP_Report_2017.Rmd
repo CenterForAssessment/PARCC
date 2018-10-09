@@ -6,7 +6,6 @@ author:
   - name: Adam R. VanIwaarden
   - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
 date: February 1, 2018
-abstract: "DRAFT REPORT - DO NOT CITE! <br></br> This report provides details about the PARCC consortium Student Growth Model methodology and presents a descriptive analysis of the 2017 SGP calculation process and results."
 ---
 
 <!--SGPreport-->
