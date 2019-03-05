@@ -1,0 +1,95 @@
+#########################################
+######### PARCC OUTPUT VALIDATION #######
+#########################################
+
+
+### Bureau_Indian_Affairs Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: NA NA NA NaN NA NA 184
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 184
+
+### Test of SGPRankedSimexState:
+Empty data.table (0 rows) of 8 cols: TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows) of 8 cols: TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Bureau_Indian_Affairs Output Validation   ###
+
+
+
+### Maryland Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.1826424870466 74 99 42178
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 31 57 54.3021640395405 79 99 39979
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1      25     50 49.76425      75   99 1544
+
+
+### Test of SGPRankedSimexPARCC:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1   36.00   62.0 58.35101      82   99 1923
+2:    ALG02    1   33.00   60.0 55.48062      77   99  129
+3:    ELA10    1   45.25   73.5 65.70915      89   99  306
+4:    ELA11    1   22.00   48.0 47.50294      72   99 1362
+5:    GEO01    3   19.50   38.0 44.95652      70   91   23
+
+###   END  Maryland Output Validation   ###
+
+
+
+### New_Jersey Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.43056246889 74 99 17809
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 23 47 47.9390978237904 72 99 16958
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1      25     50 49.96108      75   99 1670
+2:    ALG02    1      25     49 49.58888      74   99 3004
+3:    ELA09    1      25     50 50.01688      75   99 3672
+4:    ELA10    1      25     50 49.81555      75   99 3448
+5:    ELA11    1      25     49 49.81611      75   99 3725
+6:    GEO01    1      25     50 49.70726      75   99 2562
+
+
+### Test of SGPRankedSimexPARCC:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1      19     40 43.22293      65   99 2521
+2:    ALG02    1      24     49 49.39447      75   99 3004
+3:    ELA09    1      24     48 48.42674      73   99 3672
+4:    ELA10    1      23     48 48.53654      73   99 3448
+5:    ELA11    1      24     48 48.84859      74   99 3725
+6:    GEO01    1      25     50 49.73029      74   99 2562
+
+###   END  New_Jersey Output Validation   ###
+
+
+
+### New_Mexico Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: NA NA NA NaN NA NA 14629
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 30 56 54.2565485362096 80 99 12033
+
+### Test of SGPRankedSimexState:
+Empty data.table (0 rows) of 8 cols: TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+
+### Test of SGPRankedSimexPARCC:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.   N
+1:    ALG01    1      26   49.0 51.02273   77.00   99 308
+2:    ALG02    1      25   50.0 49.63582   74.00   99 670
+3:    ELA09    2      52   76.0 68.46894   90.00   99 322
+4:    ELA10    1      24   43.5 45.42405   66.75   99 158
+5:    ELA11    1      35   61.0 58.10630   83.00   99 969
+6:    GEO01    1      22   51.0 50.52071   78.00   99 169
+
+###   END  New_Mexico Output Validation   ###
+

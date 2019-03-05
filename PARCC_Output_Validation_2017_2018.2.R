@@ -58,12 +58,14 @@ for (state in tmp.states) {
     cat(paste("\n### Test of SGPTargetPARCC:", tmp.target.parcc), file="PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
 
     tmp.simex.state <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexState)), as.list(summary(as.numeric(SGPRankedSimexState))), keyby="TestCode"]
+    tmp.simex.state.n <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexState)), list(.N), keyby="TestCode"]
     cat("\n\n### Test of SGPRankedSimexState:\n", file="PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
-    capture.output(tmp.simex.state, file = "PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
+    capture.output(tmp.simex.state[tmp.simex.state.n], file = "PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
 
     tmp.simex.parcc <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexPARCC)), as.list(summary(as.numeric(SGPRankedSimexPARCC))), keyby="TestCode"]
+    tmp.simex.parcc.n <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexPARCC)), list(.N), keyby="TestCode"]
     cat("\n\n### Test of SGPRankedSimexPARCC:\n", file="PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
-    capture.output(tmp.simex.parcc, file = "PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
+    capture.output(tmp.simex.parcc[tmp.simex.parcc.n], file = "PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
 
     cat(paste("\n###   END ", state, "Output Validation   ###\n\n"), file="PARCC_Output_Validation_2017_2018.2.out", append=TRUE)
 
