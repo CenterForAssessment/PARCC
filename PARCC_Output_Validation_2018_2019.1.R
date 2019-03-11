@@ -6,7 +6,7 @@
 ###                                                                          ###
 ################################################################################
 
-cat("#########################################\n", file="PARCC_Output_Validation_2018_2019.1.out")
+cat("#########################################\n", file="PARCC_Output_Validation_2018_2019.1.out")  #X#  /Users/avi/Dropbox (SGP)/Github_Repos/Projects/PARCC/PARCC_Output_Validation_2018_2019.1.out
 cat("######### PARCC OUTPUT VALIDATION #######\n", file="PARCC_Output_Validation_2018_2019.1.out", append=TRUE)
 cat("#########################################\n", file="PARCC_Output_Validation_2018_2019.1.out", append=TRUE)
 
@@ -21,6 +21,7 @@ read.parcc <- function(state, tag, type="OUTPUT") {
   tmp.wd <- getwd()
   if (type=="ORIGINAL") tmp.dir <- "Data/Base_Files" else tmp.dir <- "Data/Pearson"
   tmp.files <- list.files(file.path(state, tmp.dir))
+  if (any(grepl(".xls", tmp.files))) tmp.files <- tmp.files[-grep(".xls", tmp.files)]
   my.file <- gsub(".zip",  "", grep(tag, tmp.files, value=TRUE))
   if (grepl(".zip", grep(tag, tmp.files, value=TRUE))) {
     setwd(tempdir())
@@ -38,6 +39,10 @@ read.parcc <- function(state, tag, type="OUTPUT") {
 for (state in tmp.states) {
     tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D201902", "ORIGINAL")
     tmp.OUTPUT <- read.parcc(state, "2018-2019_Fall_SGP-Results_20190224")
+    # tmp.ORIGINAL1<- read.parcc("Maryland", "2018-2019_SGPO_D201902", "ORIGINAL"); state <- "Maryland"
+    # tmp.ORIGINAL2<- read.parcc(state, "2018-2019_SGPO_D201903", "ORIGINAL")
+    # tmp.ORIGINAL <- rbindlist(list(tmp.ORIGINAL1, tmp.ORIGINAL2))
+    # tmp.OUTPUT <- read.parcc(state, "2018-2019_Fall_SGP-Results_20190307")
     setkey(tmp.ORIGINAL, PARCCStudentIdentifier)
     setkey(tmp.OUTPUT, PARCCStudentIdentifier)
 

@@ -22,10 +22,10 @@ require(data.table)
 # load("./Data/Archive/2017_2018.1/PARCC_SGP_LONG_Data_2017_2018.1.Rdata")
 # load("./Data/Archive/2017_2018.2/PARCC_SGP_LONG_Data_2017_2018.2.Rdata")
 # PARCC_SGP_LONG_Data <- rbindlist(list(PARCC_SGP_LONG_Data_2016_2017.2, PARCC_SGP_LONG_Data_2017_2018.1, PARCC_SGP_LONG_Data_2017_2018.2, PARCC_Data_LONG_2018_2019.1))
-load("/home/ec2-user/SGP/Dropbox (SGP)/SGP/PARCC/PARCC/Data/Archive/2017_2018.2/PARCC_SGP_LONG_Data.Rdata")
+load("./PARCC/Data/Archive/2017_2018.2/PARCC_SGP_LONG_Data.Rdata")
 PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[YEAR %in% c("2016_2017.2", "2017_2018.1", "2017_2018.2")]
 ###  Location of PARCC SQLite Database (Fall 2018 added in Data Prep step)
-parcc.db <- "/home/ec2-user/SGP/Dropbox (SGP)/SGP/PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
+parcc.db <- "./PARCC/PARCC/Data/PARCC_Data_LONG.sqlite"
 
 ###  Read in the Fall 2018 configuration code and combine into a single list.
 
@@ -88,3 +88,39 @@ q("no")
 # table(PARCC_SGP@Data[, is.na(SGP_NOTE), as.character(SGP_NORM_GROUP)])
 table(PARCC_SGP@SGP$SGPercentiles$ELA.2018_2019.1[, is.na(SGP), as.character(SGP_NORM_GROUP)])
 table(PARCC_SGP@SGP$SGPercentiles$ALGEBRA_I.2018_2019.1[, is.na(SGP_NOTE), as.character(SGP_NORM_GROUP)])
+
+
+####
+
+load("./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")
+load("../Maryland/Data/Archive/2018_2019.1/Additional_Maryland_Data_LONG_2018_2019.1.Rdata")
+
+PARCC_SGP <- updateSGP(
+		what_sgp_object = PARCC_SGP,
+		with_sgp_data_LONG = Additional_Maryland_Data_LONG_2018_2019.1[,1:18],
+		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+		sgp.config = PARCC_2018_2019.1.config,
+		sgp.percentiles = TRUE,
+		sgp.projections = FALSE,
+		sgp.projections.lagged = FALSE,
+		sgp.percentiles.baseline = FALSE,
+		sgp.projections.baseline = FALSE,
+		sgp.projections.lagged.baseline = FALSE,
+		# simulate.sgps=FALSE,
+
+		sgp.use.my.coefficient.matrices = TRUE,
+		calculate.simex = list(csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5),
+                        	 simulation.iterations=75, extrapolation="linear",
+													 simex.use.my.coefficient.matrices=TRUE),
+		overwrite.existing.data=FALSE,
+		update.old.data.with.new=TRUE,
+
+		save.intermediate.results = FALSE,
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		outputSGP.directory="./Data/Archive/2018_2019.1",
+    parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(TAUS = workers, SIMEX = workers)))
+
+### Save results
+save(PARCC_SGP, file="./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")

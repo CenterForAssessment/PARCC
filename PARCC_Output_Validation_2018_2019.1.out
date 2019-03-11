@@ -93,3 +93,26 @@ Empty data.table (0 rows) of 8 cols: TestCode,Min.,1st Qu.,Median,Mean,3rd Qu...
 
 ###   END  New_Mexico Output Validation   ###
 
+
+### Maryland Output Validation ###
+
+### Test for Identical PARCCStudentIdentifier in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.1861667744021 74 99 42197
+### Test of StudentGrowthPercentileComparedtoPARCC: 1 30.25 57 54.2808328884143 79 99 39998
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1    24.5     50 49.77828      75   99 1547
+
+
+### Test of SGPRankedSimexPARCC:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1   36.00   62.0 58.36345      82   99 1926
+2:    ALG02    1   33.00   60.0 55.48062      77   99  129
+3:    ELA10    1   45.25   73.5 65.70915      89   99  306
+4:    ELA11    1   22.00   48.0 47.50294      72   99 1362
+5:    GEO01    3   19.50   38.0 44.95652      70   91   23
+
+###   END  Maryland Output Validation   ###
+
+1:    ALG01    1      25     50 49.76425      75   99 1544

@@ -27,7 +27,7 @@ ids <- unique(PARCC_Data_LONG[YEAR=="2018_2019.1", ID])
 Fall_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
 
 ###  States
-# Fall_Data_LONG <- Fall_Data_LONG[StateAbbreviation=="BI"]
+# Fall_Data_LONG <- Fall_Data_LONG[StateAbbreviation=="MD"]
 # BIA (Fall IDs subset?) has no previous fall (2017_2018.1) -- throws off PRIOR_YEAR.2, so it looks like some progressions should work that really don't.
 
 table(Fall_Data_LONG[CONTENT_AREA != "ELA", CONTENT_AREA, YEAR])
@@ -71,11 +71,11 @@ ALG1[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.n
 # 3:                     MATHEMATICS.05     1
 # 4:                     MATHEMATICS.06     1
 # 5:                     MATHEMATICS.07   219
-# 6:                     MATHEMATICS.08  3472
+# 6:                     MATHEMATICS.08  3475 (+3)
 
 ###   All listed
 ###   BI - None
-###   MD - MATHEMATICS.08 1544
+###   MD - MATHEMATICS.08 1547 (+3)
 ###   NJ - MATHEMATICS.08 1670
 ###   NM - None > 1000
 
@@ -84,7 +84,7 @@ ALG1[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.n
 ALG1[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c("CONTENT_AREA_by_GRADE_PRIOR_YEAR.2")][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.2)]
 
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 Total
-# 1:                     ALGEBRA_I.EOCT  1132  XXX  Exclude repeater analyses
+# 1:                     ALGEBRA_I.EOCT  1133  XXX  Exclude repeater analyses (+1)
 # 2:                    ALGEBRA_II.EOCT    21  XXX  Exclude regressor analyses
 # 3:                      GEOMETRY.EOCT    33  XXX  Include for SGP_NOTE
 
@@ -96,11 +96,11 @@ ALG1[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c
 # 2:                      GEOMETRY.EOCT                     ALGEBRA_I.EOCT   861
 # 3:                     MATHEMATICS.07                     MATHEMATICS.06   207
 # 4:                     MATHEMATICS.08                               <NA>   134
-# 5:                     MATHEMATICS.08                     MATHEMATICS.07  3321   YYY  3472 w/ at least 8th grade
+# 5:                     MATHEMATICS.08                     MATHEMATICS.07  3323   YYY  3472 w/ at least 8th grade (+2)
 
 ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="MATHEMATICS.08" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.07"]
 ###   8th and 7th Grade Math
-###   MD - MATHEMATICS.08  <->  MATHEMATICS.07 1501
+###   MD - MATHEMATICS.08  <->  MATHEMATICS.07 1504 (+3)
 ###   NJ - MATHEMATICS.08  <->  MATHEMATICS.07 1580
 
 ALG1[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="MATHEMATICS.06", list(Total=sum(COUNT))] #    1
@@ -228,7 +228,7 @@ sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #    129 (repeaters)
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #   2387
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09" & !CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 %in% "ELA.08"]$COUNT)  #  274
-sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  12280 (repeaters) (mostly MD - 11663)
+sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  12283 (repeaters) (mostly MD - 11666) (+3)
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #   3720
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10" & !CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 %in% "ELA.09"]$COUNT)  # 1854  YYY  1849
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.11"]$COUNT)   #   5772 (repeaters) (mostly NM (+ NJ))
@@ -245,7 +245,7 @@ sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.09"]$COUNT)   #  1536
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.09"]$COUNT)   #  1507
 table(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2 == "ELA.09",  CONTENT_AREA_by_GRADE_PRIOR_YEAR.1])  # Some 9th & 10th.  Exclude in future?
-sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.10"]$COUNT)   #  2847 (repeaters)
+sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.10"]$COUNT)   #  2851 (repeaters) (+4)
 
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.10"]$COUNT)   #  2552  YYY   2483
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1) & CONTENT_AREA_by_GRADE_PRIOR_YEAR.2=="ELA.10"]$COUNT)   #  1942
