@@ -40,10 +40,14 @@ PARCC_Data_LONG_2018_2019.1 <- rbindlist(list(
   fread("Bureau_Indian_Affairs/Data/Base_Files/PARCC_BI_2018-2019_SGPO_D20190214.csv", colClasses=rep("character", length(all.var.names))),
   fread("Maryland/Data/Base_Files/PARCC_MD_2018-2019_SGPO_D20190215.csv", colClasses=rep("character", length(all.var.names))),
   fread("Maryland/Data/Base_Files/PARCC_MD_2018-2019_SGPO_D20190304.csv", colClasses=rep("character", length(all.var.names))),
-  fread("New_Jersey/Data/Base_Files/PARCC_NJ_2018-2019_SGPO_D20190212.csv", colClasses=rep("character", length(all.var.names))),
+  fread("New_Jersey/Data/Base_Files/PARCC_NJ_2018-2019_SGPO_D20190325.csv", colClasses=rep("character", length(all.var.names))),
   fread("New_Mexico/Data/Base_Files/PARCC_NM_2018-2019_SGPO_D20190214.csv", colClasses=rep("character", length(all.var.names)))))[, parcc.var.names, with=FALSE]
 
 # PARCC_Data_LONG_2018_2019.1 <- fread("Maryland/Data/Base_Files/PARCC_MD_2018-2019_SGPO_D20190304.csv", colClasses=rep("character", length(all.var.names))) #  Use this to create `Additional_Maryland_Data_LONG_2018_2019.1`
+# PARCC_Data_LONG_2018_2019.1 <- fread("New_Jersey/Data/Base_Files/PARCC_NJ_2018-2019_SGPO_D20190325.csv", colClasses=rep("character", length(all.var.names))) #  Use this to create `New_Jersey_Data_LONG_2018_2019.1`
+## Keep all of NJ data!  Need all cases to get Accurate SIMEX/RANKED_SIMEX values.
+## njo <- fread("New_Jersey/Data/Base_Files/PARCC_NJ_2018-2019_SGPO_D20190212.csv", colClasses=rep("character", length(all.var.names)))
+## PARCC_Data_LONG_2018_2019.1 <- PARCC_Data_LONG_2018_2019.1[!PARCC_Data_LONG_2018_2019.1$StudentTestUUID %in% njo$StudentTestUUID]
 
 setkey(PARCC_Data_LONG_2018_2019.1, PARCCStudentIdentifier, TestCode, Period)
 
@@ -164,6 +168,9 @@ save(PARCC_Data_LONG_2018_2019.1, file = "./PARCC/Data/Archive/2018_2019.1/PARCC
 
 # Additional_Maryland_Data_LONG_2018_2019.1 <- PARCC_Data_LONG_2018_2019.1 #  Format additional data seperately for `updateSGP` of PARCC_SGP object
 # save(Additional_Maryland_Data_LONG_2018_2019.1, file = "./Maryland/Data/Archive/2018_2019.1/Additional_Maryland_Data_LONG_2018_2019.1.Rdata")
+
+# New_Jersey_Data_LONG_2018_2019.1 <- PARCC_Data_LONG_2018_2019.1[,1:18] #  Format additional data seperately for `updateSGP` of PARCC_SGP object
+# save(New_Jersey_Data_LONG_2018_2019.1, file = "./New_Jersey/Data/Archive/2018_2019.1/New_Jersey_Data_LONG_2018_2019.1.Rdata")
 
 
 #####  Add Fall 2018 LONG data to existing SQLite Database.  Tables stored by each year / period

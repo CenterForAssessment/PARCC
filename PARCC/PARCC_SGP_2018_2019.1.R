@@ -95,6 +95,8 @@ table(PARCC_SGP@SGP$SGPercentiles$ALGEBRA_I.2018_2019.1[, is.na(SGP_NOTE), as.ch
 load("./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")
 load("../Maryland/Data/Archive/2018_2019.1/Additional_Maryland_Data_LONG_2018_2019.1.Rdata")
 
+###   updateSGP
+
 PARCC_SGP <- updateSGP(
 		what_sgp_object = PARCC_SGP,
 		with_sgp_data_LONG = Additional_Maryland_Data_LONG_2018_2019.1[,1:18],
@@ -107,6 +109,59 @@ PARCC_SGP <- updateSGP(
 		sgp.projections.baseline = FALSE,
 		sgp.projections.lagged.baseline = FALSE,
 		# simulate.sgps=FALSE,
+
+		sgp.use.my.coefficient.matrices = TRUE,
+		calculate.simex = list(csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5),
+                        	 simulation.iterations=75, extrapolation="linear",
+													 simex.use.my.coefficient.matrices=TRUE),
+		overwrite.existing.data=FALSE,
+		update.old.data.with.new=TRUE,
+
+		save.intermediate.results = FALSE,
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		outputSGP.directory="./Data/Archive/2018_2019.1",
+    parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(TAUS = workers, SIMEX = workers)))
+
+### Save results
+save(PARCC_SGP, file="./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")
+
+
+####
+
+load("./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")
+load("./Data/Archive/2018_2019.1/PARCC_Data_LONG_2018_2019.1.Rdata")
+
+PARCC_SGP@Data <- PARCC_SGP@Data[YEAR!="2018_2019.1",]
+PARCC_SGP@SGP$Goodness_of_Fit <- PARCC_SGP@SGP$Goodness_of_Fit[-grep("ELA|GEOM", names(PARCC_SGP@SGP$Goodness_of_Fit))]
+PARCC_SGP@SGP$Simulated_SGPs <- PARCC_SGP@SGP$Simulated_SGPs[-grep("ELA|GEOM", names(PARCC_SGP@SGP$Simulated_SGPs))]
+
+PARCC_SGP@SGP$SGPercentiles <- PARCC_SGP@SGP$SGPercentiles[-grep("ELA|GEOM", names(PARCC_SGP@SGP$SGPercentiles))] #  Remove ELA SGPs - no SGP_NOTE
+
+###   Remove original GEOMETRY SGPercentiles EXCEPT the progressions with SGP_NOTE (fewer than 1000 kids)
+for (n in grep("GEOMETRY", names(PARCC_SGP@SGP$SGPercentiles), value=TRUE)) {
+  if (any(grepl("SGP_NOTE", names(PARCC_SGP@SGP$SGPercentiles[[n]])))) {
+    PARCC_SGP@SGP$SGPercentiles[[n]] <- PARCC_SGP@SGP$SGPercentiles[[n]][!is.na(SGP_NOTE)]
+    PARCC_SGP@SGP$SGPercentiles$Most_Recent_Prior <- NULL
+  } else {
+    PARCC_SGP@SGP$SGPercentiles[[n]] <- NULL
+  }
+}
+
+###   updateSGP
+
+PARCC_SGP <- updateSGP(
+		what_sgp_object = PARCC_SGP,
+		with_sgp_data_LONG = PARCC_Data_LONG_2018_2019.1,
+		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+		sgp.config = PARCC_2018_2019.1.config, #  ELA and GEOM only
+		sgp.percentiles = TRUE,
+		sgp.projections = FALSE,
+		sgp.projections.lagged = FALSE,
+		sgp.percentiles.baseline = FALSE,
+		sgp.projections.baseline = FALSE,
+		sgp.projections.lagged.baseline = FALSE,
 
 		sgp.use.my.coefficient.matrices = TRUE,
 		calculate.simex = list(csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5),

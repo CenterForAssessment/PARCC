@@ -7,6 +7,8 @@
 if (!exists("sgp.test")) sgp.test <- FALSE
 workers <- parallel::detectCores()/2
 
+later:::ensureInitialized()
+
 ###   Load Packages
 
 require(SGP)
@@ -48,9 +50,9 @@ New_Jersey_SGP <- abcSGP(
 			parcc.db = "../PARCC/Data/PARCC_Data_LONG.sqlite",
 			prior.years=c("2017_2","2018_1", "2018_2"),
 			current.year="2019_1"),
-		sgp.config = PARCC_2018_2019.1.config,
 		steps=c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
 		prepareSGP.create.additional.variables=FALSE,
+		sgp.config = PARCC_2018_2019.1.config,
 		sgp.percentiles=TRUE,
 		sgp.projections=FALSE,
 		sgp.projections.lagged=FALSE,

@@ -23,10 +23,10 @@ read.parcc <- function(state, tag, type="OUTPUT") {
   tmp.files <- list.files(file.path(state, tmp.dir))
   if (any(grepl(".xls", tmp.files))) tmp.files <- tmp.files[-grep(".xls", tmp.files)]
   my.file <- gsub(".zip",  "", grep(tag, tmp.files, value=TRUE))
+
   if (grepl(".zip", grep(tag, tmp.files, value=TRUE))) {
     setwd(tempdir())
     system(paste0("unzip '", file.path(tmp.wd, state, tmp.dir, paste0(my.file, ".zip")), "'"))
-
   	TMP <- fread(my.file, sep=",", colClasses=rep("character", 57))
   	unlink(my.file, recursive = TRUE)
   	setwd(tmp.wd)
@@ -43,6 +43,8 @@ for (state in tmp.states) {
     # tmp.ORIGINAL2<- read.parcc(state, "2018-2019_SGPO_D201903", "ORIGINAL")
     # tmp.ORIGINAL <- rbindlist(list(tmp.ORIGINAL1, tmp.ORIGINAL2))
     # tmp.OUTPUT <- read.parcc(state, "2018-2019_Fall_SGP-Results_20190307")
+    # tmp.ORIGINAL<-read.parcc("New_Jersey", "2018-2019_SGPO_D201903", "ORIGINAL")
+    # tmp.OUTPUT <- read.parcc("New_Jersey", "2018-2019_Fall_SGP-Results_20190327")
     setkey(tmp.ORIGINAL, PARCCStudentIdentifier)
     setkey(tmp.OUTPUT, PARCCStudentIdentifier)
 

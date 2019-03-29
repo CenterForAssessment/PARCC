@@ -27,7 +27,7 @@ ids <- unique(PARCC_Data_LONG[YEAR=="2018_2019.1", ID])
 Fall_Data_LONG <- PARCC_Data_LONG[ID %in% ids,]
 
 ###  States
-# Fall_Data_LONG <- Fall_Data_LONG[StateAbbreviation=="MD"]
+# Fall_Data_LONG <- Fall_Data_LONG[StateAbbreviation=="NJ"]
 # BIA (Fall IDs subset?) has no previous fall (2017_2018.1) -- throws off PRIOR_YEAR.2, so it looks like some progressions should work that really don't.
 
 table(Fall_Data_LONG[CONTENT_AREA != "ELA", CONTENT_AREA, YEAR])
@@ -121,7 +121,7 @@ GEOM[COUNT > 100]  #  Major progressions
 ###   Viable 1 Prior (Spring 18) GEOMETRY Progressions
 GEOM[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1)]
 #    CONTENT_AREA_by_GRADE_PRIOR_YEAR.1   Total
-# 1:                     ALGEBRA_I.EOCT   2754
+# 1:                     ALGEBRA_I.EOCT   2755 (+1)
 # 2:                    ALGEBRA_II.EOCT    698
 # 3:             INTEGRATED_MATH_1.EOCT     75
 # 4:             INTEGRATED_MATH_2.EOCT     12
@@ -130,7 +130,7 @@ GEOM[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!is.n
 
 ###   All listed - Establish configs with ALGEBRA_II, Int Maths & Math 8 for the SGP_NOTE variables
 ###   MD - None > 1000
-###   NJ - ALGEBRA_I.EOCT  2562
+###   NJ - ALGEBRA_I.EOCT  2563 (+1)
 ###   NM - None > 1000
 
 
@@ -152,11 +152,11 @@ GEOM[!is.na(CONTENT_AREA_by_GRADE_PRIOR_YEAR.1), list(Total=sum(COUNT)), keyby=c
 # 1:                     ALGEBRA_I.EOCT                               <NA>   353
 # 2:                     ALGEBRA_I.EOCT                     ALGEBRA_I.EOCT   161
 # 3:                     ALGEBRA_I.EOCT                     MATHEMATICS.07   730
-# 4:                     ALGEBRA_I.EOCT                     MATHEMATICS.08  1480
+# 4:                     ALGEBRA_I.EOCT                     MATHEMATICS.08  1481 (+1)
 # 5:                    ALGEBRA_II.EOCT                     ALGEBRA_I.EOCT   370
 # 6:                    ALGEBRA_II.EOCT                      GEOMETRY.EOCT   198
 
-###   NJ - ALGEBRA_I.EOCT  <->  MATHEMATICS.08  1449
+###   NJ - ALGEBRA_I.EOCT  <->  MATHEMATICS.08  1450 (+1)
 
 ###   Algebra I and 8th Grade Math, with exclusions
 GEOM[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ALGEBRA_I.EOCT" & CONTENT_AREA_by_GRADE_PRIOR_YEAR.3=="MATHEMATICS.08"]
@@ -226,7 +226,7 @@ names(ela.prog$BACKWARD[['2018_2019.1']])
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.08"]$COUNT)   #   3994
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.08" & !CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 %in% "ELA.07"]$COUNT)  #  177
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.09[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #    129 (repeaters)
-sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #   2387
+sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09"]$COUNT)   #   2388 (+1)
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.09" & !CONTENT_AREA_by_GRADE_PRIOR_YEAR.3 %in% "ELA.08"]$COUNT)  #  274
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.10[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #  12283 (repeaters) (mostly MD - 11666) (+3)
 sum(ela.prog$BACKWARD[['2018_2019.1']]$ELA.11[CONTENT_AREA_by_GRADE_PRIOR_YEAR.1=="ELA.10"]$COUNT)   #   3720
