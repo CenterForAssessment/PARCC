@@ -367,6 +367,10 @@ setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports")
 
 PARCC_SGP <- prepareSGP(PARCC_LONG_Data, create.additional.variables = FALSE)
 
+
+load("./Data/Archive/2017_2018.2/PARCC_SGP.Rdata")
+PARCC_SGPercentiles <- PARCC_SGP@SGP$SGPercentiles
+save(PARCC_SGPercentiles, file="/media/Data/Dropbox (SGP)/Github_Repos/Documentation/PARCC/Data/PARCC_SGPercentiles_2018.2.rda")
 save(PARCC_SGP, file="../Data/PARCC_SGP-Tech_Reports_2018.2.Rdata")
 
 ###
@@ -382,9 +386,13 @@ setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PAR
 load ("../../../Data/PARCC_SGP-Tech_Reports_2018.2.Rdata")
 
 
+renderMultiDocument(rmd_input = "PARCC_SGP_Report_Spring_2018.Rmd",
+										report_format = c("HTML", "PDF"))
+
+renderMultiDocument(rmd_input = "Appendix_B_2018.Rmd",
+									report_format = c("HTML", "PDF"),
+									pandoc_args = "--webtex")
+
 renderMultiDocument(rmd_input = "Appendix_C_Spring_2018.Rmd",
-										# report_format = c("HTML"),
-										report_format = c("HTML", "PDF"), #, "EPUB", "DOCX"
-										cover_img="../img/cover.jpg",
-										add_cover_title=TRUE)
+										report_format = c("HTML", "PDF"))
 

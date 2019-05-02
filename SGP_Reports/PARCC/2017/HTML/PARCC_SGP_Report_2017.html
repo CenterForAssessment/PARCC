@@ -146,7 +146,7 @@ LaTeX_End -->
 <p>Growth analyses of assessment data require test scores that are linked to individual students over time. Student growth percentile analyses require, at a minimum two (and preferably more) years of assessment data for analysis of student progress. To this end it is necessary that a unique student identifier be available so that student data records across years can be merged with one another and subsequently examined.</p>
 <p>Table 1 shows the number of valid grade level student records available for analysis after applying a set of general business rules. The final raw data submissions provided by Pearson contained no duplicate records or other problematic cases, and therefore these records are all considered valid for use in the SGP models.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="11" style="text-align: left;">
@@ -293,7 +293,7 @@ LaTeX_End -->
 LaTeX_End -->
 <p>Table 2 shows the total number of valid EOCT student records from spring 2017 available for analysis.</p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="2" style="text-align: left;">
@@ -436,11 +436,12 @@ LaTeX_End -->
 <div id="specify-sgp-configurations" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Specify SGP configurations</h3>
 <p>Many SGP analyses are specialized enough that it is necessary to specify each analyses to be performed via explicit configuration code. Such configurations were required to conduct the EOCT mathematics SGP analyses for the PARCC consortium. Although not necessary for the grade level content areas, explicit configuration code were also used for these analyses to provide greater coding consistency and allow for all analyses to be run concurrently.</p>
-<p>Configurations are <code>R</code> code scripts that are used primarily in the SGP analysis to be discussed later, but are also used initially to construct the norm group preference object prior to analysis. They are broken up into four separate <code>R</code> scripts based on content domain (ELA and mathematics) and test score metric (IRT theta and scaled scores). Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined. Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level. Therefore, every configuration used contains the first three elements and some analyses also contain the fourth and/or fifth elements:</p>
+<p>Configurations are <code>R</code> code scripts that are used primarily in the SGP analysis to be discussed later, but are also used initially to construct the norm group preference object prior to analysis. They are broken up into four separate <code>R</code> scripts based on content domain (ELA and mathematics) and test score metric (IRT theta and scaled scores). Each configuration code chunk specifies a set of parameters that defines the norm group of students to be examined. Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level. Therefore, every configuration used contains the first three elements and some analyses also contain the fourth through sixth elements:</p>
 <ul>
 <li><strong><code>sgp.content.areas</code>:</strong> The ordered progression of content areas to be looked at.</li>
 <li><strong><code>sgp.panel.years</code>:</strong> The progression of the years associated with the content area progression (<code>sgp.content.areas</code>), potentially allowing for skipped or repeated years, fall to spring within year analyses, etc. Because some PARCC states administer tests in both Fall and Spring, a season or period indicator is required as well. This is encoded here as either a “.1” or “.2” suffix to the academic year (“2016_2017.1” for Fall 2016 and “2016_2017.2” for Spring 2017).</li>
 <li><strong><code>sgp.grade.sequences</code>:</strong> The grade progression associated with the configuration content areas and years. The value <strong>‘EOCT’</strong> stands for ‘End Of Course Test’. The use of the generic ‘EOCT’ allows for secondary students to be compared based on the pattern of course taking rather than being dependent upon grade-level designation.</li>
+<li><strong><code>sgp.exact.grade.progression</code>:</strong> When set to <code>TRUE</code>, this element will force the lower level functions to analyze <em>only</em> the progression as specified in its entirety. Otherwise these functions will analyze subsets of the progression for every possible order (i.e. each number of prior time periods of data available). When set to <code>TRUE</code>, a norm group preference system is usually required as well.</li>
 <li><strong><code>sgp.projection.grade.sequences</code>:</strong> This element is used to identify the grade sequence that will be used to produce student growth projections. It can either be left out or set explicitly to <code>NULL</code> to produce projections based on the values provided in the <code>sgp.content.areas</code> and <code>sgp.grade.sequences</code> elements. Alternatively, when set to “<code>NO_PROJECTIONS</code>”, no projections will be produced. For EOCT analyses, only configurations that correspond to the canonical course progressions can produce student growth projections. The canonical progressions are codified in the <code>SGP</code> package here: <a href="https://github.com/CenterForAssessment/SGPstateData/blob/052fc248ffa7fbe196cb75a58efdfac3cfae3c1d/SGPstateData.R#L115"><code>SGPstateData[[&quot;PARCC&quot;]][[&quot;SGP_Configuration&quot;]][[&quot;content_area.projection.sequence&quot;]]</code></a>. Note also that grade level Mathematics can have two different EOCT trajectories - one that follows the Integrated Math courses and another that goes from Algebra I to Geometry to Algebra II.<br />
 </li>
 <li><strong><code>sgp.norm.group.preference</code>:</strong> Because a student can potentially be included in more than one analysis/configuration, multiple SGPs will be produced for some students and a system is required to identify the preferred SGP that will be matched with the student in the <code>combineSGP</code> step. This argument provides a numeric ranking that specifies how preferable SGPs produced from the analysis in question is relative to other possible analyses. <strong><em>Lower numbers correspond with higher preference.</em></strong></li>
@@ -607,7 +608,7 @@ LaTeX_End -->
 <div id="grade-level-subjects" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Grade level subjects</h3>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="6" style="text-align: left;">
@@ -929,7 +930,7 @@ LaTeX_End -->
 <p>Each EOCT subject is analyzed using more than one sequence of prior subjects, grades and years, and these unique progressions are disaggregated in Table 4 using the most recent prior available for each norm group (although more prior years’ scores can be used in SGP calculations when available). Unless otherwise noted, all priors are from the Spring of 2016. The correlations between current EOCT and prior test score are generally lower than in the grade level norm groups, and overall lower correlations may be expected in EOCT subjects due to the change in specific subject from one course to the next.</p>
 <p>The relationships between growth and prior achievement reported in Table 4 are still non-existent for cohort referenced SGPs and slightly negative after SIMEX correction. These results are as expected for appropriate fit to the respective models as discussed in the grade level section above.</p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="6" style="text-align: left;">
@@ -1263,7 +1264,7 @@ LaTeX_End -->
 <p>Growth percentiles, being quantities associated with each individual student, can be easily summarized across numerous grouping indicators to provide summary results regarding growth. The median and mean of a collection of growth percentiles are used as measures of central tendency that summarize the distribution as a single number. With perfect data fit, we expect the consortium-wide median of all student growth percentiles in any grade to be 50 because the data are norm-referenced across all students in PARCC. Median (and mean) growth percentiles well below 50 represent growth less than the consortium “average” and median growth percentiles well above 50 represent growth in excess of the PARCC “average”.</p>
 <p>To demonstrate the norm-referenced nature of the growth percentiles viewed at the consortium level, Tables 5 and 6 present the cohort-referenced growth percentile medians and means for the grade level and EOCT content areas respectively.</p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="10" style="text-align: left;">
@@ -1396,7 +1397,7 @@ Mathematics&&50 (50)&50 (50)&50 (50)&50 (50)&50 (50)&&&\tabularnewline
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="3" style="text-align: left;">
@@ -1501,7 +1502,7 @@ LaTeX_End -->
 <p>The use of error-prone standardized test scores in statistical models can lead to numerous problems. Understanding the effects of measurement error and correcting for it is particularly difficult in the SGP model given that it is based on non-parametric quantile regression. Preliminary investigations suggest that the use of error-prone measures may lead SGP estimates to be inflated for students with high prior achievement and underestimated for students with lower prior achievement. This bias at the individual student-level can translate to bias in aggregate measures (such as median and mean SGPs) when student sorting based on prior achievement exists at the level of aggregation (e.g. classrooms or schools). As a result, growth and prior achievement are (positively) correlated, giving schools and teachers with higher achieving students an undue advantage and disadvantaging those with lower achieving students <span class="citation">(Shang et al., 2015)</span>.</p>
 <p>Simulation-extrapolation (SIMEX) methods of correcting for measurement error induced bias in the SGP estimation has been proposed and tested in other states. This correction has been applied to the 2017 SGPs in addition to a system of ranking the SIMEX SGPs in order to improve some student level properties of the growth measure <span class="citation">(Castellano &amp; McCaffrey, 2017)</span>. Descriptive statistics from the uncorrected and Ranked SIMEX corrected SGP results are both presented here. The interested reader can find more in depth discussions of the SGP methodology in the <a href="https://github.com/CenterForAssessment/SGP_Resources/tree/master/articles">available literature</a>, and information about the SIMEX measurement error correction methodology is available in recent academic articles <span class="citation">(Castellano &amp; McCaffrey, 2017; Shang et al., 2015)</span>.</p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="10" style="text-align: left;">
@@ -1634,7 +1635,7 @@ Mathematics&&50 (50)&50 (50.1)&50 (50)&50 (50)&50 (50)&&&\tabularnewline
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="3" style="text-align: left;">
@@ -1744,7 +1745,7 @@ LaTeX_End -->
 <p>In this section we aggregate test score and SGP results by state. At present, district, school or other group identification has not been attached to the student records provided to the Center for Assessment. Smaller group level analyses are therefore left to the individual consortium members to perform. In addition to mean SGP values, mean prior test scores are given using both the IRT Theta and PARCC scale metrics. This mean prior achievement value is given further context by providing percentile value it corresponds with in that test score distribution.</p>
 <p>Summary values are provided in the following tables only when a state has <em>1,000 students or greater</em> in a norm group. A randomized (i.e. non-alphabetical) letter has been attached to each state in order to protect the identity of the member states. As in previous tables of SGP results in this report, ELA and Mathematics results are disaggregated by grade level and EOCT Math tables are disaggregated by the most recent prior ensuring that all SGPs included in the summary statistics include only results from one analysis (norm group). Tables for the Integrated Mathematics SGPs are not presented as only two states had any one cohort with greater than 1,000 students, and therefore presenting these tables may compromise state anonymity.</p>
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -2354,7 +2355,7 @@ H
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -3020,7 +3021,7 @@ LaTeX_End -->
 \pagebreak
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -3630,7 +3631,7 @@ H
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -4007,7 +4008,7 @@ H
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -4410,7 +4411,7 @@ H
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">
@@ -4626,7 +4627,7 @@ H
 
 LaTeX_End -->
 <!-- HTML_Start -->
-<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;" id="table_0">
+<table class="gmisc_table breakboth" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
 <td colspan="7" style="text-align: left;">

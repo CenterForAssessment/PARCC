@@ -5,8 +5,7 @@ author:
   - name: Adam R. VanIwaarden
   - name: Damian W. Betebenner
   - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
-date: July 2018
-abstract: "DRAFT REPORT - DO NOT CITE!"
+date: December 31, 2018
 ---
 
 <!--SGPreport-->
@@ -18,7 +17,7 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 	require(data.table)
 
   ## set a universal Cache path
-  knitr::opts_chunk$set(cache.path = "_cache/Appendix_C_Fall_2017", fig.path="../img/Appendices/Appendix_C_Fall_2017/")
+  knitr::opts_chunk$set(cache.path = "_cache/Appendix_C_Spring_2018", fig.path="../img/Appendices/Appendix_C_Spring_2018/")
 
   ##  Set Table, Figure and Equation Counters
   options(table_counter=FALSE)
@@ -28,12 +27,12 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
   options(fig_caption_no_sprintf = "**Fig. C.%s:** %s")
 	options("equation_counter" = 0)
 	
-  subject_order<-c("ELA",
+  subject_order<-c("ELA", "MATHEMATICS",
 									 "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II")
-	GL_subjects <- c("ELA")
-	EOCT_subjects <-c("ALGEBRA_I", "ALGEBRA_II", "GEOMETRY")
+	GL_subjects <- c("ELA", "MATHEMATICS")
+	EOCT_subjects <-c("ALGEBRA_I", "GEOMETRY", "ALGEBRA_II")
 
-	prior.year <- c("2016_2017.2", "2017_2018.1")
+	prior.year <- c("2015_2016.2", "2016_2017.2", "2017_2018.1")
 	current.year <- "2017_2018.2"
 
 	###  Set up long data
@@ -73,14 +72,15 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 	condDistPlot <- function(ca, g, prior.ca = NULL) {
 		tmp.curnt.year <- paste(rev(strsplit(gsub("[.]1", "__Fall", (gsub("[.]2", "__Spring", strsplit(current.year, "_")[[1]][2]))), "__")[[1]]), collapse = " ")
 		if (!is.null(prior.ca)) {
-			tmp.prior.year <- paste(rev(strsplit(gsub("[.]1", "__Fall", (gsub("[.]2", "__Spring", strsplit(strsplit(prior.ca, "/")[[1]][1],
-																	"_")[[1]][2]))), "__")[[1]]), collapse = " ")
+			tmp.prior.year <- paste(rev(strsplit(gsub("[.]1", "__Fall", (gsub("[.]2", "__Spring", 
+																	strsplit(strsplit(prior.ca, "/")[[1]][1], "_")[[1]][2]))), "__")[[1]]), collapse = " ")
 			x.lab <- paste(tmp.prior.year, c(sapply(strsplit(prior.ca, "/")[[1]][2], capwords)), collapse = " ") #"First Prior:", 
 			x.lab <- gsub(" Eoct", "", x.lab)
 			x.lab <- gsub(" EOCT", "", x.lab)
 			x.lab <- gsub(" 8", " Grade 8", x.lab)
 			x.lab <- gsub(" 7", " Grade 7", x.lab)
 			x.lab <- gsub(" 6", " Grade 6", x.lab)
+			x.lab <- gsub("Fall 2018", "Fall 2017", x.lab)
 		}
 		if (g == "EOCT") {
 			tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & Most_Recent_Prior==prior.ca & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR, LOSS_25, HOSS_25, SGP, SGP_NORM_GROUP))
@@ -101,18 +101,20 @@ abstract: "DRAFT REPORT - DO NOT CITE!"
 		tmp.bnds <- extendrange(tmp.data$SCALE_SCORE_PRIOR, f=0.1)
 		tmp.x.scale <- extendrange(tmp.data$SCALE_SCORE_PRIOR, f=0.05)
 		tmp.y.scale <- extendrange(tmp.data$SCALE_SCORE, f=0.05) # 0.1 if using 1st and 99th percentiles in geom_quantile
-		
+		if (tmp.y.scale[1] >= 0) y.n.scale <- 1.1 else y.n.scale <- 0.85
+
 		ggplot(NULL, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE, label=SGP)) + # NULL data to use different data sets below ## , fill=SGP_NORM_GROUP
 			theme_bw() + xlim(tmp.x.scale) + ylim(tmp.y.scale) +
 			geom_text(data=tmp.pnts, size=2.75, alpha=0.65) + #, position=position_jitter(tmp.w, tmp.h)
-			geom_quantile(data=tmp.data, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE), quantiles = c(0.05, 0.5, 0.95), colour="magenta", formula = y ~ splines::bs(x, knots=tmp.knots, Boundary.knots = tmp.bnds)) +
+			geom_quantile(data=tmp.data, aes(x=SCALE_SCORE_PRIOR, y=SCALE_SCORE), quantiles = c(0.05, 0.5, 0.95), 
+										colour="magenta", formula = y ~ splines::bs(x, knots=tmp.knots, Boundary.knots = tmp.bnds)) +
 			geom_rug(data=tmp.data, sides="tb", size=0.05, col=rgb(0,0,0.8, alpha=0.1)) + 
 			geom_rug(data=tmp.data, sides="rl", size=0.05, col=rgb(0.8,0,0, alpha=0.1)) +
 			stat_density2d(data=tmp.data, geom="density2d",  aes(alpha = ..level..), colour="green", contour = TRUE) + #, size=1
 			geom_hline(data=tmp.pnts, aes(yintercept=LOSS_25), colour="red", linetype="dotted") +
 			geom_hline(data=tmp.pnts, aes(yintercept=HOSS_25), colour="red", linetype="dotted") +
 			annotate("text", label = paste0("N = ", prettyNum(nrow(tmp.data), preserve.width = "individual", big.mark=",")), 
-							 x = tmp.x.scale[2]*0.9, y = tmp.y.scale[1]*1.1, size = 3.5, colour = "red") +
+							 x = tmp.x.scale[2]*0.6, y = tmp.y.scale[1]*y.n.scale, size = 3.0, colour = "red") +
 			labs(y = y.lab, x = x.lab) + theme(axis.title=element_text(size=10, face="bold"), legend.position="none")
 	}
 
@@ -175,101 +177,150 @@ Ceiling and floor effects are a common characteristic of many standardized asses
 
 With perfect data and model fit, the expectation is that the majority of SGPs for students scoring at or near the lowest obtainable scale score (LOSS) will be low (preferably less than 5 and not higher than 20), and that SGPs for students with the highest obtainable scale score (HOSS) will be high (higher than 95 and not less than 80).  Ceiling effects in growth measures are somewhat more problematic than floor effects because students that consistently receive the highest scores are given lower than expected growth percentiles and are therefore negatively impacted.  Conversely, the consistently lowest achieving students have higher estimated SGPs than expected.  This could possibly conceal unacceptably low growth that might otherwise be identified and addressed.
 
-In general these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were given a relatively easy test and 20% of them received a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile of achievement because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99<sup>th</sup> percentile under an equally valid definition.
+In part, these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were given a relatively easy test and 20% of them received a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile of achievement because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99.9<sup>th</sup> percentile under other equally valid definitions.
 
 To extend this heuristic from achievement to growth, if 50% of those top students also scored perfectly on the next test, we might estimate that they had 50<sup>th</sup> percentile growth.  Although there is nothing *technically* incorrect about this estimate since their growth is fairly typical for their academic peer group, it is an inadequate or unsatisfactory assessment of their growth because they have consistently attained the highest levels.  Furthermore, if it is typical for their peers to maintain perfect scores then even small deviations from a perfect score could produce *low growth* SGP estimates.
 
-Typically only a few students are impacted by ceiling and floor effects, making them difficult to detect using traditional SGP diagnostic tools.  The Center for Assessment has now added "Ceiling/Test Effects" indicators to the SGP model goodness of fit plots and is providing all clients even more rigorous diagnostic and descriptive analyses through this Appendix to the annual technical report.  This report includes:
+Typically only a few students are impacted by ceiling and floor effects, making them difficult to detect using traditional SGP diagnostic tools.  The Center for Assessment has recently added "Ceiling/Test Effects" indicators to the SGP model goodness of fit plots and is providing all clients even more rigorous diagnostic and descriptive analyses through this Appendix to the annual technical report.  This report includes:
 
 1. Scatter plots of the current and the most recent prior year's test score distributions to indicate ceilings or floors in the data used in growth calculations.
-2. Box plots showing the range and distribution of SGPs for *only* the highest and lowest achieving students in the current year.
+2. Box plots showing the range and distribution of SGPs for *only* the highest and lowest achieving students in the current year.^[Ranked SIMEX measurement error corrected SGPs are the "official" SGP in Georgia, and are used exclusively in this report.]
 
 
-```{r, cache=FALSE, results="asis", echo=FALSE}
-	Literasee:::pageBreak()
-```
+`r pageBreak()`
 
 
-# Prior and Current Year Score Distributions
-The marginal and conditional distributions of test scores can serve as a preliminary indicator of potential ceiling or floor effects in the calculation of student growth percentiles.  Some minor problems could present themselves if these characteristics are present in either prior or current year scores, and are particularly likely when present in both.  
+# Prior- and Current-Year Score Distributions
+The marginal and conditional distributions of test scores can serve as a preliminary indicator of potential ceiling or floor effects in the calculation of student growth percentiles.  Some minor problems could occur if these characteristics are present in either the prior- or current-year scores, and are particularly likely when present in both.  
 
-The plots below depict distributions for the current year and the most recent prior year used in the SGP calculations for each content area and grade level.  These plots start with a basic scatter plot of each student's scores to show their conditional (joint) score distributions, and each point is depicted as the estimated SGP value based on their scores^[Note that many SGPs are estimated using more than one prior score, and therefore plots may show SGP results from multiple analyses and/or varying SGPs for identical score combinations.].  On top of this is layered 1) **green contour lines** to provide a sense of the joint density, 2) three **non-linear magenta lines** identifying the bivariate relationship between prior and current scores at the 5<sup>th</sup>, 50<sup>th</sup> and 95<sup>th</sup> percentiles^[Produced using quantile regression similar to, but not the same as, that used in calculation of the SGPs.], 3) **red** dotted lines that represent the cutoff for the highest and lowest 25+ current scale scores (corresponding with the first and last rows of the fit plot table), and 4) **rug plots** that depict the marginal distributions (prior scores shown in blue and current scores in red).  
+The plots in the following sections depict distributions for the current year and the most recent prior year used in the SGP calculations for each content area and grade level.  These plots start with a basic scatter plot of each student's scores to show their conditional (joint) score distributions, and each point is depicted as the estimated SGP value based on their scores^[Note that many SGPs are estimated using more than one prior score, and therefore plots may show SGP results from multiple analyses and/or varying SGPs for identical score combinations.].  On top of this is layered 1) **green contour lines** to provide a better sense of the score distribution density, 2) three **non-linear magenta lines** identifying the bivariate relationship between prior and current scores at the 5<sup>th</sup>, 50<sup>th</sup> and 95<sup>th</sup> percentiles^[Produced using quantile regression similar to, but not the same as, that used in calculation of the SGPs.], 3) **red** dotted lines that represent the cutoff for the highest and lowest 25+ current scale scores (corresponding with the first and last rows of the fit plot table), and 4) **rug plots** that depict the marginal distributions (prior scores shown in blue and current scores in red).  
 
-Ceiling or floor effects may be indicated by dark shaded SGP values in the extreme top-right or bottom-left corners of the plots.  This suggests that staying at the extremes is common, which may lead to odd growth estimates for these high/low achieving students.  We see very few issues in all content areas and grades in the 2016 and 2017 PARCC grade level data.  Where minor ceilings appear in either years' data, the opposite year score distributions for these students are well distributed, lessening the concern for a growth ceiling effect.
-
-```{r, echo=FALSE, include=FALSE, cache=TRUE, condDist_EOG, fig.height=2.5, fig.width=3}
-	# table(long.data[CONTENT_AREA=="ELA" & YEAR==current.year, GRADE, Most_Recent_Prior])
-	condDistPlot(ca="ELA", g=9)
-	condDistPlot(ca="ELA", g=10, prior.ca="2017_2018.1/ELA_9")
-	condDistPlot(ca="ELA", g=10, prior.ca="2017_2018.2/ELA_9")
-	condDistPlot(ca="ELA", g=11, prior.ca="2017_2018.1/ELA_10")
-	condDistPlot(ca="ELA", g=11, prior.ca="2017_2018.2/ELA_10")
-
-```
-
-`r Literasee:::pageBreak()`
+Ceiling or floor effects may be indicated by dark shaded SGP values in the extreme top-right or bottom-left corners of the plots.  This suggests that staying at the extremes is common, which may lead to odd growth estimates for these high/low achieving students.  
 
 
 ##  End-of-Grade Content Areas
 
+We see very few issues in all content areas and grades in the 2017 and 2018 PARCC grade level data.  Where minor ceilings appear in either years' data, the opposite year score distributions for these students are well distributed, lessening the concern for a growth ceiling effect.
+
+Although ceiling effects are not widespread, there are two individual students who show potential problems in the grade level analyses.  The first is a student in the 11<sup>th</sup> grade ELA analysis that uses fall 2017 as the most recent prior.  This student scored near the HOSS in both tests and is a clear outlier in the scatterplot, and her estimated SGP is 51.  A similar student appears in the 8<sup>th</sup> grade Mathematics scatterplot, and this student's SGP estimate is 13.  It is not surprising that the SGP estimates of growth are questionable for extreme outliers in the data such as this.
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, condDist_EOG, fig.height=2.5, fig.width=3}
+	# table(long.data[CONTENT_AREA=="ELA" & YEAR==current.year, GRADE, Most_Recent_Prior])
+	
+	condDistPlot(ca="ELA", g=4)
+	condDistPlot(ca="ELA", g=5)
+	condDistPlot(ca="ELA", g=6)
+	condDistPlot(ca="ELA", g=7)
+	condDistPlot(ca="ELA", g=8)
+	condDistPlot(ca="ELA", g=9)
+	condDistPlot(ca="ELA", g=10, prior.ca="2015_2016.2/ELA_8")
+	condDistPlot(ca="ELA", g=10, prior.ca="2016_2017.2/ELA_9")
+	condDistPlot(ca="ELA", g=11, prior.ca="2016_2017.2/ELA_10")
+	condDistPlot(ca="ELA", g=11, prior.ca="2017_2018.1/ELA_10")
+
+	condDistPlot(ca="MATHEMATICS", g=4)
+	condDistPlot(ca="MATHEMATICS", g=5)
+	condDistPlot(ca="MATHEMATICS", g=6)
+	condDistPlot(ca="MATHEMATICS", g=7)
+	condDistPlot(ca="MATHEMATICS", g=8)
+```
+
+
 ```{r, results="asis", echo=FALSE, ELA_Cond_Dists1}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/condDist_EOG-1.png", "../img/Appendices/Appendix_C_Fall_2017/condDist_EOG-2.png"),
-			rows = 1, columns = 2, page.break= TRUE, pdf.width = 0.5,
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-1.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-2.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-3.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-4.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-5.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-6.png"),
+			rows = 3, columns = 2, page.break= TRUE, pdf.width = 0.5,
 			caption = "Conditional distribution(s) of current and prior scale scores: ELA.")
 ```
 
 
 ```{r, results="asis", echo=FALSE, ELA_Cond_Dists2}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/condDist_EOG-3.png", "../img/Appendices/Appendix_C_Fall_2017/condDist_EOG-4.png",
-								"../img/Appendices/Appendix_C_Fall_2017/condDist_EOG-5.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-7.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-8.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-9.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-10.png"),
 			rows = 2, columns = 2, page.break= TRUE, pdf.width = 0.5,
 			caption = "Conditional distribution(s) of current and prior scale scores: ELA <em>Continued</em>.")
 ```
 
+```{r, results="asis", echo=FALSE, Math_Cond_Dists1}
+		placeFigure(
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-11.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-12.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-13.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-14.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOG-15.png"),
+			rows = 3, columns = 2, page.break= TRUE, pdf.width = 0.5,
+			caption = "Conditional distribution(s) of current and prior scale scores: Mathematics.")
+```
 
 ##  End-of-Course Test Subjects
 
 The conditional density plots for the EOC test subjects are displayed below.  The most recent prior is used in each plot to provide insight on the academic peer group based analyses.  Some of these norm groups represent atypical student populations (e.g. high achieving middle school students who take math EOCT assessments), which can also cause ceiling effects for different reasons.
 
-Overall there is no evidence for concern of ceiling or floor effects in the PARCC EOCT analyses.  There is one individual case that appears to be problematic in Geometry cohort that had Algebra II as the most recent prior.  Here we see a student who consistently scored extremely high at least two years in a row and yet her estimated SGP is 1^[Interestingly, the Ranked SIMEX SGP estimate for this same student is 69, which shows how the SIMEX correction can help in these cases].  This is likely not an adequate description of this student's growth, and an individual (manual) correction may be required for this specific case.
 
+Overall there is no evidence for concern of ceiling or floor effects in the PARCC EOCT analyses.  There are several cases that appear to be somewhat problematic in that students consistently scoring high receive lower than expected SGP estimates.  For example, the Algebra I cohort with Geometry as the most recent prior, the Geometry cohort with Algebra I prior and Algebra II with Mathematics Grade 8 and Fall 2017 Geometry priors.  In all cases, the students' SGPs are above 50 (i.e. above average), so they would not be flagged as having low growth^[Interestingly, the Ranked SIMEX SGP estimate for these same students are higher, which shows how the SIMEX correction can help in these cases].  This is likely not an adequate description of these students' growth given their consistently high achievement, and an individual (manual) correction may be required for these specific cases.
 
 ```{r, echo=FALSE, include=FALSE, cache=TRUE, condDist_EOC, fig.height=2.5, fig.width=3}
-# table(long.data[YEAR==current.year & CONTENT_AREA=="ALGEBRA_II" & !is.na(SGP), Most_Recent_Prior])
+# table(long.data[YEAR==current.year & CONTENT_AREA=="GEOMETRY" & !is.na(as.numeric(SGP)), Most_Recent_Prior])
 
-	condDistPlot(ca="ALGEBRA_I", g="EOCT", prior.ca="2017_2018.2/MATHEMATICS_8")
+	condDistPlot(ca="ALGEBRA_I", g="EOCT", prior.ca="2016_2017.2/MATHEMATICS_6")
+	condDistPlot(ca="ALGEBRA_I", g="EOCT", prior.ca="2016_2017.2/MATHEMATICS_7")
+	condDistPlot(ca="ALGEBRA_I", g="EOCT", prior.ca="2016_2017.2/MATHEMATICS_8")
+	condDistPlot(ca="ALGEBRA_I", g="EOCT", prior.ca="2016_2017.2/GEOMETRY_EOCT")
 	# max.data[CONTENT_AREA %in% "GEOMETRY" & SCALE_SCORE==HOSS_1 & Most_Recent_Prior=="2016_2017.2/ALGEBRA_II_EOCT"]
 
-	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2017_2018.2/ALGEBRA_I_EOCT")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2015_2016.2/MATHEMATICS_8")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2016_2017.2/MATHEMATICS_8")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2015_2016.2/ALGEBRA_I_EOCT")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2016_2017.2/ALGEBRA_I_EOCT")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2017_2018.1/ALGEBRA_I_EOCT")
+	condDistPlot(ca="GEOMETRY", g="EOCT", prior.ca="2016_2017.2/ALGEBRA_II_EOCT")
 
-	condDistPlot(ca="ALGEBRA_II", g="EOCT", prior.ca="2017_2018.2/GEOMETRY_EOCT")
+	condDistPlot(ca="ALGEBRA_II", g="EOCT", prior.ca="2016_2017.2/MATHEMATICS_8")
+	condDistPlot(ca="ALGEBRA_II", g="EOCT", prior.ca="2016_2017.2/ALGEBRA_I_EOCT")
+	condDistPlot(ca="ALGEBRA_II", g="EOCT", prior.ca="2016_2017.2/GEOMETRY_EOCT")
 	condDistPlot(ca="ALGEBRA_II", g="EOCT", prior.ca="2017_2018.1/GEOMETRY_EOCT")
 
 ```
 
 ```{r, results="asis", echo=FALSE, Alg1_Cond_Dists}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/condDist_EOC-1.png"),
-			page.break= TRUE, pdf.width = 0.95, # rows = 2, columns = 2, 
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-1.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-2.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-3.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-4.png"),
+			page.break= TRUE, pdf.width = 0.5, rows = 2, columns = 2, 
 			caption = "Conditional distribution(s) of current and prior scale scores: Algebra I.")
 ```
 
 
 ```{r, results="asis", echo=FALSE, Geom_Cond_Dists}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/condDist_EOC-2.png"),
-			page.break= TRUE, pdf.width = 0.95, # rows = 3, columns = 2, 
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-5.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-6.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-7.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-8.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-9.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-10.png"),
+			page.break= TRUE, pdf.width = 0.5, rows = 3, columns = 2, 
 			caption = "Conditional distribution(s) of current and prior scale scores: Geometry.")
 ```
 
 
 ```{r, results="asis", echo=FALSE, Alg2_Cond_Dists}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/condDist_EOC-3.png",
-								"../img/Appendices/Appendix_C_Fall_2017/condDist_EOC-4.png"),
-			rows = 1, columns = 2, page.break= TRUE, pdf.width = 0.75,
+			files = c("../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-11.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-12.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-13.png",
+								"../img/Appendices/Appendix_C_Spring_2018/condDist_EOC-14.png"),
+			page.break= TRUE, pdf.width = 0.5, rows = 2, columns = 2, 
 			caption = "Conditional distribution(s) of current and prior scale scores: Algebra II.")
 ```
 
@@ -297,12 +348,12 @@ The box plots provide several descriptive statistics.  The dark line within the 
 
 ## Grade Level Content Areas
 
-The scatter plots in the previous section showed that there are no concerns for ceiling or floor effects in either the ELA or Mathematics assessments.  Figure C. 9 suggests that there are potential problems in the high school ELA tests and 8<sup>th</sup> grade Mathematics.  However, Figure C. 10 shows that potential ceiling issues do not effect the students that scored exactly the HOSS.  Only students scoring just below the HOSS have somewhat lower SGPs, but these growth estimates are still relatively high.
+The scatter plots in the previous section showed that there are no concerns for ceiling or floor effects in either the ELA or Mathematics assessments.  Figure C. 7 suggests that there are potential problems in the high school ELA tests and 8<sup>th</sup> grade Mathematics.  However, Figure C. 8 shows that potential ceiling issues do not effect the students that scored exactly the HOSS.  Only students scoring just below the HOSS have somewhat lower SGPs, but these growth estimates are still relatively high.  Figure C.8 does suggest that one student in Grade 8 ELA may be impacted by a minor floor effect with an unexpectedly high SGP estimate of 18.  This, however, is still a relatively low SGP that would likely still accurately flag this student as having low growth. 
 
 
 ```{r, results="asis", echo=FALSE, EOG_HOSS1}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOG-1.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOG-1.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOG-1.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOG-1.png"),
 			rows = 2, columns = 1, page.break= TRUE,
 			caption = "Grade Level SGP distributions for highest and lowest 25+ scale scores by content area and grade level.")
 ```
@@ -310,7 +361,7 @@ The scatter plots in the previous section showed that there are no concerns for 
 
 ```{r, results="asis", echo=FALSE, EOG_HOSS2}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOG-2.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOG-2.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOG-2.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOG-2.png"),
 			rows = 2, columns = 1, page.break= TRUE,
 			caption = "Grade Level SGP distributions for the HOSS and LOSS scores by content area and grade level.")
 ```
@@ -344,7 +395,7 @@ The end-of-course subject results are shown here *only for students scoring exac
 
 ```{r, results="asis", echo=FALSE, EOC_HOSS}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOC-1.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOC-1.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOC-1.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOC-1.png"),
 			rows = 2, columns = 1, page.break= TRUE, pdf.width = 0.95,
 			caption = "EOCT SGP distributions for the HOSS and LOSS scores by content area.")
 ```
@@ -352,28 +403,27 @@ The end-of-course subject results are shown here *only for students scoring exac
 
 The EOCT subject box plots can be disaggregated further by the most recent prior to reflect their constituent norm groups more closely.  The following box plots disaggregate each EOCT subject by norm groups.
 
-
 ```{r, results="asis", echo=FALSE, Alg1_HOSS}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOC-2.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOC-2.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOC-2.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOC-2.png"),
 			rows = 2, columns = 1, page.break= TRUE, pdf.width = 0.93,
 			caption = "EOCT SGP distributions for the HOSS and LOSS scores by norm group: Algebra I.")
 ```
 
 
-The plots for the Geometry progression with the Algebra II prior is notable.  This progression can also be seen in Figure C.5 above.  Here the student who scored near the HOSS consecutively has an unexpectedly low SGP of 1.
-
-
 ```{r, results="asis", echo=FALSE, Geom_HOSS}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOC-3.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOC-3.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOC-3.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOC-3.png"),
 			rows = 2, columns = 1, page.break= TRUE,
 			caption = "EOCT SGP distributions for the HOSS and LOSS scores by norm group: Geometry.")
 ```
 
+
+The plots for the Algebra II progression with the Grade 8 Math prior is notable.  This progression can also be seen in Figure C.6 above.  Here the student who scored near the HOSS consecutively has an unexpectedly low SGP of 52.
+
 ```{r, results="asis", echo=FALSE, Alg2_HOSS}
 		placeFigure(
-			files = c("../img/Appendices/Appendix_C_Fall_2017/HOSS_Box_EOC-4.png", "../img/Appendices/Appendix_C_Fall_2017/LOSS_Box_EOC-4.png"),
+			files = c("../img/Appendices/Appendix_C_Spring_2018/HOSS_Box_EOC-4.png", "../img/Appendices/Appendix_C_Spring_2018/LOSS_Box_EOC-4.png"),
 			rows = 2, columns = 1, page.break= TRUE,
 			caption = "EOCT SGP distributions for the HOSS and LOSS scores by norm group: Algebra II.")
 ```
