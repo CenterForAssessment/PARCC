@@ -389,6 +389,10 @@ load ("../../../Data/PARCC_SGP-Tech_Reports_2018.2.Rdata")
 renderMultiDocument(rmd_input = "PARCC_SGP_Report_Spring_2018.Rmd",
 										report_format = c("HTML", "PDF"))
 
+
+renderMultiDocument(rmd_input = "Appendix_A_2018.Rmd",
+										report_format = c("HTML", "PDF"))
+
 renderMultiDocument(rmd_input = "Appendix_B_2018.Rmd",
 									report_format = c("HTML", "PDF"),
 									pandoc_args = "--webtex")
