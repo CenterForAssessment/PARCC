@@ -453,7 +453,7 @@ The notable exception to this is 10<sup>th</sup> Grade ELA.  In this case the de
 
 The results are coarse in that they are aggregated across hundreds of thousands of students.  More refined fit analyses were presented in the Goodness-of-Fit section.  Depending upon feedback from Pearson, it may be desirable to tweak some operational parameters and attempt to improve fit even further.  The impact upon the operational results based on better fit is expected to be extremely minor.
 
-It is important to note how, at the entire consortium level, the *norm-referenced* growth information returns little information on annual trends due to its norm-reference nature.  What the results indicate is that a typical (or average) student in the state demonstrates 50<sup>th</sup> percentile growth.  That is, "typical students" demonstrate "typical growth".  One benefit of the norm-referenced results follows when subgroups are examined (e.g., schools, district, demographic groups, etc.) Examining subgroups in terms of the mean or median of their student growth percentiles, it is then possible to investigate why some subgroups display lower/higher student growth than others.  Moreover, because the subgroup summary statistic (i.e., the median) is composed of many individual student growth percentiles, one can break out the result and further examine the distribution of individual results.  
+It is important to note how, at the entire consortium level, the *norm-referenced* growth information returns little information on annual trends due to its norm-reference nature.  What the results indicate is that a typical (or average) student in the consortium demonstrates 50<sup>th</sup> percentile growth.  That is, "typical students" demonstrate "typical growth".  One benefit of the norm-referenced results follows when subgroups are examined (e.g., schools, district, demographic groups, etc.) Examining subgroups in terms of the mean or median of their student growth percentiles, it is then possible to investigate why some subgroups display lower/higher student growth than others.  Moreover, because the subgroup summary statistic (i.e., the median) is composed of many individual student growth percentiles, one can break out the result and further examine the distribution of individual results.  
 
 
 ## Ranked SIMEX Adjusted SGPs
@@ -665,7 +665,7 @@ Summary values are provided in the following tables only when a state has *1,000
 	setnames(tmp.tbl, "Most_Recent_Prior", "Most Recent Prior")
 	
 	##  NOTE - tmp.tbl[1:4] to remove rows with only one state
-	cat(dualTable(as.matrix(tmp.tbl[1:4]), title="", align=paste(rep('r',ncol(tmp.tbl)), collapse=''), n.rgroup=tbl.rgroup[tbl.rgroup>1],
+	cat(dualTable(as.matrix(tmp.tbl[1:4]), title="", align=paste(rep('r', ncol(tmp.tbl)), collapse=''), n.rgroup=tbl.rgroup[tbl.rgroup>1],
 		caption='Spring 2018 Typical Prior Achievement and Growth by State: Geometry'))
 ```
 

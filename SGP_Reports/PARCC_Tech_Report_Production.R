@@ -189,24 +189,15 @@ PARCC_LONG_Data[, Most_Recent_Prior_State := sapply(strsplit(as.character(SGP_NO
 PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 1", "Level 2", "Level 3"), PROFICIENT:=0L]
 PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 4", "Level 5"), PROFICIENT:=1L]
 PARCC_LONG_Data[, SCALE_SCORE_CURRENT_STANDARDIZED:=scale(SCALE_SCORE), keyby=list(CONTENT_AREA, YEAR, GRADE)]
-PARCC_LONG_Data[, PRIOR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
-PARCC_LONG_Data[, PRIOR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
-PARCC_LONG_Data[, PRIOR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
 
 scaling.constants <- as.data.table(read.csv("PARCC/Data/Base_Files/2015-2016 PARCC Scaling Constants.csv"))
 PARCC_LONG_Data[, SCALE_SCORE_PRIOR_ACTUAL := round((SCALE_SCORE_PRIOR*scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["a"]]+scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["b"]]), 0), by=c("PRIOR_CONTENT_AREA", "PRIOR_GRADE")]
 cor(PARCC_LONG_Data$SCALE_SCORE_PRIOR_ACTUAL, PARCC_LONG_Data$SCALE_SCORE_PRIOR, use="complete")
 PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL < 650), SCALE_SCORE_PRIOR_ACTUAL := 650]
 PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL > 850), SCALE_SCORE_PRIOR_ACTUAL := 850]
-
-# # These were causing problems with calculation of PRIOR_ACHIEVEMENT_PERCENTILE below
-PARCC_LONG_Data[, PR_YEAR := PRIOR_YEAR] # Next time just use setnames(...)
-PARCC_LONG_Data[, PR_GRADE := PRIOR_GRADE]
-PARCC_LONG_Data[, PR_CONTENT_AREA := PRIOR_CONTENT_AREA]
-PARCC_LONG_Data[, PRIOR_YEAR := NULL]
-PARCC_LONG_Data[, PRIOR_GRADE := NULL]
-PARCC_LONG_Data[, PRIOR_CONTENT_AREA := NULL]
-
 
 PARCC_SGP <- prepareSGP(PARCC_LONG_Data, create.additional.variables = FALSE)
 
@@ -344,23 +335,15 @@ PARCC_LONG_Data[, Most_Recent_Prior_State := sapply(strsplit(as.character(SGP_NO
 PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 1", "Level 2", "Level 3"), PROFICIENT:=0L]
 PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 4", "Level 5"), PROFICIENT:=1L]
 PARCC_LONG_Data[, SCALE_SCORE_CURRENT_STANDARDIZED:=scale(SCALE_SCORE), keyby=list(CONTENT_AREA, YEAR, GRADE)]
-PARCC_LONG_Data[, PRIOR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
-PARCC_LONG_Data[, PRIOR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
-PARCC_LONG_Data[, PRIOR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
 
 scaling.constants <- as.data.table(read.csv("PARCC/Data/Base_Files/2015-2016 PARCC Scaling Constants.csv"))
 PARCC_LONG_Data[, SCALE_SCORE_PRIOR_ACTUAL := round((SCALE_SCORE_PRIOR*scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["a"]]+scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["b"]]), 0), by=c("PRIOR_CONTENT_AREA", "PRIOR_GRADE")]
 cor(PARCC_LONG_Data$SCALE_SCORE_PRIOR_ACTUAL, PARCC_LONG_Data$SCALE_SCORE_PRIOR, use="complete")
 PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL < 650), SCALE_SCORE_PRIOR_ACTUAL := 650]
 PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL > 850), SCALE_SCORE_PRIOR_ACTUAL := 850]
-
-# # These were causing problems with calculation of PRIOR_ACHIEVEMENT_PERCENTILE below
-PARCC_LONG_Data[, PR_YEAR := PRIOR_YEAR] # Next time just use setnames(...)
-PARCC_LONG_Data[, PR_GRADE := PRIOR_GRADE]
-PARCC_LONG_Data[, PR_CONTENT_AREA := PRIOR_CONTENT_AREA]
-PARCC_LONG_Data[, PRIOR_YEAR := NULL]
-PARCC_LONG_Data[, PRIOR_GRADE := NULL]
-PARCC_LONG_Data[, PRIOR_CONTENT_AREA := NULL]
 
 
 setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports")
@@ -398,5 +381,113 @@ renderMultiDocument(rmd_input = "Appendix_B_2018.Rmd",
 									pandoc_args = "--webtex")
 
 renderMultiDocument(rmd_input = "Appendix_C_Spring_2018.Rmd",
+										report_format = c("HTML", "PDF"))
+
+
+############################################################################
+####
+#         Fall 2018
+####
+############################################################################
+
+### Load required packages
+
+require(SGP)
+require(data.table)
+
+setwd("~/Dropbox (SGP)/SGP/PARCC")
+
+###
+###    Read in Fall 2018 Output Files
+###
+
+load("./PARCC/Data/Archive/2018_2019.1/PARCC_SGP_LONG_Data_2018_2019.1.Rdata")
+
+load("./Maryland/Data/Archive/2018_2019.1/Maryland_SGP_LONG_Data_2018_2019.1.Rdata")
+load("./New_Jersey/Data/Archive/2018_2019.1/New_Jersey_SGP_LONG_Data_2018_2019.1.Rdata")
+load("./New_Mexico/Data/Archive/2018_2019.1/New_Mexico_SGP_LONG_Data_2018_2019.1.Rdata")
+load("./Bureau_Indian_Affairs/Data/Archive/2018_2019.1/Bureau_Indian_Affairs_SGP_LONG_Data_2018_2019.1.Rdata")
+
+
+####  Subset PARCC Data
+
+PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2018_2019.1[grep("_SS", CONTENT_AREA, invert =TRUE), 
+																									 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX_RANKED", "ACHIEVEMENT_LEVEL",
+																									 	"SGP_NORM_GROUP","SCALE_SCORE", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "StateAbbreviation")]
+
+####  Subset State Data
+
+State_LONG_Data <- rbindlist(list(Bureau_Indian_Affairs_SGP_LONG_Data_2018_2019.1, Maryland_SGP_LONG_Data_2018_2019.1,
+																	New_Jersey_SGP_LONG_Data_2018_2019.1, New_Mexico_SGP_LONG_Data_2018_2019.1), fill=TRUE)[grep("_SS", CONTENT_AREA, invert =TRUE),
+																																											 c("VALID_CASE", "CONTENT_AREA", "GRADE", "YEAR", "ID", "SGP", "SGP_SIMEX_RANKED", "ACHIEVEMENT_LEVEL",
+																																											 	"SGP_NORM_GROUP","SCALE_SCORE", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED")]
+
+
+state.vars <- c("SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "SGP", "SGP_SIMEX_RANKED", "SGP_NORM_GROUP")
+setnames(State_LONG_Data, state.vars, paste(state.vars, "_STATE", sep=""))
+setkey(State_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+setkey(PARCC_LONG_Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+
+###       Merge PARCC and State Data
+PARCC_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
+
+rm(State_LONG_Data); gc()
+
+PARCC_LONG_Data[, Most_Recent_Prior := as.character(NA)]
+PARCC_LONG_Data[, Most_Recent_Prior := sapply(strsplit(as.character(SGP_NORM_GROUP), "; "), function(x) rev(x)[2])]
+PARCC_LONG_Data[, Most_Recent_Prior_State := as.character(NA)]
+PARCC_LONG_Data[, Most_Recent_Prior_State := sapply(strsplit(as.character(SGP_NORM_GROUP_STATE), "; "), function(x) rev(x)[2])]
+
+###   Add variables, etc used in State summary tables
+
+PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 1", "Level 2", "Level 3"), PROFICIENT:=0L]
+PARCC_LONG_Data[ACHIEVEMENT_LEVEL %in% c("Level 4", "Level 5"), PROFICIENT:=1L]
+PARCC_LONG_Data[, SCALE_SCORE_CURRENT_STANDARDIZED:=scale(SCALE_SCORE), keyby=list(CONTENT_AREA, YEAR, GRADE)]
+PARCC_LONG_Data[, PR_YEAR := strsplit(Most_Recent_Prior[1], "/")[[1]][1], by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], 1), by="Most_Recent_Prior"]
+PARCC_LONG_Data[, PR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
+
+scaling.constants <- as.data.table(read.csv("PARCC/Data/Base_Files/2015-2016 PARCC Scaling Constants.csv"))
+PARCC_LONG_Data[, SCALE_SCORE_PRIOR_ACTUAL := round((SCALE_SCORE_PRIOR*scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["a"]]+scaling.constants[CONTENT_AREA==PRIOR_CONTENT_AREA[1] & GRADE==PRIOR_GRADE[1]][["b"]]), 0), by=c("PRIOR_CONTENT_AREA", "PRIOR_GRADE")]
+cor(PARCC_LONG_Data$SCALE_SCORE_PRIOR_ACTUAL, PARCC_LONG_Data$SCALE_SCORE_PRIOR, use="complete")
+PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL < 650), SCALE_SCORE_PRIOR_ACTUAL := 650]
+PARCC_LONG_Data[which(SCALE_SCORE_PRIOR_ACTUAL > 850), SCALE_SCORE_PRIOR_ACTUAL := 850]
+
+load("./Data/Archive/2018_2019.1/PARCC_SGP.Rdata")
+PARCC_SGPercentiles <- PARCC_SGP@SGP$SGPercentiles
+save(PARCC_SGPercentiles, file="~/Dropbox (SGP)/Github_Repos/Documentation/PARCC/Data/PARCC_SGPercentiles_2019.1.rda")
+
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports")
+
+PARCC_SGP <- prepareSGP(PARCC_LONG_Data, create.additional.variables = FALSE)
+PARCC_SGPercentiles -> PARCC_SGP@SGP$SGPercentiles
+
+
+save(PARCC_SGP, file="../Data/PARCC_SGP-Tech_Reports_2019.1.Rdata")
+
+###
+##    Fall 2018 reports
+###
+
+###   Load required packages and data
+require(Literasee)
+
+###   Read in Fall (truncated) SGP object
+
+setwd("/Users/avi/Dropbox (SGP)/Github_Repos/Documentation/PARCC/SGP_Reports/PARCC/2019")
+load ("../../../Data/PARCC_SGP-Tech_Reports_2019.1.Rdata")
+
+
+renderMultiDocument(rmd_input = "PARCC_SGP_Report_Fall_2018.Rmd",
+										report_format = c("HTML", "PDF"))
+
+renderMultiDocument(rmd_input = "Appendix_A_Fall_2018.Rmd",
+										report_format = c("HTML", "PDF"))
+
+renderMultiDocument(rmd_input = "Appendix_B_2019.Rmd",
+										report_format = c("HTML", "PDF"),
+										pandoc_args = "--webtex")
+
+renderMultiDocument(rmd_input = "Appendix_C_Fall_2018.Rmd",
 										report_format = c("HTML", "PDF"))
 

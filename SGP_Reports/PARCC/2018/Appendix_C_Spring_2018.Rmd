@@ -431,7 +431,7 @@ The plots for the Algebra II progression with the Grade 8 Math prior is notable.
 
 #  Discussion
 
-Overall there is little evidence of floor or ceiling effects in the Spring 2017 PARCC SGP analyses.  Some scores for EOC test progressions with small cohorts suggest that a few minor problems may exist that could require changes.  When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but not limited to):
+Overall there is little evidence of floor or ceiling effects in the Spring 2018 PARCC SGP analyses.  Some scores for EOC test progressions with small cohorts suggest that a few minor problems may exist that could require changes.  When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but not limited to):
 
 1. Convert all students scoring at the HOSS (LOSS) to 99 (1.
 2. Run SGP analyses with more granular scores.  For example, many tests that use Item Response Theory (IRT) to analyse test results provide scaled scores that enforce an artificial ceiling (floor), but also have more granular achievement scores available (IRT $\theta$ estimates).
