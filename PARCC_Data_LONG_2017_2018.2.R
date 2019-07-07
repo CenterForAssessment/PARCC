@@ -38,7 +38,7 @@ all.var.names <- c(parcc.var.names[1:11], center.var.names[1:4], parcc.var.names
 
 read.parcc <- function(state, year) {
 	tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
-  if (state == "DD") tmp.name <- "Department_of_Defense" else tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
+  if (state == "DD") tmp.name <- "Department_Of_Defense" else tmp.name <- gsub(" ", "_", SGP:::getStateAbbreviation(state, type="state"))
 	if (tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
 	tmp.files <- list.files(file.path(tmp.name, "Data/Base_Files"))
 	my.file <- gsub(".zip",  "", grep(year, tmp.files, value=TRUE))
@@ -70,7 +70,7 @@ old <- rbindlist(list(
 
 setkey(new, PARCCStudentIdentifier, TestCode, Period)
 setkey(old, PARCCStudentIdentifier, TestCode, Period)
-  
+
 ###
 ###       Data Cleaning  -  Create Required SGP Variables
 ###
@@ -80,7 +80,7 @@ setnames(PARCC_Data_LONG_2017_2018.2, "PARCCStudentIdentifier", "ID")
 
 ####  CONTENT_AREA from TestCode
 PARCC_Data_LONG_2017_2018.2[, CONTENT_AREA := factor(TestCode)]
-levels(PARCC_Data_LONG_2017_2018.2$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 9), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
+levels(PARCC_Data_LONG_2017_2018.2$CONTENT_AREA) <- c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 4), "GEOMETRY", rep("MATHEMATICS", 4)), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")
 PARCC_Data_LONG_2017_2018.2[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ####  GRADE from TestCode
