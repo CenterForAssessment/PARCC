@@ -1,0 +1,175 @@
+#########################################
+######### PARCC OUTPUT VALIDATION #######
+#########################################
+
+
+### Bureau_Indian_Affairs Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.4618098159509 75 99 10438
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 16958
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ELA04    1      25     50 50.02045      75   99 1076
+2:    ELA05    1      25     50 50.02817      75   99 1136
+3:    ELA06    1      25     50 50.05118      75   99 1055
+4:    MAT04    1      25     50 50.06871      75   99 1077
+5:    MAT05    1      25     50 50.03527      75   99 1134
+6:    MAT06    1      25     50 50.04990      75   99 1042
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Bureau_Indian_Affairs Output Validation   ###
+
+
+
+### Department_Of_Defense Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.8329107283379 75 99 27754
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 50628
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG02    1      25     50 50.03634      75   99 1651
+2:    ELA07    1      25     50 50.00905      75   99 3426
+3:    ELA08    1      25     50 50.02196      75   99 3188
+4:    GEO01    1      25     50 50.01960      75   99 2143
+5:    MAT04    1      25     50 50.01401      75   99 4283
+6:    MAT05    1      25     50 49.99854      75   99 4119
+7:    MAT06    1      25     50 50.01649      75   99 4064
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Department_Of_Defense Output Validation   ###
+
+
+
+### Illinois Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9877909424867 75 99 343359
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 1720779
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.      N
+ 1:    ELA04    1      25     50 50.00428      75   99 135033
+ 2:    ELA05    1      25     50 50.03351      75   99 139260
+ 3:    ELA06    1      25     50 50.00480      75   99 140613
+ 4:    ELA07    1      25     50 49.99511      75   99 137744
+ 5:    ELA08    1      25     50 50.02053      75   99 136567
+ 6:    MAT04    1      25     50 49.99140      75   99 135167
+ 7:    MAT05    1      25     50 50.05133      75   99 139286
+ 8:    MAT06    1      25     50 50.04636      75   99 140559
+ 9:    MAT07    1      25     50 50.03354      75   99 137674
+10:    MAT08    1      25     50 50.01004      75   99 135517
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Illinois Output Validation   ###
+
+
+
+### Maryland Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 50.003491680558 75 99 208205
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 924479
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.     N
+ 1:    ALG01    1      25     50 50.07781      75   99 55725
+ 2:    ELA04    1      25     50 50.00728      75   99 64658
+ 3:    ELA05    1      25     50 50.10742      75   99 66356
+ 4:    ELA06    1      25     50 50.10515      75   99 64309
+ 5:    ELA07    1      25     50 50.04994      75   99 62437
+ 6:    ELA08    1      25     50 50.05921      75   99 61020
+ 7:    ELA10    1      25     50 50.00589      75   99 50759
+ 8:    GEO01    1      25     50 50.01608      75   99  6469
+ 9:    MAT04    1      25     50 49.99581      75   99 64947
+10:    MAT05    1      25     50 50.10945      75   99 66626
+11:    MAT06    1      25     50 50.03726      75   99 64247
+12:    MAT07    1      25     50 50.10536      75   99 54840
+13:    MAT08    1      25     50 50.00829      75   99 33881
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Maryland Output Validation   ###
+
+
+
+### New_Mexico Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.9853462723763 75 99 82601
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 426882
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.     N
+ 1:    ALG01    1      25     50 50.15208      75   99 20345
+ 2:    ALG02    1      25     50 50.02513      75   99 18026
+ 3:    ELA04    1      25     50 50.00911      75   99 22396
+ 4:    ELA05    1      25     50 50.06616      75   99 23339
+ 5:    ELA06    1      25     50 50.07383      75   99 23406
+ 6:    ELA07    1      25     50 49.96271      75   99 22663
+ 7:    ELA08    1      25     50 50.00682      75   99 22422
+ 8:    ELA09    1      25     50 49.98758      75   99 20778
+ 9:    ELA10    1      25     50 49.85659      75   99 20445
+10:    ELA11    1      25     50 49.97606      75   99 19044
+11:    GEO01    1      25     50 50.12139      75   99 19260
+12:    MAT04    1      25     50 50.01593      75   99 23480
+13:    MAT05    1      25     50 49.98023      75   99 24081
+14:    MAT06    1      25     50 50.09226      75   99 23542
+15:    MAT07    1      25     50 50.17476      75   99 22591
+16:    MAT08    1      25     50 49.98857      75   99 18463
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  New_Mexico Output Validation   ###
+
+
+
+### Washington_DC Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test for Identical IRTTheta in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 25 50 49.8230795530203 75 99 26663
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 82236
+
+### Test of SGPRankedSimexState:
+    TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+ 1:    ELA04    1      25     50 50.00276      75   99 5800
+ 2:    ELA05    1      25     50 50.12858      75   99 5623
+ 3:    ELA06    1      25     50 50.06662      75   99 5224
+ 4:    ELA07    1      25     50 49.86693      75   99 4599
+ 5:    ELA08    1      25     50 49.96423      75   99 4333
+ 6:    ELA10    1      25     50 50.02315      75   99 3197
+ 7:    GEO01    1      25     50 50.03243      75   99 2189
+ 8:    MAT04    1      25     50 50.00052      75   99 5791
+ 9:    MAT05    1      25     50 49.99698      75   99 5623
+10:    MAT06    1      25     50 50.07623      75   99 5221
+11:    MAT07    1      25     50 49.99756      75   99 4499
+12:    MAT08    1      25     50 50.03138      75   99 3474
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  Washington_DC Output Validation   ###
+
