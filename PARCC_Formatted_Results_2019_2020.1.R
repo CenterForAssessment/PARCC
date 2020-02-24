@@ -13,16 +13,13 @@ require(data.table)
 ###    Read in Fall 2019 Output File (No Consortium File in 2019 - just NJ)
 ###
 
-###  Set working directory to top level directory
-load("./PARCC/Data/Archive/2019_2020.1/PARCC_SGP_LONG_Data_2019_2020.1.Rdata")
+###  Set working directory to New_Jersey directory
+# load("./PARCC/Data/Archive/2019_2020.1/PARCC_SGP_LONG_Data_2019_2020.1.Rdata")
 
-load("./Maryland/Data/Archive/2019_2020.1/Maryland_SGP_LONG_Data_2019_2020.1.Rdata")
 load("./New_Jersey/Data/Archive/2019_2020.1/New_Jersey_SGP_LONG_Data_2019_2020.1.Rdata")
-load("./New_Mexico/Data/Archive/2019_2020.1/New_Mexico_SGP_LONG_Data_2019_2020.1.Rdata")
-load("./Bureau_Indian_Affairs/Data/Archive/2019_2020.1/Bureau_Indian_Affairs_SGP_LONG_Data_2019_2020.1.Rdata")
 
 ####  Set names based on Pearson file layout
-parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PARCCStudentIdentifier", "GradeLevelWhenAssessed", "Period", "TestCode", "TestFormat",
+parcc.var.names <- c("AssessmentYear", "StateAbbreviation", "PANUniqueStudentID", "GradeLevelWhenAssessed", "Period", "TestCode", "TestFormat",
                      "SummativeScoreRecordUUID", "StudentTestUUID", "SummativeScaleScore", "IRTTheta", "SummativeCSEM", "ThetaSEM")
 
 center.var.names <- c("SGPIRTThetaState1Prior", "SGPIRTThetaState2Prior", "SGPIRTThetaPARCC1Prior", "SGPIRTThetaPARCC2Prior",
@@ -41,13 +38,11 @@ center.var.names <- c("SGPIRTThetaState1Prior", "SGPIRTThetaState2Prior", "SGPIR
 all.var.names <- c(parcc.var.names[1:11], center.var.names[1:4], parcc.var.names[12:13], center.var.names[-c(1:4)])
 
 ####  Combine states' data into single data table
-State_LONG_Data <- rbindlist(list(
-  Maryland_SGP_LONG_Data_2019_2020.1, New_Jersey_SGP_LONG_Data_2019_2020.1,
-  New_Mexico_SGP_LONG_Data_2019_2020.1, Bureau_Indian_Affairs_SGP_LONG_Data_2019_2020.1), fill=TRUE)
+assign("State_LONG_Data", New_Jersey_SGP_LONG_Data_2019_2020.1)
 
 ####    Remove rows associated with the Scale Score SGP
 State_LONG_Data <- State_LONG_Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
-PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2019_2020.1[grep("_SS", CONTENT_AREA, invert =TRUE),]
+# PARCC_LONG_Data <- PARCC_SGP_LONG_Data_2019_2020.1[grep("_SS", CONTENT_AREA, invert =TRUE),] # No Consortium data for Fall 2019
 
 
 #####
@@ -68,7 +63,7 @@ setnames(State_LONG_Data,
     	  "SGP_ORDER_2", "SGP_ORDER_2_0.05_CONFIDENCE_BOUND", "SGP_ORDER_2_0.95_CONFIDENCE_BOUND", "SGP_ORDER_2_STANDARD_ERROR",
         "SGP_SIMEX_RANKED", "SGP_SIMEX_RANKED_ORDER_1", "SGP_SIMEX_RANKED_ORDER_2"),
         # "SGP_TARGET_3_YEAR", "SGP_TARGET_3_YEAR_CONTENT_AREA"),   "/Users/avi/Dropbox (SGP)/SGP/PARCC"
-    	c("PARCCStudentIdentifier", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "ThetaSEM",
+    	c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "ThetaSEM",
         "StudentGrowthPercentileComparedtoState", "SGPLowerBoundState", "SGPUpperBoundState", "SGPStandardErrorState",
         "StudentGrowthPercentileComparedtoState1Prior", "SGPLowerBoundState1Prior", "SGPUpperBoundState1Prior", "SGPStandardErrorState1Prior",
     	  "StudentGrowthPercentileComparedtoState2Prior", "SGPLowerBoundState2Prior", "SGPUpperBoundState2Prior", "SGPStandardErrorState2Prior",
@@ -79,8 +74,8 @@ setnames(State_LONG_Data,
 state.tmp.split <- strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP), "; ")
 State_LONG_Data[, CONTENT_AREA_1PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
 State_LONG_Data[, CONTENT_AREA_2PRIOR := factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), head, -1), paste, collapse="_"))]
-levels(State_LONG_Data$CONTENT_AREA_1PRIOR) <- c(NA, "ALG01", "ALG02", "ELA", "GEO01", "MAT1I", "MAT2I", "MAT3I", "MAT") #XX#
-levels(State_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ALG01", "ELA", "MAT") #XX#
+levels(State_LONG_Data$CONTENT_AREA_1PRIOR) <- c(NA, "ALG01", "ALG02", "ELA", "GEO01", "MAT") #XX# "MAT1I", "MAT2I", "MAT3I",
+levels(State_LONG_Data$CONTENT_AREA_2PRIOR) <- c(NA, "ELA", "MAT") #XX# "ALG01",
 State_LONG_Data[, GRADE_1PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
 State_LONG_Data[, GRADE_2PRIOR := sapply(strsplit(sapply(strsplit(sapply(state.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), tail, 1)]
 State_LONG_Data[which(GRADE_1PRIOR=="EOCT"), GRADE_1PRIOR := ""]   #XX#
@@ -105,6 +100,20 @@ State_LONG_Data[, SGPIRTThetaState2Prior := as.numeric(sapply(State.score.split,
 State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Data) %in% head(all.var.names, -4)], with=FALSE]
 
 
+####   For individual state data formatting
+State_LONG_Data[, grep("PARCC", center.var.names, value=T) := NA]
+State_LONG_Data[, center.var.names[!center.var.names %in% names(State_LONG_Data)] := NA]
+####   For individual state data formatting
+
+
+###  Re-order and SUBSET columns of State_LONG_Data
+State_LONG_Data <- State_LONG_Data[, names(State_LONG_Data)[names(State_LONG_Data) %in% all.var.names], with=FALSE]
+
+
+#####
+####   SKIP "PARCC Consortium Data" STEP For individual state data formatting
+#####
+
 ###         PARCC Consortium Data
 
 ###  Combine SGP_NOTE and SGP variables
@@ -119,7 +128,7 @@ setnames(PARCC_LONG_Data,
       "SGP_ORDER_2", "SGP_ORDER_2_0.05_CONFIDENCE_BOUND", "SGP_ORDER_2_0.95_CONFIDENCE_BOUND", "SGP_ORDER_2_STANDARD_ERROR",
       "SGP_SIMEX_RANKED", "SGP_SIMEX_RANKED_ORDER_1", "SGP_SIMEX_RANKED_ORDER_2"),
       # "SGP_TARGET_3_YEAR", "SGP_TARGET_3_YEAR_CONTENT_AREA"),
-    c("PARCCStudentIdentifier", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "ThetaSEM",
+    c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM", "IRTTheta", "ThetaSEM",
       "StudentGrowthPercentileComparedtoPARCC", "SGPLowerBoundPARCC", "SGPUpperBoundPARCC", "SGPStandardErrorPARCC",
       "StudentGrowthPercentileComparedtoPARCC1Prior", "SGPLowerBoundPARCC1Prior", "SGPUpperBoundPARCC1Prior", "SGPStandardErrorPARCC1Prior",
       "StudentGrowthPercentileComparedtoPARCC2Prior", "SGPLowerBoundPARCC2Prior", "SGPUpperBoundPARCC2Prior", "SGPStandardErrorPARCC2Prior",
@@ -160,15 +169,19 @@ PARCC_LONG_Data <- PARCC_LONG_Data[, names(PARCC_LONG_Data)[names(PARCC_LONG_Dat
 ###       Merge PARCC and State Data
 ###
 
-FINAL_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
-FINAL_LONG_Data[, c("SGPTargetState", "SGPTargetPARCC", "SGPTargetTestCodeState", "SGPTargetTestCodePARCC") := "NA"]
+####   For individual state data formatting
+FINAL_LONG_Data <- State_LONG_Data
+
+# FINAL_LONG_Data <- merge(PARCC_LONG_Data, State_LONG_Data, by=intersect(names(PARCC_LONG_Data), names(State_LONG_Data)), all.x=TRUE)
+# FINAL_LONG_Data[, c("SGPTargetState", "SGPTargetPARCC", "SGPTargetTestCodeState", "SGPTargetTestCodePARCC") := "NA"]
 
 ###  Coordinate missing SGP notes for small N states and set remaining missings as character "NA" (currently logical NA)
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
-table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoPARCC == "<1000", StudentGrowthPercentileComparedtoState], exclude=NULL) # 2766 None NA/NULL
-table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", is.na(StudentGrowthPercentileComparedtoPARCC)], exclude=NULL)
-summary(as.numeric(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", StudentGrowthPercentileComparedtoPARCC]))
+###  Not necessary for Fall 2019 - no consortium SGPs
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
+# table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoPARCC == "<1000", StudentGrowthPercentileComparedtoState], exclude=NULL) # 2766 None NA/NULL
+# table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", is.na(StudentGrowthPercentileComparedtoPARCC)], exclude=NULL)
+# summary(as.numeric(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", StudentGrowthPercentileComparedtoPARCC]))
 
 # table(FINAL_LONG_Data[TestCode=="ALG02", SGPPreviousTestCodeState!="", SGPPreviousTestCodePARCC!=""])
 # table(FINAL_LONG_Data[SGPPreviousTestCodeState=="" & SGPPreviousTestCodePARCC!="", SGPPreviousTestCodePARCC, TestCode])
@@ -179,12 +192,13 @@ table(FINAL_LONG_Data[TestCode=="ALG02", StateAbbreviation, SGPPreviousTestCodeS
 # table(FINAL_LONG_Data[TestCode=="ALG02", StateAbbreviation, SGPPreviousTestCodeState])
 table(FINAL_LONG_Data[TestCode=="ELA11", StateAbbreviation, SGPPreviousTestCodeState])
 
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
+#  Return NA values blank for 2019?
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
 
 ###  Make sure no exact duplicates remain.
-setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode, SummativeScaleScore)
-setkey(FINAL_LONG_Data, PARCCStudentIdentifier, StudentTestUUID, TestCode)
+setkey(FINAL_LONG_Data, PANUniqueStudentID, StudentTestUUID, TestCode, SummativeScaleScore)
+setkey(FINAL_LONG_Data, PANUniqueStudentID, StudentTestUUID, TestCode)
 table(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data))) # Should be FALSE
 findups <- FINAL_LONG_Data[c(which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))-1, which(duplicated(FINAL_LONG_Data, by=key(FINAL_LONG_Data)))),]
 dim(findups) # Should be 0 rows!
@@ -217,7 +231,7 @@ save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2019_2020.1
 tmp.wd <- getwd()
 for (abv in sort(unique(FINAL_LONG_Data$StateAbbreviation))) {
   tmp.state <- SGP:::getStateAbbreviation(abv, type="state")
-	fname <- paste0("PARCC_", abv, "_2018-2019_Fall_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
+	fname <- paste0("PARCC_", abv, "_2019-2020_Fall_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
   setwd(paste0("./",  gsub(" ", "_", capwords(tmp.state, special.words="DC")), "/Data/Pearson"))
   fwrite(FINAL_LONG_Data[StateAbbreviation == abv], fname) #, col.names = FALSE
   zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mq") # -mq doesn't leave a csv copy.

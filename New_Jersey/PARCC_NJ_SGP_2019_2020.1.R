@@ -43,6 +43,8 @@ PARCC_2019_2020.1.config <- c(
 
 ###   abcSGP
 
+SGPstateData[["NJ"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 900
+
 New_Jersey_SGP <- abcSGP(
 		state="NJ",
 		sgp_object=New_Jersey_Data_LONG,
@@ -60,21 +62,17 @@ New_Jersey_SGP <- abcSGP(
 		return.sgp.test.results= if (sgp.test) TRUE else FALSE, ## -- Turn OFF these 3 for real analyses
 		goodness.of.fit.print= if (sgp.test) FALSE else TRUE,   ####
 		save.intermediate.results=FALSE,
-		outputSGP.output.type="LONG_FINAL_YEAR_Data",
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
 		outputSGP.directory="./Data/Archive/2019_2020.1",
     parallel.config=list(
 			BACKEND = "FOREACH", TYPE = "doParallel",
 			WORKERS = list(TAUS = workers, SIMEX = workers)))
 
 # table(New_Jersey_SGP@Data[, is.na(SGP), as.character(SGP_NORM_GROUP)])
-# table(New_Jersey_SGP@Data[, is.na(SGP_NOTE), as.character(SGP_NORM_GROUP)])
-
+# table(New_Jersey_SGP@Data[YEAR == '2019_2020.1', is.na(SGP_NOTE), as.character(SGP_NORM_GROUP)])
 
 ###   Save results
 
 if (sgp.test) {
 	save(New_Jersey_SGP, file="./Data/SIM/New_Jersey_SGP-Test_PARCC_2019_2020.1.Rdata")
 } else save(New_Jersey_SGP, file="./Data/Archive/2019_2020.1/New_Jersey_SGP.Rdata")
-
-
-sessionInfo(); q("no")
