@@ -95,9 +95,19 @@ if (sgp.test) {
 
 ### visualizeSGP
 
+
+###   Need to modify the GRADE, CONTENT_AREA and Year Lag projection sequences to
+###   Accurately reflect the course taking patterns in the state (the
+###   original meta-data are based on the entire PARCC Consortium).
+###
+###   See code above
+
+SGPstateData[["IL"]][["SGP_Configuration"]][["gaPlot.back.extrapolated.cuts"]] <- NULL
+
 visualizeSGP(
 	Illinois_SGP,
 	plot.types=c("growthAchievementPlot"),
+	# gaPlot.content_areas=c("ELA", "MATHEMATICS"),
 	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
 q("no")
