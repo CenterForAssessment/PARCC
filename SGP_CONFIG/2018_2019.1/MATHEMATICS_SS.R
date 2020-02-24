@@ -13,7 +13,7 @@ ALGEBRA_I_SS.2018_2019.1.config <- list(
 		sgp.panel.years=c("2016_2017.2", "2017_2018.2", "2018_2019.1"),
 		sgp.grade.sequences=list(c("7", "8", "EOCT")), # ~ 9th grade
 		# sgp.exclude.sequences = data.table(VALID_CASE = "VALID_CASE", CONTENT_AREA=PARCC.Math.Subjects,
-		# 	YEAR="2017_2018.1", GRADE="EOCT"), # Exlcude Fall 2016 Math Subjects.  Include to be safe?  Bring up with PARCC State Leads
+		# 	YEAR="2017_2018.1", GRADE="EOCT"), # Exlcude Fall 2017 Math Subjects.  Include to be safe?  Bring up with PARCC State Leads
 		sgp.norm.group.preference=1,
 		sgp.projection.grade.sequences=list("NO_PROJECTIONS")),
 	ALGEBRA_I_SS.2018_2019.1 = list(  #  SGP_NOTE
@@ -55,7 +55,7 @@ GEOMETRY_SS.2018_2019.1.config <- list(
 		sgp.panel.years=c("2016_2017.2", "2017_2018.2", "2018_2019.1"),
 		sgp.grade.sequences=list(c("8", "EOCT", "EOCT")),
 		# sgp.exclude.sequences = data.table(VALID_CASE = "VALID_CASE", CONTENT_AREA=PARCC.Math.Subjects,
-		# 	YEAR="2017_2018.1", GRADE="EOCT"), # Exlcude Fall 2016 Math Subjects
+		# 	YEAR="2017_2018.1", GRADE="EOCT"), # Exlcude Fall 2017 Math Subjects
 		sgp.norm.group.preference=1,
 		sgp.projection.grade.sequences=list("NO_PROJECTIONS")),
 	GEOMETRY_SS.2018_2019.1 = list(  #  SGP_NOTE
