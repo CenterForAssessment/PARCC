@@ -16,7 +16,7 @@ cat("#########################################\n", file = out.file, append=TRUE)
 require(data.table)
 
 ###  Set working directory to top level directory (PARCC) and Identify States
-tmp.states <- c("Bureau_Indian_Affairs", "Department_Of_Defense", "Illinois", "Maryland", "New_Mexico", "Washington_DC")
+tmp.states <- c("Bureau_Indian_Affairs", "Department_Of_Defense", "Illinois", "Maryland", "New_Jersey", "New_Mexico", "Washington_DC")
 
 ####   Function to read in individual state files
 read.parcc <- function(state, tag, type="OUTPUT") {
@@ -39,14 +39,18 @@ read.parcc <- function(state, tag, type="OUTPUT") {
 ### Loop over states
 
 for (state in tmp.states) {
-    tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D201906", "ORIGINAL")
-    tmp.OUTPUT <- read.parcc(state, "2018-2019_Spring_SGP-STATE_LEVEL_Results_201907")
-    # tmp.ORIGINAL1<- read.parcc("Maryland", "2018-2019_SGPO_D201902", "ORIGINAL"); state <- "Maryland"
-    # tmp.ORIGINAL2<- read.parcc(state, "2018-2019_SGPO_D201903", "ORIGINAL")
-    # tmp.ORIGINAL <- rbindlist(list(tmp.ORIGINAL1, tmp.ORIGINAL2))
-    # tmp.OUTPUT <- read.parcc(state, "2018-2019_Fall_SGP-Results_20190307")
-    # tmp.ORIGINAL<-read.parcc("New_Jersey", "2018-2019_SGPO_D201903", "ORIGINAL")
-    # tmp.OUTPUT <- read.parcc("New_Jersey", "2018-2019_Fall_SGP-Results_20190327")
+    if (state == "Maryland") tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D201908", "ORIGINAL")
+    if (state == "New_Jersey") tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D20190812", "ORIGINAL") # D20190726
+    if (state == "New_Mexico") tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D201908", "ORIGINAL")
+    if (!state %in% c("Maryland", "New_Mexico", "New_Jersey")) {
+      tmp.ORIGINAL<-read.parcc(state, "2018-2019_SGPO_D201906", "ORIGINAL")
+    }
+    if (state == "Maryland") tmp.OUTPUT <- read.parcc(state, "2018-2019_Spring_SGP-Results_20190814")
+    if (state == "New_Jersey") tmp.OUTPUT <- read.parcc(state, "2018-2019_Spring_SGP-Results_20190816")
+    if (state == "New_Mexico") tmp.OUTPUT <- read.parcc(state, "2018-2019_Spring_SGP-Results_20190908")
+    if (!state %in% c("Maryland", "New_Mexico", "New_Jersey")) {
+      tmp.OUTPUT <- read.parcc(state, "2018-2019_Spring_SGP-Results_201908")
+    }
     setkey(tmp.ORIGINAL, PANUniqueStudentID, TestCode, IRTTheta)
     setkey(tmp.OUTPUT, PANUniqueStudentID, TestCode, IRTTheta)
 
@@ -57,14 +61,22 @@ for (state in tmp.states) {
     cat(paste("\n### Test for Identical PANUniqueStudentID in BASE and OUTPUT files:", tmp.tf), file = out.file, append=TRUE)
 
     ### TEST for identical IRTTheta
-    identical(as.numeric(tmp.OUTPUT$IRTTheta), as.numeric(tmp.ORIGINAL$IRTTheta))
+    tmp.tf <- identical(as.numeric(tmp.OUTPUT$IRTTheta), as.numeric(tmp.ORIGINAL$IRTTheta))
     cat(paste("\n### Test for Identical IRTTheta in BASE and OUTPUT files:", tmp.tf), file = out.file, append=TRUE)
 
-    tmp.sgp.state <- paste(as.character(summary(as.numeric(tmp.OUTPUT$StudentGrowthPercentileComparedtoState))), collapse=" ")
-    cat(paste("\n### Test of StudentGrowthPercentileComparedtoState:", tmp.sgp.state), file = out.file, append=TRUE)
+    # tmp.sgp.state <- paste(as.character(summary(as.numeric(tmp.OUTPUT$StudentGrowthPercentileComparedtoState))), collapse=" ")
+    tmp.sgp.state <- tmp.OUTPUT[!is.na(as.numeric(StudentGrowthPercentileComparedtoState)), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoState))), keyby="TestCode"]
+    tmp.sgp.state.n <- tmp.OUTPUT[!is.na(as.numeric(StudentGrowthPercentileComparedtoState)), list(.N), keyby="TestCode"]
+    # cat(paste("\n### Test of StudentGrowthPercentileComparedtoState:", tmp.sgp.stat), file = out.file, append=TRUE)
+    cat("\n\n### Test of StudentGrowthPercentileComparedtoState:\n", file = out.file, append=TRUE)
+    capture.output(tmp.sgp.state[tmp.sgp.state.n], file = out.file, append=TRUE)
 
-    tmp.sgp.parcc <- paste(as.character(summary(as.numeric(tmp.OUTPUT$StudentGrowthPercentileComparedtoPARCC))), collapse=" ")
-    cat(paste("\n### Test of StudentGrowthPercentileComparedtoPARCC:", tmp.sgp.parcc), file = out.file, append=TRUE)
+    # tmp.sgp.parcc <- paste(as.character(summary(as.numeric(tmp.OUTPUT$StudentGrowthPercentileComparedtoPARCC))), collapse=" ")
+    tmp.sgp.parcc <- tmp.OUTPUT[!is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC)), as.list(summary(as.numeric(StudentGrowthPercentileComparedtoPARCC))), keyby="TestCode"]
+    tmp.sgp.parcc.n <- tmp.OUTPUT[!is.na(as.numeric(StudentGrowthPercentileComparedtoPARCC)), list(.N), keyby="TestCode"]
+    # cat(paste("\n### Test of StudentGrowthPercentileComparedtoPARCC:", tmp.sgp.parcc), file = out.file, append=TRUE)
+    cat("\n\n### Test of StudentGrowthPercentileComparedtoPARCC:\n", file = out.file, append=TRUE)
+    capture.output(tmp.sgp.parcc[tmp.sgp.parcc.n], file = out.file, append=TRUE)
 
     tmp.simex.state <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexState)), as.list(summary(as.numeric(SGPRankedSimexState))), keyby="TestCode"]
     tmp.simex.state.n <- tmp.OUTPUT[!is.na(as.numeric(SGPRankedSimexState)), list(.N), keyby="TestCode"]
