@@ -7,6 +7,7 @@
 ### Load required packages
 
 require(SGP)
+require(R.utils)
 require(data.table)
 
 ###  Set working directory to top level directory (PARCC)
@@ -42,13 +43,15 @@ read.parcc <- function(state, year) {
 	if (tmp.name=="WASHINGTON_DC") tmp.name <- "Washington_DC"
 	tmp.files <- list.files(file.path(tmp.name, "Data/Base_Files"))
 	my.file <- gsub(".zip",  "", grep(year, tmp.files, value=TRUE))
-	tmp.dir <- getwd()
-	setwd(tempdir())
-	system(paste0("unzip '", file.path(tmp.dir, tmp.name, "Data/Base_Files", paste0(my.file, ".zip")), "'"))
-
+	my.dir <- getwd()
+  if (!grepl(".gz", my.file)) {
+    setwd(tempdir())
+    system(paste0("unzip '", file.path(my.dir, tmp.name, "Data/Base_Files", paste0(my.file, ".zip")), "'"))
+  } else {
+    my.file <- file.path(my.dir, tmp.name, "Data/Base_Files", my.file)
+  }
 	TMP <- fread(my.file, sep=",", colClasses=rep("character", length(all.var.names)))
-	unlink(my.file)
-	setwd(tmp.dir)
+	if (!grepl(".gz", my.file)) {unlink(my.file);setwd(my.dir)}
 	return(TMP)
 }
 

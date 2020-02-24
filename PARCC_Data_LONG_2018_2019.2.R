@@ -56,17 +56,17 @@ read.parcc <- function(state, year) {
 
 PARCC_Data_LONG_2018_2019.2 <- fread("./Bureau_Indian_Affairs/Data/Base_Files/PARCC_BI_2018-2019_SGPO_D20190606.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
 PARCC_Data_LONG_2018_2019.2 <- read.parcc("IL", "D20190624")[, parcc.var.names, with=FALSE]
-PARCC_Data_LONG_2018_2019.2 <- fread("./New_Mexico/Data/Base_Files/PARCC_NM_2018-2019_SGPO_D20190611.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
+PARCC_Data_LONG_2018_2019.2 <- fread("./New_Mexico/Data/Base_Files/PARCC_NM_2018-2019_SGPO_D20190816.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
 PARCC_Data_LONG_2018_2019.2 <- fread("./Department_Of_Defense/Data/Base_Files/PARCC_DD_2018-2019_SGPO_D20190613.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
-PARCC_Data_LONG_2018_2019.2 <- read.parcc("MD", "D20190621")[, parcc.var.names, with=FALSE]
-PARCC_Data_LONG_2018_2019.2 <- read.parcc("NJ", "D20190619")[, parcc.var.names, with=FALSE] # Had to add extra commas at the end of pre-equated file
+PARCC_Data_LONG_2018_2019.2 <- read.parcc("MD", "D20190808")[, parcc.var.names, with=FALSE]
+PARCC_Data_LONG_2018_2019.2 <- read.parcc("NJ", "D20190812")[, parcc.var.names, with=FALSE] # D20190619 # Had to add extra commas at the end of pre-equated file
 PARCC_Data_LONG_2018_2019.2 <- read.parcc("DC", "D20190627")[, parcc.var.names, with=FALSE]
 
-PARCC_Data_LONG_2018_2019.2 <- rbindlist(list(
-  read.parcc("BI", "D20190606"), read.parcc("DC", "D20190629")
-  read.parcc("DD", "D20190613"), read.parcc("IL", "D20190624"),
-  read.parcc("MD", "D20190629"), read.parcc("NJ", "D20190629"),
-  read.parcc("NM", "D20190629")))[, parcc.var.names, with=FALSE]
+# PARCC_Data_LONG_2018_2019.2 <- rbindlist(list(
+#   read.parcc("BI", "D20190606"), read.parcc("DC", "D20190629")
+#   read.parcc("DD", "D20190613"), read.parcc("IL", "D20190624"),
+#   read.parcc("MD", "D20190629"), read.parcc("NJ", "D20190629"),
+#   read.parcc("NM", "D20190629")))[, parcc.var.names, with=FALSE]
 
 setkey(PARCC_Data_LONG_2018_2019.2, PANUniqueStudentID, TestCode, Period)
 
@@ -169,7 +169,7 @@ PARCC_Data_LONG_2018_2019.2[which(duplicated(PARCC_Data_LONG_2018_2019.2, by=key
 PARCC_Data_LONG_2018_2019.2[which(duplicated(PARCC_Data_LONG_2018_2019.2, by=key(PARCC_Data_LONG_2018_2019.2))), EXACT_DUPLICATE := 2]
 PARCC_Data_LONG_2018_2019.2[which(duplicated(PARCC_Data_LONG_2018_2019.2, by=key(PARCC_Data_LONG_2018_2019.2))), VALID_CASE := "INVALID_CASE"]
 
-#X#  17 (8 - NM, 1 - NJ) dups in same grade.  Shouldn't be an issue and Pearson/PARCC requested duplicate results for current year as of ?2016?
+#X#  17 (8 - NM (0 in revised final), 47 - NJ pre-eq (0 in final)) dups in same grade.  Shouldn't be an issue and Pearson/PARCC requested duplicate results for current year as of ?2016?
 setkey(PARCC_Data_LONG_2018_2019.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE)
 setkey(PARCC_Data_LONG_2018_2019.2, VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID)
 dups <- PARCC_Data_LONG_2018_2019.2[c(which(duplicated(PARCC_Data_LONG_2018_2019.2, by=key(PARCC_Data_LONG_2018_2019.2))), which(duplicated(PARCC_Data_LONG_2018_2019.2, by=key(PARCC_Data_LONG_2018_2019.2)))-1),]
@@ -199,16 +199,15 @@ PARCC_Data_LONG_2018_2019.2[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUA
 PARCC_Data_LONG_2018_2019.2[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ####  Save Spring 2019 individual states LONG data
-dir.create("./Washington_DC/Data/Archive/2018_2019.2", recursive = TRUE)
-assign("Washington_DC_Data_LONG_2018_2019.2", PARCC_Data_LONG_2018_2019.2)
+dir.create("./New_Mexico/Data/Archive/2018_2019.2", recursive = TRUE)
+assign("New_Mexico_Data_LONG_2018_2019.2", PARCC_Data_LONG_2018_2019.2)
 
 # load("./New_Mexico/Data/Archive/2018_2019.2/PARCC_Data_LONG_2018_2019.2.Rdata")
 # names(New_Mexico_Data_LONG_2018_2019.2) %in% names(PARCC_Data_LONG_2018_2019.2)
 # identical(PARCC_Data_LONG_2018_2019.2, New_Mexico_Data_LONG_2018_2019.2)
 # sapply(1:19, function(z) identical(PARCC_Data_LONG_2018_2019.2[[z]], New_Mexico_Data_LONG_2018_2019.2[[z]]))
 
-save(Washington_DC_Data_LONG_2018_2019.2, file = "./Washington_DC/Data/Archive/2018_2019.2/Washington_DC_Data_LONG_2018_2019.2.Rdata")
-
+save(New_Mexico_Data_LONG_2018_2019.2, file = "./New_Mexico/Data/Archive/2018_2019.2/New_Mexico_Data_LONG_2018_2019.2.Rdata")
 
 
 ####  Save Spring 2019 LONG Data
@@ -216,8 +215,8 @@ save(Washington_DC_Data_LONG_2018_2019.2, file = "./Washington_DC/Data/Archive/2
 save(PARCC_Data_LONG_2018_2019.2, file = "./PARCC/Data/Archive/2018_2019.2/PARCC_Data_LONG_2018_2019.2.Rdata")
 
 
-#####  Add Spring 2019 LONG data to existing SQLite Database.  Tables stored by each year / period
+#####  Add Spring 2019 LONG data to existing SQLite Database.  Tables stored by each year / period  NOT DONE IN 2019
 
-con <- dbConnect(SQLite(), dbname = parcc.db)
-dbWriteTable(con, name = "PARCC_Data_LONG_2019_2", value=PARCC_Data_LONG_2018_2019.2, overwrite=TRUE)
-dbDisconnect(con)
+# con <- dbConnect(SQLite(), dbname = parcc.db)
+# dbWriteTable(con, name = "PARCC_Data_LONG_2019_2", value=PARCC_Data_LONG_2018_2019.2, overwrite=TRUE)
+# dbDisconnect(con)

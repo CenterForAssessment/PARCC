@@ -44,12 +44,8 @@ source("../SGP_CONFIG/2018_2019.2/ELA_SS.R")
 source("../SGP_CONFIG/2018_2019.2/MATHEMATICS.R")
 source("../SGP_CONFIG/2018_2019.2/MATHEMATICS_SS.R")
 
-SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "10")
-SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 7)
-SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- c(rep(1L, 5), 2)
-SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA_SS"]] <- c("3", "4", "5", "6", "7", "8", "10")
-SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA_SS"]] <- rep("ELA_SS", 7)
-SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA_SS"]] <- c(rep(1L, 5), 2)
+ELA.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
+ELA_SS.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
 
 PARCC_2018_2019.2.config <- c(
 	ELA.2018_2019.2.config,
@@ -66,10 +62,15 @@ PARCC_2018_2019.2.config <- c(
 	ALGEBRA_II_SS.2018_2019.2.config
 )
 
-ELA.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
-ELA_SS.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
-
 PARCC_2018_2019.2.config <- PARCC_2018_2019.2.config[!sapply(PARCC_2018_2019.2.config, function(f) any(grepl("INTEGRATED_MATH_", f)))]
+
+###  Necessary modifications to SGPstateData
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "10")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 7)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- c(rep(1L, 5), 2)
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA_SS"]] <- c("3", "4", "5", "6", "7", "8", "10")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA_SS"]] <- rep("ELA_SS", 7)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA_SS"]] <- c(rep(1L, 5), 2)
 
 ### abcSGP
 
@@ -123,3 +124,118 @@ visualizeSGP(
 	Maryland_SGP,
 	plot.types=c("growthAchievementPlot"),
 	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
+
+
+#####
+###   updateSGP - used for updated records Pearson sent 8/9/2019
+#####
+
+workers <- 15
+
+options(error=recover)
+
+### Load Packages
+require(SGP)
+require(data.table)
+
+load("Data/Archive/2018_2019.2/Maryland_SGP.Rdata")
+load("Data/Archive/2018_2019.2/Maryland_Data_LONG_2018_2019.2.Rdata")
+
+table(Maryland_SGP@Data[YEAR == "2018_2019.2", is.na(SGP), CONTENT_AREA]) # No ALGEBRA_II SGPs to update - Don't include in Configs
+
+###   Modify Maryland_SGP object
+Maryland_SGP@Data <- Maryland_SGP@Data[YEAR != "2018_2019.2"]
+Maryland_SGP@SGP <- Maryland_SGP@SGP[c(1:3, 6)]
+
+for (pctl in names(Maryland_SGP@SGP[["SGPercentiles"]])) {
+	if ("SGP_NOTE" %in% names(Maryland_SGP@SGP[["SGPercentiles"]][[pctl]])) {
+		message(pctl, " - Pre: ", nrow(Maryland_SGP@SGP[["SGPercentiles"]][[pctl]]))
+		Maryland_SGP@SGP[["SGPercentiles"]][[pctl]] <- Maryland_SGP@SGP[["SGPercentiles"]][[pctl]][!is.na(SGP_NOTE),]
+		message(pctl, " - Post: ", nrow(Maryland_SGP@SGP[["SGPercentiles"]][[pctl]]))
+	} else {
+		Maryland_SGP@SGP[["SGPercentiles"]][[pctl]] <- NULL
+		message(pctl, " Removed Completely")
+	}
+}; names(Maryland_SGP@SGP[["SGPercentiles"]])
+
+
+###  Read in the Spring 2018 configuration code and combine into a single list.
+source("../SGP_CONFIG/2018_2019.2/ELA.R")
+source("../SGP_CONFIG/2018_2019.2/ELA_SS.R")
+source("../SGP_CONFIG/2018_2019.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2018_2019.2/MATHEMATICS_SS.R")
+
+ELA.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
+ELA_SS.2018_2019.2.config[[1]]$sgp.grade.sequences <- list(c("3", "4"), c("3", "4", "5"), c("4", "5", "6"), c("5", "6", "7"), c("6", "7", "8"))
+ELA.2018_2019.2.config[[3]] <- ELA_SS.2018_2019.2.config[[3]] <- NULL
+
+PARCC_2018_2019.2.config <- c(
+	ELA.2018_2019.2.config,
+	ELA_SS.2018_2019.2.config,
+
+	MATHEMATICS.2018_2019.2.config,
+	MATHEMATICS_SS.2018_2019.2.config,
+
+	ALGEBRA_I.2018_2019.2.config,
+	ALGEBRA_I_SS.2018_2019.2.config,
+	GEOMETRY.2018_2019.2.config,
+	GEOMETRY_SS.2018_2019.2.config
+)
+
+PARCC_2018_2019.2.config <- PARCC_2018_2019.2.config[!sapply(PARCC_2018_2019.2.config, function(f) any(grepl("INTEGRATED_MATH_", f)))]
+
+#     Also weed out progression with "Only analyses with MAX grade progression..." in Logs  One GEOMETRY config in MD case
+PARCC_2018_2019.2.config[[15]]$sgp.panel.years <- c("2017_2018.2", "2018_2019.2")
+PARCC_2018_2019.2.config[[15]]$sgp.content.areas <- c("ALGEBRA_I",   "GEOMETRY")
+PARCC_2018_2019.2.config[[15]]$sgp.grade.sequences[[1]] <- c("EOCT", "EOCT")
+
+PARCC_2018_2019.2.config[[23]]$sgp.panel.years <- c("2017_2018.2", "2018_2019.2")
+PARCC_2018_2019.2.config[[23]]$sgp.content.areas <- c("ALGEBRA_I_SS",   "GEOMETRY_SS")
+PARCC_2018_2019.2.config[[23]]$sgp.grade.sequences[[1]] <- c("EOCT", "EOCT")
+
+###  Necessary modifications to SGPstateData
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- c("3", "4", "5", "6", "7", "8", "10")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 7)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- c(rep(1L, 5), 2)
+SGPstateData[["MD"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA_SS"]] <- c("3", "4", "5", "6", "7", "8", "10")
+SGPstateData[["MD"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA_SS"]] <- rep("ELA_SS", 7)
+SGPstateData[["MD"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA_SS"]] <- c(rep(1L, 5), 2)
+
+###   updateSGP
+
+Maryland_SGP <- updateSGP(
+		what_sgp_object = Maryland_SGP,
+		with_sgp_data_LONG = Maryland_Data_LONG_2018_2019.2,
+		overwrite.existing.data=FALSE, #  Do this manually so we keep SGPercentiles with SGP_NOTE included
+		update.old.data.with.new=TRUE,
+		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+		sgp.config = PARCC_2018_2019.2.config, # Only Math grade 8
+		sgp.percentiles = TRUE,
+		sgp.projections = TRUE,
+		sgp.projections.lagged = TRUE,
+		sgp.percentiles.baseline = FALSE,
+		sgp.projections.baseline = FALSE,
+		sgp.projections.lagged.baseline = FALSE,
+		simulate.sgps=TRUE,
+
+		sgp.use.my.coefficient.matrices = TRUE,
+		calculate.simex = list(csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5),
+                        	 simulation.iterations=75, extrapolation="linear",
+													 simex.use.my.coefficient.matrices=TRUE),
+
+		save.intermediate.results = FALSE,
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		outputSGP.directory="./Data/Archive/2018_2019.2",
+    parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(TAUS = workers, SIMEX = workers)))
+
+Maryland_SGP <- combineSGP(Maryland_SGP,
+    years = "2018_2019.2",
+    sgp.target.scale.scores = TRUE,
+    sgp.config = PARCC_2018_2019.2.config, # Complete configs
+		parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(SGP_SCALE_SCORE_TARGETS=10)))
+
+save(Maryland_SGP, file="./Data/Archive/2018_2019.2/Maryland_SGP.Rdata")

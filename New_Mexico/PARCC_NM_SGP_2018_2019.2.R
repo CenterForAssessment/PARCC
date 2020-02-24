@@ -116,4 +116,89 @@ visualizeSGP(
 	plot.types=c("growthAchievementPlot"),
 	parallel.config=list(BACKEND="PARALLEL", WORKERS=list(GA_PLOTS=workers)))
 
-q("no")
+
+#####
+###   updateSGP - used for updated records Pearson sent 8/9/2019
+#####
+
+workers <- 15
+
+options(error=recover)
+
+### Load Packages
+require(SGP)
+require(data.table)
+
+load("Data/Archive/2018_2019.2/New_Mexico_SGP.Rdata")
+load("Data/Archive/2018_2019.2/New_Mexico_Data_LONG_2018_2019.2.Rdata")
+
+###   Modify New_Mexico_SGP object
+New_Mexico_SGP@Data <- New_Mexico_SGP@Data[YEAR != "2018_2019.2"]
+New_Mexico_SGP@SGP <- New_Mexico_SGP@SGP[c(1:3, 6)]
+
+for (pctl in names(New_Mexico_SGP@SGP[["SGPercentiles"]])) {
+	if ("SGP_NOTE" %in% names(New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]])) {
+		message(pctl, " - Pre: ", nrow(New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]]))
+		New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]] <- New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]][!is.na(SGP_NOTE),]
+		message(pctl, " - Post: ", nrow(New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]]))
+	} else {
+		New_Mexico_SGP@SGP[["SGPercentiles"]][[pctl]] <- NULL
+		message(pctl, " Removed Completely")
+	}
+}; names(New_Mexico_SGP@SGP[["SGPercentiles"]])
+
+PARCC_2018_2019.2.config <- c(
+	ELA.2018_2019.2.config,
+	ELA_SS.2018_2019.2.config,
+
+	MATHEMATICS.2018_2019.2.config,
+	MATHEMATICS_SS.2018_2019.2.config,
+
+	ALGEBRA_I.2018_2019.2.config,
+	ALGEBRA_I_SS.2018_2019.2.config,
+	GEOMETRY.2018_2019.2.config,
+	GEOMETRY_SS.2018_2019.2.config,
+	ALGEBRA_II.2018_2019.2.config,
+	ALGEBRA_II_SS.2018_2019.2.config
+)
+
+SGPstateData[["NM"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.matrices"]] <- TRUE
+
+###   updateSGP
+
+New_Mexico_SGP <- updateSGP(
+		what_sgp_object = New_Mexico_SGP,
+		with_sgp_data_LONG = New_Mexico_Data_LONG_2018_2019.2,
+		overwrite.existing.data=FALSE, #  Do this manually so we keep SGPercentiles with SGP_NOTE included
+		update.old.data.with.new=TRUE,
+		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+		sgp.config = PARCC_2018_2019.2.config, # Only Math grade 8
+		sgp.percentiles = TRUE,
+		sgp.projections = TRUE,
+		sgp.projections.lagged = TRUE,
+		sgp.percentiles.baseline = FALSE,
+		sgp.projections.baseline = FALSE,
+		sgp.projections.lagged.baseline = FALSE,
+		simulate.sgps=TRUE,
+
+		sgp.use.my.coefficient.matrices = TRUE,
+		calculate.simex = list(csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5),
+                        	 simulation.iterations=75, extrapolation="linear",
+													 simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=TRUE),
+
+		save.intermediate.results = FALSE,
+		outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+		outputSGP.directory="./Data/Archive/2018_2019.2",
+    parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(TAUS = workers, SIMEX = workers)))
+
+New_Mexico_SGP <- combineSGP(New_Mexico_SGP,
+    years = "2018_2019.2",
+    sgp.target.scale.scores = TRUE,
+    sgp.config = PARCC_2018_2019.2.config, # Complete configs
+		parallel.config=list(
+			BACKEND = "FOREACH", TYPE = "doParallel",
+			WORKERS = list(SGP_SCALE_SCORE_TARGETS=3)))
+
+save(New_Mexico_SGP, file="./Data/Archive/2018_2019.2/New_Mexico_SGP.Rdata")
