@@ -1,0 +1,38 @@
+#########################################
+######### PARCC OUTPUT VALIDATION #######
+#########################################
+
+
+### New_Jersey Output Validation ###
+
+### Test for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+### Test of StudentGrowthPercentileComparedtoState: 1 24 49 49.5507787151201 75 99 6763
+### Test of StudentGrowthPercentileComparedtoPARCC: NA NA NA NaN NA NA 19091
+
+### Test of StudentGrowthPercentileComparedtoState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1   24.25   49.5 49.31128      74   99 1542
+2:    ALG02    1   24.00   49.0 49.19788      74   99  945
+3:    ELA09    1   25.00   50.0 49.66648      75   99 3529
+4:    ELA10    1   24.00   49.0 49.43043      74   99 3615
+5:    GEO01    1   25.00   50.0 49.82128      75   99 2697
+
+
+### Test of StudentGrowthPercentileComparedtoPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+
+### Test of SGPRankedSimexState:
+   TestCode Min. 1st Qu. Median     Mean 3rd Qu. Max.    N
+1:    ALG01    1      25     50 49.92607      75   99 1542
+2:    ALG02    1      25     50 50.04868      75   99  945
+3:    ELA09    1      25     50 49.97478      75   99 3529
+4:    ELA10    1      25     50 49.87469      75   99 3615
+5:    GEO01    1      25     49 49.49203      75   99 2697
+
+
+### Test of SGPRankedSimexPARCC:
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+###   END  New_Jersey Output Validation   ###
+
