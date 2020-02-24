@@ -15,7 +15,7 @@ workers <- 25
 load("./Data/Archive/2017_2018.2/PARCC_SGP.Rdata")
 load("./Data/Archive/2016_2017.1/PARCC_SGP_LONG_Data.Rdata")
 table(PARCC_SGP@Data[, YEAR])
-table(PARCC_SGP_LONG_Data[YEAR != "2015_2016.2"])
+table(PARCC_SGP_LONG_Data[YEAR != "2015_2016.2", YEAR])
 
 PARCC_SGP@Data <- rbindlist(list(PARCC_SGP@Data, PARCC_SGP_LONG_Data[YEAR != "2015_2016.2"]), fill=TRUE)
 PARCC_SGP@Data <- PARCC_SGP@Data[grep("_SS", CONTENT_AREA, invert =TRUE),]
@@ -41,7 +41,7 @@ PARCC_SGP@SGP <- NULL;gc()
 PARCC_SGP@Data[, CATCH_UP_KEEP_UP_STATUS := NULL]
 PARCC_SGP@Data[, MOVE_UP_STAY_UP_STATUS := NULL]
 PARCC_SGP <- prepareSGP(PARCC_SGP, create.additional.variables=FALSE)
-save(PARCC_SGP, file="/media/Data/PARCC_Alt/PARCC_SGP_Alt.rda")
+save(PARCC_SGP, file="/media/Data/PARCC_Alt/PARCC_SGP_Alt2.rda")
 
 
 ####
@@ -49,17 +49,13 @@ save(PARCC_SGP, file="/media/Data/PARCC_Alt/PARCC_SGP_Alt.rda")
 ####
 
 
-###  Read in the Spring 2017 configuration code and combine into a single list.
+###  Read in the Spring 2017 & 2018 configuration code and combine into a single list.
 
 source("../SGP_CONFIG/2016_2017.2/ELA.R")
-source("../SGP_CONFIG/2016_2017.2/ELA_SS.R")
 source("../SGP_CONFIG/2016_2017.2/MATHEMATICS.R")
-source("../SGP_CONFIG/2016_2017.2/MATHEMATICS_SS.R")
 
 source("../SGP_CONFIG/2017_2018.2/ELA.R")
-source("../SGP_CONFIG/2017_2018.2/ELA_SS.R")
 source("../SGP_CONFIG/2017_2018.2/MATHEMATICS.R")
-source("../SGP_CONFIG/2017_2018.2/MATHEMATICS_SS.R")
 
 PARCC_Alt_Consortium.config <- c(
 	ELA.2017_2018.2.config,
@@ -69,20 +65,12 @@ PARCC_Alt_Consortium.config <- c(
 	GEOMETRY.2017_2018.2.config,
 	ALGEBRA_II.2017_2018.2.config,
 
-	INTEGRATED_MATH_1.2017_2018.2.config,
-	INTEGRATED_MATH_2.2017_2018.2.config,
-	INTEGRATED_MATH_3.2017_2018.2.config,
-
 	ELA.2016_2017.2.config,
 	MATHEMATICS.2016_2017.2.config,
 
 	ALGEBRA_I.2016_2017.2.config,
 	GEOMETRY.2016_2017.2.config,
-	ALGEBRA_II.2016_2017.2.config,
-
-	INTEGRATED_MATH_1.2016_2017.2.config,
-	INTEGRATED_MATH_2.2016_2017.2.config,
-	INTEGRATED_MATH_3.2016_2017.2.config
+	ALGEBRA_II.2016_2017.2.config
 )
 
 ### abcSGP
@@ -122,7 +110,7 @@ grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, pe
 setnames(PARCC_SGP@Data, grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, perl=TRUE), # more?  "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED",
 			gsub("SGP", "ALL", grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, perl=TRUE)))
 
-###   Run abcSGP - lines 91 - 106 For ABO
+###   Run abcSGP - lines 80 - 95 For ABO
 
 ####
 ####   Now rename/cleanup and then run MD/DC Consortium
@@ -143,7 +131,7 @@ grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, pe
 setnames(PARCC_SGP@Data, grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, perl=TRUE),
 			gsub("SGP", "ABO", grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP@Data), value=TRUE, perl=TRUE)))
 
-###   Run abcSGP - lines 91 - 106 For MD/DC Flagship
+###   Run abcSGP - lines 80 - 95 For MD/DC Flagship
 
 FLSHP_SGP <- PARCC_SGP@SGP
 save(FLSHP_SGP, file="FLSHP_SGP.rda")
@@ -169,8 +157,6 @@ grep('(?=^((?!TARGET|PROJECTION).)*$)ALL', names(PARCC_SGP@Data), value=TRUE, pe
 setnames(PARCC_SGP@Data, grep('(?=^((?!TARGET|PROJECTION).)*$)ALL', names(PARCC_SGP@Data), value=TRUE, perl=TRUE),
 			gsub("ALL", "SGP", grep('(?=^((?!TARGET|PROJECTION).)*$)ALL', names(PARCC_SGP@Data), value=TRUE, perl=TRUE)))
 
-
-
 	PARCC_SGP@Data[, ALT := ABO]
 	PARCC_SGP@Data[, ALT_ORDER := ABO_ORDER]
 	PARCC_SGP@Data[, ALT_NOTE := ABO_NOTE]
@@ -183,7 +169,7 @@ setnames(PARCC_SGP@Data, grep('(?=^((?!TARGET|PROJECTION).)*$)ALL', names(PARCC_
 	PARCC_SGP@Data[is.na(ALT_NORM_GROUP), ALT_NORM_GROUP := as.character(FLSHP_NORM_GROUP)]
 
 	PARCC_SGP@Data[, ORIG_NORM_GROUP := as.character(ORIG_NORM_GROUP)]
-	PARCC_SGP@Data[, ALL_NORM_GROUP := as.character(ALL_NORM_GROUP)]
+	PARCC_SGP@Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)]
 
 ###   Output data and save SGP object
 outputSGP(PARCC_SGP, output.type="LONG_Data")
@@ -196,7 +182,7 @@ save(PARCC_SGP, file="./Data/PARCC_SGP.Rdata")
 ####    Analysis
 ####
 
-setwd("/media/Data/PARCC_Alt")
+setwd("/media/Data/PARCC_Alt/July_Redo")
 require(data.table)
 require("xlsx")
 load("Data/PARCC_SGP_LONG_Data.Rdata")
@@ -204,6 +190,11 @@ load("Data/PARCC_SGP_LONG_Data.Rdata")
 table(PARCC_SGP_LONG_Data[StateAbbreviation == "DC" & TestCode == "ELA09", VALID_CASE])
 table(PARCC_SGP_LONG_Data[StateAbbreviation == "DC" & TestCode == "ALG01" & GradeLevelWhenAssessed %in% c("09", "10", "11", "12", "99"), VC_ORIG])
 table(PARCC_SGP_LONG_Data[StateAbbreviation == "DC" & TestCode == "ALG01" & GradeLevelWhenAssessed %in% c("09", "10", "11", "12", "99"), VALID_CASE])
+
+###   Rename 'SGP' variables as 'ALL'
+grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP_LONG_Data), value=TRUE, perl=TRUE)
+setnames(PARCC_SGP_LONG_Data, grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP_LONG_Data), value=TRUE, perl=TRUE),
+			gsub("SGP", "ALL", grep('(?=^((?!TARGET|PROJECTION).)*$)SGP', names(PARCC_SGP_LONG_Data), value=TRUE, perl=TRUE)))
 
 table(PARCC_SGP_LONG_Data[, !is.na(ABO), !is.na(ALL),])
 table(PARCC_SGP_LONG_Data[, !is.na(FLSHP), YEAR])
@@ -248,7 +239,7 @@ PARCC_Alt[, PRIOR_GRADE := tail(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]
 PARCC_Alt[, PRIOR_CONTENT_AREA := paste(head(strsplit(strsplit(Most_Recent_Prior[1], "/")[[1]][2], "_")[[1]], -1), collapse="_"), by="Most_Recent_Prior"]
 table(PARCC_Alt[, PRIOR_CONTENT_AREA, PRIOR_YEAR])
 
-table(PARCC_Alt[, Most_Recent_Prior2 == Most_Recent_Prior3])
+table(PARCC_Alt[, Most_Recent_Prior == Most_Recent_Prior3])
 table(PARCC_Alt[Most_Recent_Prior != Most_Recent_Prior3, Most_Recent_Prior, Most_Recent_Prior3])
 
 PARCC_Alt <- PARCC_Alt[-which(Most_Recent_Prior != Most_Recent_Prior3),] # Just using Most_Recent_Prior == Most_Recent_Prior3 removes NAs as well
