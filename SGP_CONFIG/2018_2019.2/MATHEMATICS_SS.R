@@ -119,7 +119,7 @@ GEOMETRY_SS.2018_2019.2.config <- list(
 		sgp.panel.years=c("2016_2017.2", "2018_2019.2"),
 		sgp.grade.sequences=list(c("EOCT", "EOCT")),
 		sgp.exact.grade.progression=TRUE,
-		sgp.projection.grade.sequences=as.list(rep("NO_PROJECTIONS", 3)),
+		sgp.projection.grade.sequences=list("NO_PROJECTIONS"),
 		sgp.norm.group.preference=7L), # 10th grade - ignore 9th Grade (Alg 1 in 8th grade)
 
 	GEOMETRY_SS.2018_2019.2 = list(  #  Skip year progression for Washington DC
@@ -127,7 +127,7 @@ GEOMETRY_SS.2018_2019.2.config <- list(
 		sgp.panel.years=c("2016_2017.2", "2018_2019.2"),
 		sgp.grade.sequences=list(c("8", "EOCT")),
 		sgp.exact.grade.progression=TRUE,
-		sgp.projection.grade.sequences=as.list(rep("NO_PROJECTIONS", 3)),
+		sgp.projection.grade.sequences=list("NO_PROJECTIONS"),
 		sgp.norm.group.preference=8L), # 10th grade - ignore 9th Grade
 
 	GEOMETRY_SS.2018_2019.2 = list( #  --  <1000 :: Include for SGP_NOTE

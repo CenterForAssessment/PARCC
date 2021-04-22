@@ -183,6 +183,12 @@ FINAL_LONG_Data <- State_LONG_Data
 # table(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", is.na(StudentGrowthPercentileComparedtoPARCC)], exclude=NULL)
 # summary(as.numeric(FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", StudentGrowthPercentileComparedtoPARCC]))
 
+###   Remove SGPPreviousTestCodeState* when SGP_NOTE generated
+FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", SGPPreviousTestCodeState := ""]
+FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", SGPPreviousTestCodeState1Prior := ""]
+# FINAL_LONG_Data[StudentGrowthPercentileComparedtoState == "<1000", SGPPreviousTestCodeState2Prior := ""] #  Already blank
+
+
 # table(FINAL_LONG_Data[TestCode=="ALG02", SGPPreviousTestCodeState!="", SGPPreviousTestCodePARCC!=""])
 # table(FINAL_LONG_Data[SGPPreviousTestCodeState=="" & SGPPreviousTestCodePARCC!="", SGPPreviousTestCodePARCC, TestCode])
 # table(FINAL_LONG_Data[SGPPreviousTestCodeState1Prior=="" & SGPPreviousTestCodePARCC1Prior!="", SGPPreviousTestCodePARCC, TestCode])
@@ -229,11 +235,13 @@ save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2019_2020.1
 
 ####  Loop on State Abbreviation to write out each state file in format that it was recieved and return requested
 tmp.wd <- getwd()
+options(scipen = 999)
 for (abv in sort(unique(FINAL_LONG_Data$StateAbbreviation))) {
   tmp.state <- SGP:::getStateAbbreviation(abv, type="state")
 	fname <- paste0("PARCC_", abv, "_2019-2020_Fall_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
   setwd(paste0("./",  gsub(" ", "_", capwords(tmp.state, special.words="DC")), "/Data/Pearson"))
-  fwrite(FINAL_LONG_Data[StateAbbreviation == abv], fname) #, col.names = FALSE
-  zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mq") # -mq doesn't leave a csv copy.
+  # fwrite(FINAL_LONG_Data[StateAbbreviation == abv], fname) #, col.names = FALSE
+  write.csv(FINAL_LONG_Data[StateAbbreviation == abv], fname, row.names = FALSE, na="") #  --> Use for 2020 - LeAnn / Kathy email 2/25/2020
+  zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mqj") # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
   setwd(tmp.wd)
 }
