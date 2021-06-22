@@ -10,26 +10,38 @@ require(data.table)
 
 ###   Load Original Consortium data from 2019 PARCC SGP Analyses
 
-load("Data/Archive/2019/PARCC_SGP_LONG_Data.Rdata")
+load("Data/Archive/2018_2019.2/PARCC_SGP_LONG_Data.Rdata")
+load("Data/Archive/2015_2016.2/PARCC_SGP_LONG_Data_2015_2016.2.Rdata")
 
 ###   Create a smaller subset of the LONG data to work with.
-PARCC_Baseline_Data <- data.table::data.table(PARCC_SGP_LONG_Data[,
-	list(VALID_CASE, GTID, SCHOOL_YEAR, SUBJECT_CODE, YEAR_WITHIN, GRADE, SCALE_SCORE, CONDSEM, PERFORMANCE_LEVEL)])
+parcc.members <- c("BI", "DC", "DD", "IL", "MD", "NJ", "NM") # c("BI", "DD", "IL")
+parcc.years <- c("2016_2017.2", "2017_2018.2", "2018_2019.2")
+parcc.subjects <- c("ELA", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II")
+
+PARCC_Baseline_Data <- rbindlist(list(
+		PARCC_SGP_LONG_Data_2015_2016.2[
+			StateAbbreviation %in% parcc.members & CONTENT_AREA %in% parcc.subjects,
+			list(VALID_CASE, ID, YEAR, CONTENT_AREA, GRADE, SCALE_SCORE, SCALE_SCORE_CSEM, ACHIEVEMENT_LEVEL)],
+		PARCC_SGP_LONG_Data[
+			StateAbbreviation %in% parcc.members & CONTENT_AREA %in% parcc.subjects & YEAR %in% parcc.years,
+			list(VALID_CASE, ID, YEAR, CONTENT_AREA, GRADE, SCALE_SCORE, SCALE_SCORE_CSEM, ACHIEVEMENT_LEVEL)]))
+
+ids <- unique(PARCC_Baseline_Data[YEAR=="2018_2019.2", ID])
+PARCC_Baseline_Data <- PARCC_Baseline_Data[ID %in% ids,]
+
+rm(list=c("PARCC_SGP_LONG_Data_2015_2016.2", "PARCC_SGP_LONG_Data"));gc()
 
 ###   Read in Baseline SGP Configuration Scripts and Combine
-source("SGP_CONFIG/2019/BASELINE/Matrices/ELA_SingleCohort.R")
-source("SGP_CONFIG/2019/BASELINE/Matrices/MATHEMATICS_SingleCohort.R")
+source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/ELA.R")
+source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/MATHEMATICS.R")
 
 PARCC_BASELINE_CONFIG <- c(
 		ELA_BASELINE.config,
-		GRADE_9_LIT_BASELINE.config,
-		AMERICAN_LIT_BASELINE.config,
-
 		MATHEMATICS_BASELINE.config,
+
 		ALGEBRA_I_BASELINE.config,
 		GEOMETRY_BASELINE.config,
-		COORDINATE_ALGEBRA_BASELINE.config,
-		ANALYTIC_GEOMETRY_BASELINE.config
+		ALGEBRA_II_BASELINE.config
 )
 
 
@@ -52,11 +64,11 @@ PARCC_Baseline_Matrices <- baselineSGP(
 	###
 	sgp.test.cohort.size = 10000, # comment out for full run and change calculate.simex.baseline$simex.sample.size to 10000
 	###
-	sgp.cohort.size=1500,
+	sgp.cohort.size=1000,
 	goodness.of.fit.print=FALSE,
 	parallel.config=list(
 		BACKEND="PARALLEL",
-		WORKERS=list(TAUS=13, SIMEX=13)))
+		WORKERS=list(TAUS=27, SIMEX=25)))
 
 ###   Save results
 save(PARCC_Baseline_Matrices, file="Data/PARCC_Baseline_Matrices.Rdata")
