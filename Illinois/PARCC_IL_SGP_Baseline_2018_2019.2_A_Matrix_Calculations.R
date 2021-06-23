@@ -52,10 +52,10 @@ Illinois_Baseline_Matrices <- baselineSGP(
 	calculate.baseline.sgps=FALSE,
 	calculate.simex.baseline=list(
 		csem.data.vnames="SCALE_SCORE_CSEM", lambda=seq(0,2,0.5), simulation.iterations=75,
-		simex.use.my.coefficient.matrices = FALSE, simex.sample.size=2000, # simex.sample.size=10000
+		simex.use.my.coefficient.matrices = FALSE, simex.sample.size=10000, # simex.sample.size=2000, #
 		extrapolation="linear", save.matrices=TRUE, use.cohort.for.ranking=TRUE),
 	###
-	sgp.test.cohort.size = 10000, # comment out for full run and change calculate.simex.baseline$simex.sample.size to 10000
+	# sgp.test.cohort.size = 10000, # comment out for full run and change calculate.simex.baseline$simex.sample.size to 10000
 	###
 	sgp.cohort.size=1000,
 	goodness.of.fit.print=FALSE,
@@ -64,5 +64,4 @@ Illinois_Baseline_Matrices <- baselineSGP(
 		WORKERS=list(TAUS=27, SIMEX=25)))
 
 ###   Save results
-if (!dir.exists("Data")) dir.create("Data")
 save(Illinois_Baseline_Matrices, file="Data/Illinois_Baseline_Matrices.Rdata")

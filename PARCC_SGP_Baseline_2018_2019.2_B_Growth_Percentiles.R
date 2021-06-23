@@ -16,8 +16,8 @@ PARCC_SGP_LONG_Data[, Current_Score := NULL]
 PARCC_SGP_LONG_Data <- PARCC_SGP_LONG_Data[is.na(EXACT_DUPLICATE) | EXACT_DUPLICATE == 1]
 PARCC_SGP_LONG_Data[, EXACT_DUPLICATE := NULL]
 
-names(PARCC_SGP_LONG_Data_2015_2016.2)[!names(PARCC_SGP_LONG_Data_2015_2016.2) %in%names(PARCC_SGP_LONG_Data)]
-names(PARCC_SGP_LONG_Data)[!names(PARCC_SGP_LONG_Data) %in%names(PARCC_SGP_LONG_Data_2015_2016.2)]
+# names(PARCC_SGP_LONG_Data_2015_2016.2)[!names(PARCC_SGP_LONG_Data_2015_2016.2) %in%names(PARCC_SGP_LONG_Data)]
+# names(PARCC_SGP_LONG_Data)[!names(PARCC_SGP_LONG_Data) %in%names(PARCC_SGP_LONG_Data_2015_2016.2)]
 setnames(PARCC_SGP_LONG_Data_2015_2016.2,
 		c("CATCH_UP_KEEP_UP_STATUS", "MOVE_UP_STAY_UP_STATUS"),
 		c("CATCH_UP_KEEP_UP_STATUS_3_YEAR", "MOVE_UP_STAY_UP_STATUS_3_YEAR"))
@@ -64,7 +64,7 @@ setnames(PARCC_SGP_LONG_Data,
 
 PARCC_SGP <- abcSGP(
       sgp_object = PARCC_SGP_LONG_Data,
-      steps = c("prepareSGP", "analyzeSGP", "combineSGP"), # "outputSGP"),
+      steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
       sgp.config = PARCC_2018_2019_BASELINE_CONFIG,
       sgp.percentiles = FALSE,
       sgp.projections = FALSE,
@@ -72,23 +72,23 @@ PARCC_SGP <- abcSGP(
       sgp.percentiles.baseline = TRUE,  #  Skip year SGPs for 2021 comparisons
       sgp.projections.baseline = FALSE, #  Calculated in next step
       sgp.projections.lagged.baseline = FALSE,
-	    # calculate.simex.baseline = TRUE,
+	    calculate.simex.baseline = TRUE,
 			###   Use these four arguments for small sample test run.
 			###   Delete/comment out and set calculate.simex = TRUE for full EOC run.
-	      calculate.simex.baseline = list(
-					lambda=seq(0,2,0.5), simulation.iterations=25, simex.sample.size=2000,
-					csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
-					simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=TRUE),
-				sgp.test.cohort.size = 2500,
-				return.sgp.test.results = "ALL_DATA",
+	      # calculate.simex.baseline = list(
+				# 	lambda=seq(0,2,0.5), simulation.iterations=25, simex.sample.size=2000,
+				# 	csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
+				# 	simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=TRUE),
+				# sgp.test.cohort.size = 2500,
+				# return.sgp.test.results = "ALL_DATA",
 				# goodness.of.fit.print=FALSE,
 			###
 			###
       save.intermediate.results = FALSE,
-			outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+			outputSGP.output.type="LONG_Data",
 			parallel.config = list(
 				BACKEND = "PARALLEL",
-				WORKERS=list(BASELINE_PERCENTILES=24))
+				WORKERS=list(BASELINE_PERCENTILES=14)) # BASELINE_PERCENTILES requires MUCH more memory...
 )
 
 ###   Re-set and rename prior scores (one set for sequential/cohort, another for skip-year/baseline)
@@ -98,9 +98,8 @@ setnames(PARCC_SGP@Data,
 
 ###   Quick checks
 table(PARCC_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !is.na(SGP_BASELINE), SGP_NOTE], exclude=NULL)
-tmp.tbl <- table(PARCC_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP_BASELINE)])  #  small cohort N (<1000)
+tmp.tbl <- table(PARCC_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP_BASELINE)]) # Kids with skip year, but no seq
 tmp.tbl[tmp.tbl > 1000] # check larger groups
-summary(PARCC_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !is.na(SGP_BASELINE), SCALE_SCORE_PRIOR]) # all students with no 2018 score
 
 table(PARCC_SGP@Data[YEAR=="2018_2019.2" & !is.na(SGP) & is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP)]) #  single (2018.2 OR 2019.1) prior only
 

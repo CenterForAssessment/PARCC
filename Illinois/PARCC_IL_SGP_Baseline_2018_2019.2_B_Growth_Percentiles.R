@@ -56,7 +56,7 @@ setnames(Illinois_SGP_LONG_Data,
 
 Illinois_SGP <- abcSGP(
       sgp_object = Illinois_SGP_LONG_Data,
-      steps = c("prepareSGP", "analyzeSGP", "combineSGP"), # "outputSGP"),
+      steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
       sgp.config = Illinois_2018_2019_BASELINE_CONFIG,
       sgp.percentiles = FALSE,
       sgp.projections = FALSE,
@@ -64,15 +64,15 @@ Illinois_SGP <- abcSGP(
       sgp.percentiles.baseline = TRUE,  #  Skip year SGPs for 2021 comparisons
       sgp.projections.baseline = FALSE, #  Calculated in next step
       sgp.projections.lagged.baseline = FALSE,
-	    # calculate.simex.baseline = TRUE,
+	    calculate.simex.baseline = TRUE,
 			###   Use these four arguments for small sample test run.
 			###   Delete/comment out and set calculate.simex = TRUE for full EOC run.
-	      calculate.simex.baseline = list(
-					lambda=seq(0,2,0.5), simulation.iterations=25, simex.sample.size=2000,
-					csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
-					simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=TRUE),
-				sgp.test.cohort.size = 2500,
-				return.sgp.test.results = "ALL_DATA",
+	      # calculate.simex.baseline = list(
+				# 	lambda=seq(0,2,0.5), simulation.iterations=25, simex.sample.size=2000,
+				# 	csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
+				# 	simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=TRUE),
+				# sgp.test.cohort.size = 2500,
+				# return.sgp.test.results = "ALL_DATA",
 				# goodness.of.fit.print=FALSE,
 			###
 			###
@@ -80,7 +80,7 @@ Illinois_SGP <- abcSGP(
 			outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
 			parallel.config = list(
 				BACKEND = "PARALLEL",
-				WORKERS=list(SIMEX=25)) # BASELINE_PERCENTILES requires MUCH more memory...
+				WORKERS=list(BASELINE_PERCENTILES=25)) # BASELINE_PERCENTILES requires MUCH more memory...
 )
 
 ###   Re-set and rename prior scores (one set for sequential/cohort, another for skip-year/baseline)
