@@ -57,7 +57,8 @@ Bureau_of_Indian_Education_SGP <- abcSGP(
       sgp.projections.lagged.baseline = FALSE,
 	    calculate.simex.baseline = TRUE,
       save.intermediate.results = FALSE,
-			outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+			outputSGP.output.type="LONG_Data",
+			outputSGP.directory="Data/Archive/2018_2019.2/BASELINE",
 			parallel.config = list(
 				BACKEND = "PARALLEL",
 				WORKERS=list(SIMEX=15)) # BASELINE_PERCENTILES requires MUCH more memory...
@@ -77,4 +78,4 @@ summary(Bureau_of_Indian_Education_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !
 table(Bureau_of_Indian_Education_SGP@Data[YEAR=="2018_2019.2" & !is.na(SGP) & is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP)]) #  single (2018.2 OR 2019.1) prior only
 
 ###   Save results
-save(Bureau_of_Indian_Education_SGP, file="Data/Bureau_of_Indian_Education_SGP.Rdata")
+save(Bureau_of_Indian_Education_SGP, file="Data/Archive/2018_2019.2/BASELINE/Bureau_of_Indian_Education_SGP.Rdata")

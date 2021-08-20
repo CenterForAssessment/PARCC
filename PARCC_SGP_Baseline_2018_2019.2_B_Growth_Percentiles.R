@@ -86,6 +86,7 @@ PARCC_SGP <- abcSGP(
 			###
       save.intermediate.results = FALSE,
 			outputSGP.output.type="LONG_Data",
+			outputSGP.directory="PARCC/Data/Archive/2018_2019.2/BASELINE",
 			parallel.config = list(
 				BACKEND = "PARALLEL",
 				WORKERS=list(BASELINE_PERCENTILES=14)) # BASELINE_PERCENTILES requires MUCH more memory...
@@ -104,4 +105,4 @@ tmp.tbl[tmp.tbl > 1000] # check larger groups
 table(PARCC_SGP@Data[YEAR=="2018_2019.2" & !is.na(SGP) & is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP)]) #  single (2018.2 OR 2019.1) prior only
 
 ###   Save results
-save(PARCC_SGP, file="Data/PARCC_SGP.Rdata")
+save(PARCC_SGP, file="Data/Archive/2018_2019.2/BASELINE/PARCC_SGP.Rdata")

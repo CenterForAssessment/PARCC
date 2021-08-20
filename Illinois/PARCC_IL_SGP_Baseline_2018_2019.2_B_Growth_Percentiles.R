@@ -9,8 +9,8 @@ require(SGP)
 require(data.table)
 
 ###   Load data and remove some old vars.
-load("Data/Archive/2018_2019.2/Illinois_SGP_LONG_Data.Rdata")
-load("Data/Archive/2015_2016.2/Illinois_SGP_LONG_Data_2015_2016.2.Rdata")
+load("./Data/Archive/2018_2019.2/Illinois_SGP_LONG_Data.Rdata")
+load("./Data/Archive/2015_2016.2/Illinois_SGP_LONG_Data_2015_2016.2.Rdata")
 
 Illinois_SGP_LONG_Data <- Illinois_SGP_LONG_Data[is.na(EXACT_DUPLICATE) | EXACT_DUPLICATE == 1]
 Illinois_SGP_LONG_Data[, EXACT_DUPLICATE := NULL]
@@ -32,7 +32,7 @@ Illinois_SGP_LONG_Data <- rbindlist(list(
 		fill=TRUE)
 
 ###   Add single-cohort baseline matrices to SGPstateData
-load("Data/Illinois_Baseline_Matrices.Rdata")
+load("./Data/Illinois_Baseline_Matrices.Rdata")
 SGPstateData[["IL"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- Illinois_Baseline_Matrices
 SGPstateData[["IL"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- NULL
 
@@ -77,7 +77,8 @@ Illinois_SGP <- abcSGP(
 			###
 			###
       save.intermediate.results = FALSE,
-			outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+			outputSGP.output.type="LONG_Data",
+			outputSGP.directory="Data/Archive/2018_2019.2/BASELINE",
 			parallel.config = list(
 				BACKEND = "PARALLEL",
 				WORKERS=list(BASELINE_PERCENTILES=25)) # BASELINE_PERCENTILES requires MUCH more memory...
@@ -97,4 +98,4 @@ summary(Illinois_SGP@Data[YEAR=="2018_2019.2" & is.na(SGP) & !is.na(SGP_BASELINE
 table(Illinois_SGP@Data[YEAR=="2018_2019.2" & !is.na(SGP) & is.na(SGP_BASELINE), as.character(SGP_NORM_GROUP)]) #  single (2018.2 OR 2019.1) prior only
 
 ###   Save results
-save(Illinois_SGP, file="Data/Illinois_SGP.Rdata")
+save(Illinois_SGP, file="Data/Archive/2018_2019.2/BASELINE/Illinois_SGP.Rdata")
