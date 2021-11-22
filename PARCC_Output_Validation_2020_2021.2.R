@@ -44,7 +44,7 @@ for (state in tmp.states) {
     # if (state == "Illinois") tmp.ORIGINAL<-fread("./Illinois/Data/Base_Files/PARCC_IL_2020-2021_SGPO_D20210623.csv", colClasses=rep("character", 90))
     if (state == "Illinois") tmp.ORIGINAL <- fread("./Illinois/Data/Base_Files/PARCC_IL_2020-2021_SGPO_D20211031.csv", colClasses=rep("character", 90))
     if (state == "Department_Of_Defense") tmp.ORIGINAL<-fread("./Department_Of_Defense/Data/Base_Files/pcspr21_dodea_state_Student_Growth_20210726153550747902.csv", colClasses=rep("character", 92))
-    tmp.OUTPUT <- read.parcc(state, "2020-2021_Spring_SGP-Results_202111")
+    tmp.OUTPUT <- read.parcc(state, "2020-2021_Spring_SGP-Results_20211122")
     setkey(tmp.ORIGINAL, PANUniqueStudentID, TestCode, IRTTheta)
     setkey(tmp.OUTPUT, PANUniqueStudentID, TestCode, IRTTheta)
 

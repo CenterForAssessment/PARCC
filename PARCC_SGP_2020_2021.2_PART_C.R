@@ -56,5 +56,13 @@ PARCC_SGP <- abcSGP(
 
 # table(PARCC_SGP@Data[YEAR=='2020_2021.2', is.na(SGP_BASELINE), TestCode])
 
+###   Re-run combineSGP (and output) for everything.  Not sure why everything didn't merge...
+PARCC_SGP <- combineSGP(PARCC_SGP)
+table(PARCC_SGP@Data[YEAR=='2020_2021.2', is.na(SGP_BASELINE), TestCode])
+
+outputSGP(PARCC_SGP,
+  outputSGP.directory="Data/Archive/2020_2021.2",
+  output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"))
+
 ###  Save results
 save(PARCC_SGP, file="Data/Archive/2020_2021.2/PARCC_SGP.Rdata")
