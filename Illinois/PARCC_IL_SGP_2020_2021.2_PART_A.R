@@ -14,6 +14,10 @@ load("./Data/Archive/2019_2020.2/Illinois_SGP.Rdata")
 ###   Load cleaned 2021 LONG data
 load("./Data/Archive/2020_2021.2/Illinois_Data_LONG_2020_2021.2.Rdata")
 
+###   Load Cohort Referenced Matrices from 2021 (June 2021)
+load("./Data/Illinois_Cohort_2021_Matrices.Rdata")
+Illinois_SGP@SGP$Coefficient_Matrices <- Illinois_Baseline_2021_Matrices
+
 ###   Add single-cohort baseline matrices to SGPstateData
 load("./Data/Illinois_Baseline_Matrices.Rdata")
 SGPstateData[["IL"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- Illinois_Baseline_Matrices
@@ -42,6 +46,7 @@ Illinois_SGP <- updateSGP(
         sgp.percentiles.baseline = TRUE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
+				sgp.use.my.coefficient.matrices = TRUE,  ###  Added Nov 2021 with added Fall testers and updated/matched IDs from Spring
 				calculate.simex = TRUE,
 				calculate.simex.baseline = list(
 					lambda=seq(0,2,0.5), simulation.iterations=75, simex.sample.size=10000,
@@ -50,7 +55,7 @@ Illinois_SGP <- updateSGP(
 				save.intermediate.results = FALSE,
         parallel.config = list(
 					BACKEND = "PARALLEL",
-          WORKERS=list(TAUS = 27, SIMEX = 75))
+          WORKERS=list(SIMEX = 25)) # TAUS = 27,
 )
 
 ###   Save results

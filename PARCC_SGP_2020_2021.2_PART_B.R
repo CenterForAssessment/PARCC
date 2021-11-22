@@ -15,7 +15,7 @@ load("./Data/Archive/2020_2021.2/PARCC_SGP.Rdata")
 ###   Load analysis configurations
 # rm(list=grep("config", ls(), value=TRUE))
 source("../SGP_CONFIG/2020_2021.2/PART_B/ELA.R")
-source("../SGP_CONFIG/2020_2021.2/PART_B/MATHEMATICS.R")
+source("../SGP_CONFIG/2020_2021.2/PART_B/MATHEMATICS_IL.R")
 
 PARCC_2021_CONFIG_PART_B <- c(
   ELA_2020_2021.2.config,
@@ -55,13 +55,8 @@ PARCC_SGP <- abcSGP(
         sgp.target.scale.scores=TRUE,
         parallel.config = list(
 					BACKEND = "PARALLEL",
-          WORKERS=10) # list(PROJECTIONS = 10, SGP_SCALE_SCORE_TARGETS = 10))
+          WORKERS=6) # list(PROJECTIONS = 10, SGP_SCALE_SCORE_TARGETS = 10))
 )
-
-###   Students (87k) with 2020 priors DON'T use those priors in projection calcs
-# table(PARCC_SGP@SGP$SGProjections$ELA.2020_2021.2.BASELINE[, GRADE, nchar(SGP_PROJECTION_GROUP_SCALE_SCORES)])
-# table(PARCC_SGP@SGP$SGProjections$ELA.2020_2021.2.BASELINE[grepl("[;]", SGP_PROJECTION_GROUP_SCALE_SCORES), nchar(SGP_PROJECTION_GROUP_SCALE_SCORES)])
-# head(PARCC_SGP@SGP$SGProjections$ELA.2020_2021.2.BASELINE[nchar(SGP_PROJECTION_GROUP_SCALE_SCORES)>13, SGP_PROJECTION_GROUP_SCALE_SCORES], 50)
 
 ###  Save results
 save(PARCC_SGP, file="Data/Archive/2020_2021.2/PARCC_SGP.Rdata")

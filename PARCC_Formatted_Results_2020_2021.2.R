@@ -102,8 +102,16 @@ State_LONG_Data[, SGP_BASELINE := as.character(SGP_BASELINE)]
 State_LONG_Data[is.na(SGP_BASELINE), SGP_BASELINE := SGP_NOTE] # No BASELINE specific NOTE.  Make sure its only replacing NAs!
 
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-# State_LONG_Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)]
-# State_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP := ""]
+###   JK re JK. LOL. -- 8/18/2021 Kathy.  SMH FML IHTG
+State_LONG_Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)]
+State_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP := ""]
+
+State_LONG_Data[, SGP_NORM_GROUP_BASELINE := as.character(SGP_NORM_GROUP_BASELINE)]
+State_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP_BASELINE := ""]
+
+##  BASELINEs don't rename "SGP_0.**_CONFIDENCE_BOUND" with "_BASELINE" tag - Not an issue for State - see PARCC Below though...
+# State_LONG_Data[!is.na(SGP_NOTE), as.list(summary(SGP_0.05_CONFIDENCE_BOUND)), keyby="TestCode"]
+
 
 ###  Change relevant SGP package convention names to Pearson's names
 sgp.names <- c(
@@ -154,7 +162,6 @@ State.score.split <- strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP_SCALE_
 State_LONG_Data[, SGPIRTThetaState1Prior := as.numeric(sapply(State.score.split, function(x) rev(x)[2]))]
 State_LONG_Data[, SGPIRTThetaState2Prior := as.numeric(sapply(State.score.split, function(x) rev(x)[3]))]
 
-
 ###    Compute and Format SGPTargetTestCodeState
 State_LONG_Data[, SGPTargetTestCodeState := factor(SGPTargetTestCodeState)]
 # levels(State_LONG_Data$SGPTargetTestCodeState) <- c("ALG01", "ALG02", "ELA", "GEO01", "MAT") # "MAT1I",
@@ -164,11 +171,16 @@ State_LONG_Data[SGPTargetTestCodeState %in% c("ELA", "MAT"), SGPTargetTestCodeSt
 # State_LONG_Data[, SGPTargetTestCodeState := gsub("09|010|011|013", "08", SGPTargetTestCodeState)] # Illinois/Washington_DC
 State_LONG_Data[, SGPTargetTestCodeState := gsub("010", "10", SGPTargetTestCodeState)]
 State_LONG_Data[, SGPTargetTestCodeState := gsub("011|012|013|014", "11", SGPTargetTestCodeState)]
-State_LONG_Data[, SGPTargetTestCodeState := gsub("MAT09|MAT10|MAT11", "MAT08", SGPTargetTestCodeState)]
+##    Illinois only goes to grade 8 & Only Illinois has state targets in 2021...
+State_LONG_Data[StateAbbreviation == "IL", SGPTargetTestCodeState := gsub("MAT09|MAT10|MAT11", "MAT08", SGPTargetTestCodeState)]
+# State_LONG_Data[StateAbbreviation != "IL", SGPTargetTestCodeState := gsub("MAT09", "ALG01", SGPTargetTestCodeState)]
+# State_LONG_Data[StateAbbreviation != "IL", SGPTargetTestCodeState := gsub("MAT10", "GEO01", SGPTargetTestCodeState)]
+# State_LONG_Data[StateAbbreviation != "IL", SGPTargetTestCodeState := gsub("MAT11", "ALG02", SGPTargetTestCodeState)]
 ##  Do this for Illinois too!
-State_LONG_Data[, SGPTargetTestCodeState := gsub("ELA09|ELA10|ELA11", "ELA08", SGPTargetTestCodeState)]
+State_LONG_Data[StateAbbreviation == "IL", SGPTargetTestCodeState := gsub("ELA09|ELA10|ELA11", "ELA08", SGPTargetTestCodeState)]
 
 table(State_LONG_Data[, SGPTargetTestCodeState, TestCode])
+table(State_LONG_Data[, SGPTargetTestCodeState, StateAbbreviation]) # Only IL had (state) projections in 2021
 
 ####   For individual state data formatting
 # State_LONG_Data[, grep("PARCC", center.var.names, value=TRUE) := NA]
@@ -192,8 +204,18 @@ PARCC_LONG_Data[, SGP_BASELINE := as.character(SGP_BASELINE)]
 PARCC_LONG_Data[is.na(SGP_BASELINE), SGP_BASELINE := SGP_NOTE] # No BASELINE specific NOTE.  Make sure its only replacing NAs!
 
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-# PARCC_LONG_Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)]
-# PARCC_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP := ""]
+###   JK re JK. LOL. -- 8/18/2021 Kathy.  SMH FML IHTG
+PARCC_LONG_Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)]
+PARCC_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP := ""]
+
+PARCC_LONG_Data[, SGP_NORM_GROUP_BASELINE := as.character(SGP_NORM_GROUP_BASELINE)]
+PARCC_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP_BASELINE := ""]
+
+##  BASELINEs don't rename "SGP_0.**_CONFIDENCE_BOUND" with "_BASELINE" tag.
+##  The "ORDER" versions DO get renamed -- "SGP_BASELINE_ORDER_*_0.**_CONFIDENCE_BOUND"
+# PARCC_LONG_Data[!is.na(SGP_NOTE), as.list(summary(SGP_0.05_CONFIDENCE_BOUND)), keyby="TestCode"]
+PARCC_LONG_Data[!is.na(SGP_NOTE), SGP_0.05_CONFIDENCE_BOUND := NA]
+PARCC_LONG_Data[!is.na(SGP_NOTE), SGP_0.95_CONFIDENCE_BOUND := NA]
 
 ###  Change relevant SGP package convention names to Pearson's names
 setnames(PARCC_LONG_Data,
@@ -273,14 +295,24 @@ FINAL_LONG_Data[, EXACT_DUPLICATE := NULL]
 
 ###   Coordinate missing SGP notes for small N states
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
-FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), SGPPreviousTestCodeState := SGPPreviousTestCodePARCC]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & StudentGrowthPercentileComparedtoPARCC == "<1000"), StudentGrowthPercentileComparedtoState := "<1000"]
 
 #  Return NA values blank for 2021? - emailed K. Brown 7/9/2021
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState)), StudentGrowthPercentileComparedtoState := "NA"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoStateBaseline)), StudentGrowthPercentileComparedtoStateBaseline := "NA"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC)), StudentGrowthPercentileComparedtoPARCC := "NA"]
 FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCCBaseline)), StudentGrowthPercentileComparedtoPARCCBaseline := "NA"]
+
+###   These can be blank (or 'NA') just don't confuse them and send one and then the other the next time... Per Zoom 8/20/21
+# FINAL_LONG_Data[, StudentGrowthPercentileComparedtoState1Prior := as.character(StudentGrowthPercentileComparedtoState1Prior)]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState1Prior)), StudentGrowthPercentileComparedtoState1Prior := "NA"]
+# FINAL_LONG_Data[, StudentGrowthPercentileComparedtoState2Prior := as.character(StudentGrowthPercentileComparedtoState2Prior)]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState2Prior)), StudentGrowthPercentileComparedtoState2Prior := "NA"]
+# FINAL_LONG_Data[, StudentGrowthPercentileComparedtoPARCC1Prior := as.character(StudentGrowthPercentileComparedtoPARCC1Prior)]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC1Prior)), StudentGrowthPercentileComparedtoPARCC1Prior := "NA"]
+# FINAL_LONG_Data[, StudentGrowthPercentileComparedtoPARCC2Prior := as.character(StudentGrowthPercentileComparedtoPARCC2Prior)]
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoPARCC2Prior)), StudentGrowthPercentileComparedtoPARCC2Prior := "NA"]
 
 
 ###  Make sure no exact duplicates remain.
@@ -298,9 +330,8 @@ FINAL_LONG_Data[, IRTTheta := format(IRTTheta, scientific = FALSE, trim=TRUE)]
 FINAL_LONG_Data[, SGPIRTThetaState1Prior := format(SGPIRTThetaState1Prior, scientific = FALSE, trim=TRUE)]
 FINAL_LONG_Data[, SGPIRTThetaState2Prior := format(SGPIRTThetaState2Prior, scientific = FALSE, trim=TRUE)]
 
-FINAL_LONG_Data[, SGPIRTThetaPARCC1Prior := format(SGPIRTThetaPARCC1Prior, scientific = FALSE)]
-FINAL_LONG_Data[, SGPIRTThetaPARCC2Prior := format(SGPIRTThetaPARCC2Prior, scientific = FALSE)]
-# trimWhiteSpace <- function(line) gsub("(^ +)|( +$)", "", line)
+FINAL_LONG_Data[, SGPIRTThetaPARCC1Prior := format(SGPIRTThetaPARCC1Prior, scientific = FALSE, trim=TRUE)]
+FINAL_LONG_Data[, SGPIRTThetaPARCC2Prior := format(SGPIRTThetaPARCC2Prior, scientific = FALSE, trim=TRUE)]
 
 ##   Clean up NAs after cleanup.  IRTTheta not affected (No NAs)
 table(FINAL_LONG_Data[, grepl("NA", SGPIRTThetaState1Prior)]) # NAs formatted as "      NA"
@@ -348,17 +379,15 @@ tbl <- FINAL_LONG_Data[grep("ELA04|ELA05|ELA06|ELA07|ELA08", TestCode), as.list(
 ###
 
 ####   For individual state data formatting
-abv <- "IL"
-fname <- paste0("./", gsub(" ", "_", SGP:::getStateAbbreviation(abv, type="state")), "/Data/Pearson/PARCC_", abv, "_2020-2021_Spring_SGP-STATE_LEVEL_Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
-fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
-# fwrite(FINAL_LONG_Data, fname)
-options(scipen = 999)
-write.csv(FINAL_LONG_Data, fname, row.names = FALSE, na="") # [PANUniqueStudentID %in% sample(PANUniqueStudentID, 100) & GradeLevelWhenAssessed %in% c('05','08'),]
-zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mqj") # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
+# abv <- "IL"
+# fname <- paste0("./", gsub(" ", "_", SGP:::getStateAbbreviation(abv, type="state")), "/Data/Pearson/PARCC_", abv, "_2020-2021_Spring_SGP-STATE_LEVEL_Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")
+# fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
+# # fwrite(FINAL_LONG_Data, fname)
+# options(scipen = 999)
+# write.csv(FINAL_LONG_Data, fname, row.names = FALSE, na="") # [PANUniqueStudentID %in% sample(PANUniqueStudentID, 100) & StateAbbreviation == abv & GradeLevelWhenAssessed %in% c('05','08'),]
+# zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mqj") # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
 ####   END For individual state data formatting
 
-
-save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2020_2021.2-FORMATTED-IL.Rdata")
 
 ####  Loop on State Abbreviation to write out each state file in format that it was recieved and return requested
 tmp.wd <- getwd()
@@ -373,6 +402,8 @@ for (abv in unique(FINAL_LONG_Data$StateAbbreviation)) {
   zip(zipfile=paste0(fname, ".zip"), files=fname, flags="-mqj") # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
   message("Finished with ", SGP:::getStateAbbreviation(abv, type="state"))
 }
+
+save(FINAL_LONG_Data, file="./PARCC/Data/Pearson/PARCC_SGP_LONG_Data_2020_2021.2.Rdata")
 
 #   tmp.state <- SGP:::getStateAbbreviation(abv, type="state")
 # 	fname <- paste0("PARCC_", abv, "_2018-2019_Spring_SGP-Results_", format(Sys.Date(), format="%Y%m%d"), ".csv")

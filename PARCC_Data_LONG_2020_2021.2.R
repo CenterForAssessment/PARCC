@@ -60,9 +60,19 @@ parcc.var.names <- c(parcc.var.names, addl.bie.dd.names)
 
 ###   Spring 2021
 
-PARCC_Data_LONG_2020_2021.2 <- fread("./Bureau_of_Indian_Education/Data/Base_Files/bi_pcspr21_state_Student_Growth_20210723151340223283.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
-PARCC_Data_LONG_2020_2021.2 <- fread("./Illinois/Data/Base_Files/PARCC_IL_2020-2021_SGPO_D20210623.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
-PARCC_Data_LONG_2020_2021.2 <- fread("./Department_Of_Defense/Data/Base_Files/pcspr21_dodea_state_Student_Growth_20210726153550747902.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
+# PARCC_Data_LONG_2020_2021.2 <- fread("./Bureau_of_Indian_Education/Data/Base_Files/bi_pcspr21_state_Student_Growth_20210723151340223283.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
+# PARCC_Data_LONG_2020_2021.2 <- fread("./Department_Of_Defense/Data/Base_Files/pcspr21_dodea_state_Student_Growth_20210726153550747902.csv", colClasses=rep("character", length(all.var.names)))[, parcc.var.names, with=FALSE]
+PARCC_Data_LONG_2020_2021.2 <- fread("./Illinois/Data/Base_Files/PARCC_IL_2020-2021_SGPO_D20211031.csv", colClasses=rep("character", length(head(all.var.names, -2))))[, head(parcc.var.names, -2), with=FALSE]
+load("./Illinois/Data/Archive/2020_2021.2/IL_OG_IDs.rda")
+setnames(IL_OG_IDs, "ID", "PANUniqueStudentID")
+IL_OG_IDs[, SPRING_TEST := TRUE]
+IL_OG_IDs[, c("StudentTestUUID", "FormID") := NULL]
+
+setkey(IL_OG_IDs, PANUniqueStudentID, TestCode) # StudentTestUUID, FormID,
+setkey(PARCC_Data_LONG_2020_2021.2, PANUniqueStudentID, TestCode)
+
+PARCC_Data_LONG_2020_2021.2 <- IL_OG_IDs[PARCC_Data_LONG_2020_2021.2]
+PARCC_Data_LONG_2020_2021.2[is.na(SPRING_TEST), SPRING_TEST := FALSE]
 
 setkey(PARCC_Data_LONG_2020_2021.2, PANUniqueStudentID, TestCode, Period)
 
@@ -77,9 +87,9 @@ setnames(PARCC_Data_LONG_2020_2021.2, "PANUniqueStudentID", "ID")
 PARCC_Data_LONG_2020_2021.2[, CONTENT_AREA := factor(TestCode)]
 table(PARCC_Data_LONG_2020_2021.2$CONTENT_AREA)
 setattr(PARCC_Data_LONG_2020_2021.2$CONTENT_AREA, "levels",
-        c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")) # BIE
+        # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), "GEOMETRY", rep("MATHEMATICS", 6), "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3")) # BIE
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), "GEOMETRY", rep("MATHEMATICS", 5))) # DoDEA
-        # c(rep("ELA", 6), rep("MATHEMATICS", 6))) # IL
+        c(rep("ELA", 6), rep("MATHEMATICS", 6))) # IL
 PARCC_Data_LONG_2020_2021.2[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ###   GRADE from TestCode
@@ -156,9 +166,9 @@ PARCC_Data_LONG_2020_2021.2[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUA
 PARCC_Data_LONG_2020_2021.2[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ###   Save Spring 2021 individual states LONG data
-dir.create("./Bureau_of_Indian_Education/Data/Archive/2020_2021.2", recursive = TRUE)
-assign("Bureau_of_Indian_Education_Data_LONG_2020_2021.2", PARCC_Data_LONG_2020_2021.2)
-save(Bureau_of_Indian_Education_Data_LONG_2020_2021.2, file = "./Bureau_of_Indian_Education/Data/Archive/2020_2021.2/Bureau_of_Indian_Education_Data_LONG_2020_2021.2.Rdata")
+dir.create("./Illinois/Data/Archive/2020_2021.2", recursive = TRUE)
+assign("Illinois_Data_LONG_2020_2021.2", PARCC_Data_LONG_2020_2021.2)
+save(Illinois_Data_LONG_2020_2021.2, file = "./Illinois/Data/Archive/2020_2021.2/Illinois_Data_LONG_2020_2021.2.Rdata")
 
 
 #####
