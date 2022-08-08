@@ -24,8 +24,8 @@ source("../SGP_CONFIG/2019_2020.2/ELA.R")
 source("../SGP_CONFIG/2019_2020.2/MATHEMATICS.R")
 
 Illinois_2019_2020_CONFIG <- c(
-	ELA_2019_2020.2.config,
-	MATHEMATICS_2019_2020.2.config
+  ELA_2019_2020.2.config,
+  MATHEMATICS_2019_2020.2.config
 )
 
 #####
@@ -36,7 +36,7 @@ Illinois_2019_2020_CONFIG <- c(
 
 Illinois_SGP <- updateSGP(
         what_sgp_object = Illinois_SGP,
-				with_sgp_data_LONG = Illinois_Data_LONG_2019_2020.2,
+        with_sgp_data_LONG = Illinois_Data_LONG_2019_2020.2,
         steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
         sgp.config = Illinois_2019_2020_CONFIG,
         sgp.percentiles = FALSE,
@@ -45,12 +45,12 @@ Illinois_SGP <- updateSGP(
         sgp.percentiles.baseline = TRUE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
-				calculate.simex.baseline = TRUE,
+        calculate.simex.baseline = TRUE,
         save.intermediate.results = FALSE,
-				outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-				outputSGP.directory="Illinois/Data/Archive/2019_2020.2",
+        outputSGP.output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"),
+        outputSGP.directory="Illinois/Data/Archive/2019_2020.2",
         parallel.config = list(
-					BACKEND = "PARALLEL",
+          BACKEND = "PARALLEL",
           WORKERS=list(BASELINE_PERCENTILES=8))
 )
 
@@ -73,7 +73,7 @@ Illinois_SGP <- abcSGP(
         sgp.projections.lagged.baseline = FALSE,
         save.intermediate.results = FALSE,
         parallel.config = list(
-					BACKEND = "PARALLEL",
+          BACKEND = "PARALLEL",
           WORKERS=list(PROJECTIONS=8))
 )
 

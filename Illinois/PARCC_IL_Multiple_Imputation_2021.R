@@ -155,8 +155,8 @@ Illinois_2021_Imputed <- imputeScaleScore(
 	seed = 2072L,
 	M = 30,
 	maxit = 10,
-	verbose=TRUE,
-	allow.na=TRUE)
+	verbose = TRUE,
+	allow.na = TRUE)
 
 tmp.messages <- c(tmp.messages, paste("\n\t\tRaw Scale Score", my.impute.method, "LONG"[my.impute.long], "Imputation completed in", SGP:::convertTime(SGP:::timetakenSGP(started.impute))))
 

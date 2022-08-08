@@ -4,13 +4,13 @@
 ###                                                                         ###
 ###############################################################################
 
-out.file <- 
+out.file <-
    file.path("/Users/avi/Dropbox (SGP)/Github_Repos/Projects/",
              "PARCC/Consortia_Output_Validation_2021_2022.2.out")
 
-cat("#########################################\n", file = out.file)
-cat("###    Consortia OUTPUT VALIDATION    ###\n", file = out.file, append = TRUE)
-cat("#########################################\n", file = out.file, append = TRUE)
+cat("#################################################\n", file = out.file)
+cat("###        CONSORTIA OUTPUT VALIDATION        ###\n", file = out.file, append = TRUE)
+cat("#################################################\n", file = out.file, append = TRUE)
 
 ###   Load packages
 require(data.table)
@@ -36,7 +36,7 @@ read.parcc <- function(state, tag, type = "OUTPUT") {
       setwd(tmp.wd)
       return(TMP)
   } else {
-      return(fread(file.path(state, tmp.dir, my.file), 
+      return(fread(file.path(state, tmp.dir, my.file),
                    sep = ",", colClasses = rep("character", var.num)))
   }
 }
@@ -53,7 +53,7 @@ for (state in tmp.states) {
     if (state == "Department_Of_Defense")
         tmp.ORIGINAL <- fread("./Department_Of_Defense/Data/Base_Files/",
                               colClasses = rep("character", 92))
-    tmp.OUTPUT <- read.parcc(state, "2021-2022_Spring_SGP-STATE_LEVEL_Results_20220602")
+    tmp.OUTPUT <- read.parcc(state, "2021-2022_Spring_SGP-STATE_LEVEL_Results_20220613")
     setkey(tmp.ORIGINAL, PANUniqueStudentID, TestCode, IRTTheta)
     setkey(tmp.OUTPUT, PANUniqueStudentID, TestCode, IRTTheta)
 
@@ -109,7 +109,7 @@ for (state in tmp.states) {
 
     ###   BASELINE - New for 2021
     ###   TEST of State Baseline SGPs
-    tmp.baseline.state <- tmp.OUTPUT[, 
+    tmp.baseline.state <- tmp.OUTPUT[,
         as.list(summary(as.numeric(StudentGrowthPercentileComparedtoStateBaseline))), keyby = "TestCode"]
     tmp.baseline.state.n <- tmp.OUTPUT[,
         list(.N), keyby = "TestCode"]
@@ -119,7 +119,7 @@ for (state in tmp.states) {
         setnames(tmp.tbl, "NA's", "NAs")
         tmp.tbl[, SGP_Calc_Pct := round(((N - NAs)/N)*100, 1)]
         capture.output(tmp.tbl, file = out.file, append = TRUE)
-    } else cat("\n\t\t No state-level baseline SGPs calculated:\n", file = out.file, append = TRUE)
+    } else cat("\n\t\tNo state-level baseline SGPs calculated:\n", file = out.file, append = TRUE)
 
     ###   TEST of State Baseline SGP SIMEX
     tmp.simexbaseline.state <- tmp.OUTPUT[,
@@ -131,7 +131,7 @@ for (state in tmp.states) {
         setnames(tmp.tbl, "NA's", "NAs")
         tmp.tbl[, SGP_Calc_Pct := round(((N - NAs)/N)*100, 1)]
         capture.output(tmp.tbl, file = out.file, append = TRUE)
-    } else cat("\n\t\t No state-level SIMEX adjusted baseline SGPs calculated:\n", file = out.file, append = TRUE)
+    } else cat("\n\t\tNo state-level SIMEX adjusted baseline SGPs calculated:\n", file = out.file, append = TRUE)
 
     ###   TEST of Consortium Baseline SGPs
     tmp.baseline.parcc <- tmp.OUTPUT[,
@@ -144,7 +144,7 @@ for (state in tmp.states) {
         setnames(tmp.tbl, "NA's", "NAs")
         tmp.tbl[, SGP_Calc_Pct := round(((N - NAs)/N)*100, 1)]
         capture.output(tmp.tbl, file = out.file, append = TRUE)
-    } else cat("\n\t\t No consortium baseline SGPs calculated:\n", file = out.file, append = TRUE)
+    } else cat("\n\t\tNo consortium baseline SGPs calculated:\n", file = out.file, append = TRUE)
 
     ###   TEST of Consortium Baseline SGP SIMEX
     tmp.simexbaseline.parcc <- tmp.OUTPUT[,
@@ -157,8 +157,8 @@ for (state in tmp.states) {
         setnames(tmp.tbl, "NA's", "NAs")
         tmp.tbl[, SGP_Calc_Pct := round(((N - NAs)/N)*100, 1)]
         capture.output(tmp.tbl, file = out.file, append = TRUE)
-    } else cat("\n\t\t No consortium SIMEX adjusted baseline SGPs calculated:\n", file = out.file, append = TRUE)
+    } else cat("\n\t\tNo consortium SIMEX adjusted baseline SGPs calculated:\n", file = out.file, append = TRUE)
 
-    cat(paste("\n###   END ", state, "Output Validation   ###\n\n"), file = out.file, append = TRUE)
+    cat(paste("\n###   END ", state, "Output Validation   ###\n"), file = out.file, append = TRUE)
     gc()
 }

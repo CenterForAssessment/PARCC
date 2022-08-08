@@ -133,7 +133,7 @@ State_LONG_Data[!is.na(SGP_NOTE), SGP_NORM_GROUP_BASELINE := ""]
 
 
 ###   Change relevant SGP package convention names to Pearson's names
-sgp.names <- 
+sgp.names <-
   c("ID", "SCALE_SCORE_ACTUAL", "SCALE_SCORE_CSEM_ACTUAL",
     "SCALE_SCORE", "SCALE_SCORE_CSEM", "SGP", "SGP_STANDARD_ERROR",
     "SGP_0.05_CONFIDENCE_BOUND", "SGP_0.95_CONFIDENCE_BOUND",
@@ -151,7 +151,7 @@ setnames(State_LONG_Data, sgp.names[sgp.names %in% names(State_LONG_Data)],
     "IRTTheta", "ThetaSEM",
     "StudentGrowthPercentileComparedtoState", "SGPStandardErrorState",
     "SGPLowerBoundState", "SGPUpperBoundState",
-    "StudentGrowthPercentileComparedtoState1Prior","SGPLowerBoundState1Prior",
+    "StudentGrowthPercentileComparedtoState1Prior", "SGPLowerBoundState1Prior",
     "SGPUpperBoundState1Prior", "SGPStandardErrorState1Prior",
     "StudentGrowthPercentileComparedtoState2Prior", "SGPLowerBoundState2Prior",
     "SGPUpperBoundState2Prior", "SGPStandardErrorState2Prior",
@@ -164,15 +164,15 @@ setnames(State_LONG_Data, sgp.names[sgp.names %in% names(State_LONG_Data)],
 ###   Split SGP_NORM_GROUP to create 'SGPPreviousTestCode*' Variables
 state.tmp.split <-
     strsplit(as.character(State_LONG_Data$SGP_NORM_GROUP), "; ")
-State_LONG_Data[, CONTENT_AREA_1PRIOR := 
+State_LONG_Data[, CONTENT_AREA_1PRIOR :=
     factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split,
-            function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1),
+            function(x) rev(x)[2]), "/"), "[", 2), "_"), head, -1),
                 paste, collapse = "_"))]
 ##    Only 1 prior for 2022
 State_LONG_Data[, CONTENT_AREA_2PRIOR := as.character(NA)]
-# State_LONG_Data[, CONTENT_AREA_2PRIOR := 
+# State_LONG_Data[, CONTENT_AREA_2PRIOR :=
 #     factor(sapply(sapply(strsplit(sapply(strsplit(sapply(state.tmp.split,
-#             function(x) rev(x)[3]), "/"), '[', 2), "_"), head, -1),
+#             function(x) rev(x)[3]), "/"), "[", 2), "_"), head, -1),
 #                 paste, collapse = "_"))]
 
 ##    Check! - levels(State_LONG_Data$CONTENT_AREA_1PRIOR)
@@ -182,15 +182,15 @@ setattr(State_LONG_Data$CONTENT_AREA_1PRIOR, "levels", c(NA, "ELA", "MAT")) # IL
 # setattr(State_LONG_Data$CONTENT_AREA_2PRIOR, "levels", c(NA, "ELA", "MAT"))
 State_LONG_Data[, GRADE_1PRIOR :=
     sapply(strsplit(sapply(strsplit(sapply(state.tmp.split,
-        function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
+        function(x) rev(x)[2]), "/"), "[", 2), "_"), tail, 1)]
 # State_LONG_Data[, GRADE_2PRIOR :=
 #     sapply(strsplit(sapply(strsplit(sapply(state.tmp.split,
-#         function(x) rev(x)[3]), "/"), '[', 2), "_"), tail, 1)]
+#         function(x) rev(x)[3]), "/"), "[", 2), "_"), tail, 1)]
 State_LONG_Data[, GRADE_2PRIOR := ""]
 State_LONG_Data[GRADE_1PRIOR == "EOCT", GRADE_1PRIOR := ""]
 # State_LONG_Data[GRADE_2PRIOR == "EOCT", GRADE_2PRIOR := ""]
 State_LONG_Data[GRADE_1PRIOR %in% 3:9, GRADE_1PRIOR := paste0("0", GRADE_1PRIOR)]
-# State_LONG_Data[GRADE_2PRIOR %in% 3:9, GRADE_2PRIOR := paste0("0", GRADE_2PRIOR)] 
+# State_LONG_Data[GRADE_2PRIOR %in% 3:9, GRADE_2PRIOR := paste0("0", GRADE_2PRIOR)]
 
 # State_LONG_Data[, SGPPreviousTestCodeState :=
 #     factor(paste0(CONTENT_AREA_2PRIOR, GRADE_2PRIOR, ";",
@@ -227,7 +227,7 @@ State_LONG_Data[, SGPTargetTestCodeState :=
     as.character(SGPTargetTestCodeState)]
 State_LONG_Data[SGPTargetTestCodeState %in% c("ELA", "MAT"),
     SGPTargetTestCodeState := 
-        paste0(SGPTargetTestCodeState, "0", as.numeric(GRADE)+3)]
+        paste0(SGPTargetTestCodeState, "0", as.numeric(GRADE) + 3)]
 State_LONG_Data[, SGPTargetTestCodeState :=
     gsub("010", "10", SGPTargetTestCodeState)]
 State_LONG_Data[, SGPTargetTestCodeState :=
@@ -235,7 +235,7 @@ State_LONG_Data[, SGPTargetTestCodeState :=
 ##    Illinois only goes to grade 8 & Only Illinois has state targets in 2021...
 State_LONG_Data[StateAbbreviation == "IL", SGPTargetTestCodeState :=
     gsub("ELA09|ELA10|ELA11", "ELA08", SGPTargetTestCodeState)]
-State_LONG_Data[StateAbbreviation == "IL", SGPTargetTestCodeState := 
+State_LONG_Data[StateAbbreviation == "IL", SGPTargetTestCodeState :=
     gsub("MAT09|MAT10|MAT11", "MAT08", SGPTargetTestCodeState)]
 ##    Non-IL States
 State_LONG_Data[StateAbbreviation != "IL", SGPTargetTestCodeState :=
@@ -329,13 +329,13 @@ parcc.tmp.split <- strsplit(as.character(Parcc_LONG_Data$SGP_NORM_GROUP), "; ")
 
 Parcc_LONG_Data[, CONTENT_AREA_1PRIOR :=
     factor(sapply(sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split,
-            function(x) rev(x)[2]), "/"), '[', 2), "_"), head, -1),
+            function(x) rev(x)[2]), "/"), "[", 2), "_"), head, -1),
                 paste, collapse = "_"))]
 # Single prior only in 2022
 Parcc_LONG_Data[, CONTENT_AREA_2PRIOR := as.character(NA)]
-# Parcc_LONG_Data[, CONTENT_AREA_2PRIOR := 
+# Parcc_LONG_Data[, CONTENT_AREA_2PRIOR :=
 #     factor(sapply(sapply(strsplit(sapply(strsplit(sapply(parcc.tmp.split,
-#             function(x) rev(x)[3]), "/"), '[', 2), "_"), head, -1),
+#             function(x) rev(x)[3]), "/"), "[", 2), "_"), head, -1),
 #                 paste, collapse = "_"))]
 
 setattr(Parcc_LONG_Data$CONTENT_AREA_1PRIOR,
@@ -343,16 +343,16 @@ setattr(Parcc_LONG_Data$CONTENT_AREA_1PRIOR,
 # setattr(Parcc_LONG_Data$CONTENT_AREA_2PRIOR, "levels", c(NA, "ELA", "MAT"))
 Parcc_LONG_Data[, GRADE_1PRIOR :=
     sapply(strsplit(sapply(strsplit(sapply(
-        parcc.tmp.split, function(x) rev(x)[2]), "/"), '[', 2), "_"), tail, 1)]
+        parcc.tmp.split, function(x) rev(x)[2]), "/"), "[", 2), "_"), tail, 1)]
 Parcc_LONG_Data[, GRADE_2PRIOR := ""]
 # Parcc_LONG_Data[, GRADE_2PRIOR :=
 #     sapply(strsplit(sapply(strsplit(sapply(
-#         parcc.tmp.split, function(x) rev(x)[3]), "/"), '[', 2), "_"), tail, 1)]
+#         parcc.tmp.split, function(x) rev(x)[3]), "/"), "[", 2), "_"), tail, 1)]
 Parcc_LONG_Data[GRADE_1PRIOR == "EOCT", GRADE_1PRIOR := ""]
 # Parcc_LONG_Data[GRADE_2PRIOR == "EOCT", GRADE_2PRIOR := ""]
 # table(Parcc_LONG_Data[, GRADE_1PRIOR, CONTENT_AREA_1PRIOR])
 Parcc_LONG_Data[GRADE_1PRIOR %in% 3:9, GRADE_1PRIOR := paste0("0", GRADE_1PRIOR)]
-# Parcc_LONG_Data[GRADE_2PRIOR %in% 3:9, GRADE_2PRIOR := paste0("0", GRADE_2PRIOR)] 
+# Parcc_LONG_Data[GRADE_2PRIOR %in% 3:9, GRADE_2PRIOR := paste0("0", GRADE_2PRIOR)]
 # Parcc_LONG_Data[, SGPPreviousTestCodeConsortia :=
 #     factor(paste0(CONTENT_AREA_2PRIOR, GRADE_2PRIOR, ";",
 #                   CONTENT_AREA_1PRIOR, GRADE_1PRIOR))]
@@ -392,7 +392,7 @@ Parcc_LONG_Data[, SGPTargetTestCodeConsortia :=
     as.character(SGPTargetTestCodeConsortia)]
 Parcc_LONG_Data[SGPTargetTestCodeConsortia %in% c("ELA", "MAT"),
     SGPTargetTestCodeConsortia :=
-        paste0(SGPTargetTestCodeConsortia, "0", as.numeric(GRADE)+3)]
+        paste0(SGPTargetTestCodeConsortia, "0", as.numeric(GRADE) + 3)]
 Parcc_LONG_Data[, SGPTargetTestCodeConsortia :=
     gsub("010", "10", SGPTargetTestCodeConsortia)]
 Parcc_LONG_Data[, SGPTargetTestCodeConsortia :=
@@ -428,13 +428,13 @@ Parcc_LONG_Data <-
 FINAL_LONG_Data <- copy(State_LONG_Data)
 
 ###  Fix EXACT_DUPLICATEs  (None in Spring 2019, 2021, 2022)
-FINAL_LONG_Data[EXACT_DUPLICATE == 2, (center.var.names) := 
+FINAL_LONG_Data[EXACT_DUPLICATE == 2, (center.var.names) :=
     FINAL_LONG_Data[EXACT_DUPLICATE == 1, center.var.names, with = FALSE]]
 FINAL_LONG_Data[, EXACT_DUPLICATE := NULL]
 
 ###   Coordinate missing SGP notes for small N states
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) & 
+# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) &
 #                       StudentGrowthPercentileComparedtoConsortia == "<1000"),
 #                 SGPPreviousTestCodeState := SGPPreviousTestCodeConsortia]
 # FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) &
@@ -480,7 +480,7 @@ setkey(FINAL_LONG_Data,
        PANUniqueStudentID, StudentTestUUID, TestCode)
 dups <- duplicated(FINAL_LONG_Data, by = key(FINAL_LONG_Data))
 table(dups) # Should be FALSE
-findups <- FINAL_LONG_Data[c(which(dups)-1, which(dups)),]
+findups <- FINAL_LONG_Data[c(which(dups) - 1, which(dups)), ]
 nrow(findups) # Should be 0 rows!
 
 # everything except which(all.var.names == "EXACT_DUPLICATE")
@@ -597,14 +597,16 @@ fname <-
 fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
 if (abv == "IL") FINAL_LONG_Data[, (addl.bie.dd.names) := NULL]
 options(scipen = 999)
+
+##    Use `write.csv` - `fwrite` had bug with number of printed digits
 write.csv(FINAL_LONG_Data, fname, row.names = FALSE, na = "")
 # [PANUniqueStudentID %in% sample(PANUniqueStudentID, 100) &
-# StateAbbreviation == abv & GradeLevelWhenAssessed %in% c('05','08'),]
+# StateAbbreviation == abv & GradeLevelWhenAssessed %in% c("05", "08"), ]
 zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")
 ####  END For individual state data formatting
 
 
-####  Loop on State Abbreviation to write out each state file in 
+####  Loop on State Abbreviation to write out each state file in
 ####  format that it was recieved and return requested
 tmp.wd <- getwd()
 options(scipen = 999)
@@ -619,6 +621,8 @@ for (abv in unique(FINAL_LONG_Data$StateAbbreviation)) {
     tmp.vars <- all.var.names[
         !all.var.names %in% c("EXACT_DUPLICATE", addl.bie.dd.names)]
   } else tmp.vars <- all.var.names[!all.var.names %in% "EXACT_DUPLICATE"]
+
+  ##    Use `write.csv` - `fwrite` had bug with number of printed digits
   write.csv(FINAL_LONG_Data[StateAbbreviation == abv, ..tmp.vars],
             fname, row.names = FALSE, na = "")
   zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")

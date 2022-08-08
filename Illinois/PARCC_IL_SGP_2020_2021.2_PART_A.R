@@ -27,8 +27,8 @@ source("../SGP_CONFIG/2020_2021.2/PART_A/ELA.R")
 source("../SGP_CONFIG/2020_2021.2/PART_A/MATHEMATICS.R")
 
 IL_2021_CONFIG_PART_A <- c(
-	ELA_2020_2021.2.config,
-	MATHEMATICS_2020_2021.2.config
+  ELA_2020_2021.2.config,
+  MATHEMATICS_2020_2021.2.config
 )
 
 #####
@@ -37,7 +37,7 @@ IL_2021_CONFIG_PART_A <- c(
 
 Illinois_SGP <- updateSGP(
         what_sgp_object = Illinois_SGP,
-				with_sgp_data_LONG = Illinois_Data_LONG_2020_2021.2,
+        with_sgp_data_LONG = Illinois_Data_LONG_2020_2021.2,
         steps = c("prepareSGP", "analyzeSGP"),
         sgp.config = IL_2021_CONFIG_PART_A,
         sgp.percentiles = TRUE,
@@ -46,15 +46,15 @@ Illinois_SGP <- updateSGP(
         sgp.percentiles.baseline = TRUE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
-				sgp.use.my.coefficient.matrices = TRUE,  ###  Added Nov 2021 with added Fall testers and updated/matched IDs from Spring
-				calculate.simex = TRUE,
-				calculate.simex.baseline = list(
-					lambda=seq(0,2,0.5), simulation.iterations=75, simex.sample.size=10000,
-					csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
-					simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=FALSE), # use baseline cohort for RANKING!
-				save.intermediate.results = FALSE,
+        sgp.use.my.coefficient.matrices = TRUE,  ###  Added Nov 2021 with added Fall testers and updated/matched IDs from Spring
+        calculate.simex = TRUE,
+        calculate.simex.baseline = list(
+          lambda=seq(0,2,0.5), simulation.iterations=75, simex.sample.size=10000,
+          csem.data.vnames="SCALE_SCORE_CSEM", extrapolation="linear", save.matrices=FALSE,
+          simex.use.my.coefficient.matrices=TRUE, use.cohort.for.ranking=FALSE), # use baseline cohort for RANKING!
+        save.intermediate.results = FALSE,
         parallel.config = list(
-					BACKEND = "PARALLEL",
+          BACKEND = "PARALLEL",
           WORKERS=list(SIMEX = 25)) # TAUS = 27,
 )
 

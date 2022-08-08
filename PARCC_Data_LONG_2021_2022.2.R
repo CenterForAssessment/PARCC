@@ -73,17 +73,17 @@ pearson.var.names <- c(pearson.var.names, addl.bie.dd.names)
 
 ###   Read in spring 2022 data by state
 # TMP_Data_2022 <-
-#     fread("./Bureau_of_Indian_Education/Data/Base_Files/BIE.xyz",
-#           colClasses=rep("character", length(all.var.names)))[,
-#         pearson.var.names, with=FALSE]
-# TMP_Data_2022 <-
-#     fread("./Department_Of_Defense/Data/Base_Files/DoD.xyz",
+#     fread("./Bureau_of_Indian_Education/Data/Base_Files/pcspr22_state_Student_Growth_20220722170814892566.csv",
 #           colClasses=rep("character", length(all.var.names)))[,
 #         pearson.var.names, with=FALSE]
 TMP_Data_2022 <-
-    fread("./Illinois/Data/Base_Files/PARCC_IL_2021-2022_SGPO_D20220518.csv",
-          colClasses = rep("character", length(head(all.var.names, -2))))[,
-        head(pearson.var.names, -2), with = FALSE]
+    fread("./Department_Of_Defense/Data/Base_Files/pcspr22_state_Student_Growth_20220722170814891136.csv",
+          colClasses=rep("character", length(all.var.names)))[,
+        pearson.var.names, with=FALSE]
+# TMP_Data_2022 <-
+#     fread("./Illinois/Data/Base_Files/PARCC_IL_2021-2022_SGPO_D20220518.csv",
+#           colClasses = rep("character", length(head(all.var.names, -2))))[,
+#         head(pearson.var.names, -2), with = FALSE]
 
 setkey(TMP_Data_2022, PANUniqueStudentID, TestCode, Period)
 
@@ -102,9 +102,9 @@ setattr(TMP_Data_2022$CONTENT_AREA, "levels",
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   BIE
         #   "GEOMETRY", rep("MATHEMATICS", 6),
         #   "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3"))
-        # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   DoDEA
-        #   "GEOMETRY", rep("MATHEMATICS", 5)))
-        c(rep("ELA", 6), rep("MATHEMATICS", 6)))      #   IL
+        c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   DoDEA
+          "GEOMETRY", rep("MATHEMATICS", 5)))
+        # c(rep("ELA", 6), rep("MATHEMATICS", 6)))      #   IL
 TMP_Data_2022[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ###   GRADE from TestCode
@@ -116,7 +116,7 @@ table(TMP_Data_2022[, GRADE, TestCode])
 
 ###   YEAR
 TMP_Data_2022[, YEAR := gsub("-", "_", AssessmentYear)]
-TMP_Data_2022[which(Period == "Spring"), YEAR := paste0(YEAR, ".2"]
+TMP_Data_2022[which(Period == "Spring"), YEAR := paste0(YEAR, ".2")]
 
 
 ###   Theta - create IRT CSEM
@@ -180,7 +180,7 @@ TMP_Data_2022[, EXACT_DUPLICATE := as.numeric(NA)]
 
 setkey(TMP_Data_2022,
     VALID_CASE, YEAR, CONTENT_AREA, GRADE, ID, SCALE_SCORE_ACTUAL, SCALE_SCORE)
-dupl <- duplicated(TMP_Data_2022, by = key(TMP_Data_2022)
+dupl <- duplicated(TMP_Data_2022, by = key(TMP_Data_2022))
 dups <- TMP_Data_2022[c(which(dupl)-1, which(dupl)), ]
 setkeyv(dups, key(TMP_Data_2022))
 
@@ -196,11 +196,11 @@ TMP_Data_2022[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 TMP_Data_2022[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ###   Save Spring 2021 individual states LONG data
-dir.create("./Illinois/Data/Archive/2021_2022.2", recursive = TRUE)
-assign("Illinois_Data_LONG_2021_2022.2", TMP_Data_2022)
-save(Illinois_Data_LONG_2021_2022.2,
-     file = file.path("Illinois/Data/Archive/2021_2022.2/",
-                      "Illinois_Data_LONG_2021_2022.2.Rdata"))
+dir.create("./Department_Of_Defense/Data/Archive/2021_2022.2", recursive = TRUE)
+assign("Department_of_Defense_Data_LONG_2021_2022.2", TMP_Data_2022)
+save(Department_of_Defense_Data_LONG_2021_2022.2,
+     file = file.path("Department_of_Defense/Data/Archive/2021_2022.2/",
+                      "Department_of_Defense_Data_LONG_2021_2022.2.Rdata"))
 
 
 #####
