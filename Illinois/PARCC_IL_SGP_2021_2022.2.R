@@ -130,7 +130,7 @@ Illinois_SGP <-
     updateSGP(
         what_sgp_object = Illinois_SGP,
         with_sgp_data_LONG = Illinois_Data_LONG_2021_2022.2,
-        years = "2022",
+        # years = "2022",
         steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
         sgp.config = IL_Config_2022,
         sgp.percentiles = TRUE,

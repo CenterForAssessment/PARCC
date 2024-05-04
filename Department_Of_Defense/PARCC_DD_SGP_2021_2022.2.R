@@ -36,8 +36,8 @@ SGPstateData[["DD"]][["Growth"]][["Cutscores"]] <-
 ###   No DoDEA skip-year SGP variables or objects to re-name
 
 ###   Read in SGP Configuration Scripts and Combine
-source("../SGP_CONFIG/2022/PART_A/ELA.R")
-source("../SGP_CONFIG/2022/PART_A/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_A/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_A/MATHEMATICS.R")
 
 DD_Baseline_Config_2019 <-
   c(ELA_2018_2019.2.config,
@@ -47,9 +47,6 @@ DD_Baseline_Config_2019 <-
     ALGEBRA_II_2018_2019.2.config
    )
 
-###   Parallel Config
-parallel.config <- list(BACKEND = "PARALLEL",
-                        WORKERS = list(SIMEX = 15))
 
 ###   Run abcSGP analysis
 Department_of_Defense_SGP <-
@@ -67,9 +64,13 @@ Department_of_Defense_SGP <-
             lambda = seq(0, 2, 0.5), simulation.iterations = 75,
             simex.sample.size = 10000, csem.data.vnames = "SCALE_SCORE_CSEM",
             extrapolation = "linear", simex.use.my.coefficient.matrices = TRUE,
-            save.matrices = FALSE, use.cohort.for.ranking = FALSE),
+            save.matrices = FALSE, use.cohort.for.ranking = FALSE
+        ),
         simulate.sgps = FALSE,
-        parallel.config = parallel.config
+        parallel.config = list(
+            BACKEND = "PARALLEL",
+            WORKERS = list(SIMEX = 15)
+        )
     )
 
 
@@ -100,8 +101,8 @@ SGPstateData[["DD"]][["Achievement"]][["Knots_Boundaries"]][["MATHEMATICS"]] <-
     )
 
 ###   Read in configuration scripts and combine
-source("../SGP_CONFIG/PART_B/2021_2022.2/ELA.R")
-source("../SGP_CONFIG/PART_B/2021_2022.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_B/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_B/MATHEMATICS.R")
 
 DD_Config_2022 <-
   c(ELA_2021_2022.2.config,
@@ -117,7 +118,6 @@ Department_of_Defense_SGP <-
     updateSGP(
         what_sgp_object = Department_of_Defense_SGP,
         with_sgp_data_LONG = Department_of_Defense_Data_LONG_2021_2022.2,
-        years = "2022",
         steps = c("prepareSGP", "analyzeSGP"),
         sgp.config = DD_Config_2022,
         sgp.percentiles = TRUE,
@@ -140,8 +140,8 @@ Department_of_Defense_SGP <-
 #####
 
 ###   Read in configuration scripts and combine
-source("../SGP_CONFIG/PART_C/2021_2022.2/ELA.R")
-source("../SGP_CONFIG/PART_C/2021_2022.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_C/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_C/MATHEMATICS.R")
 
 DD_Baseline_Config_2022 <-
     c(ELA_2022_DoDEA.config,
@@ -168,7 +168,8 @@ Department_of_Defense_SGP <-
             lambda = seq(0, 2, 0.5), simulation.iterations = 75,
             simex.sample.size = 10000, csem.data.vnames = "SCALE_SCORE_CSEM",
             extrapolation = "linear", simex.use.my.coefficient.matrices = TRUE,
-            save.matrices = FALSE, use.cohort.for.ranking = FALSE),
+            save.matrices = FALSE, use.cohort.for.ranking = FALSE
+        ),
         save.intermediate.results = FALSE,
         outputSGP.directory = "Data/Archive/2021_2022.2",
         outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data"),

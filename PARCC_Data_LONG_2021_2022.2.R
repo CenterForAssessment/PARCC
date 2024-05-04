@@ -4,11 +4,41 @@
 ###                                                                        ###
 ##############################################################################
 
+###   Set working directory to top level directory (PARCC)
+
 ###   Load required packages
 require(SGP)
 require(data.table)
 
-###   Set working directory to top level directory (PARCC)
+freadZIP <- function(
+    zipfile,
+    all.to.char = TRUE,
+    sep = NULL,
+    keep = NULL
+  ) {
+    if (is.null(sep)) sep <- "auto"
+    zipfile <- normalizePath(zipfile)
+    fname <- gsub(".zip", "", basename(zipfile))
+    tmp.dir <- getwd()
+    setwd(tempdir())
+    system(paste0("unzip '", zipfile, "'"))
+
+    if (all.to.char) {
+        TMP <- fread(fname, sep = sep, nrows = 10L)
+        TMP <- fread(fname, sep = sep, colClasses = rep("character", ncol(TMP)))
+    } else {
+        TMP <- fread(fname, sep = sep)
+    }
+
+    unlink(fname)
+    setwd(tmp.dir)
+
+    if (!is.null(keep)) {
+        TMP[, ..keep]
+    } else {
+        TMP
+    }
+}
 
 #####
 ###   Read in Spring 2022 Pearson base data
@@ -72,18 +102,24 @@ all.var.names <- c(all.var.names, addl.bie.dd.names)
 pearson.var.names <- c(pearson.var.names, addl.bie.dd.names)
 
 ###   Read in spring 2022 data by state
+# TMP_Data_2022 <- freadZIP(
+#     "./New_Jersey/Data/Base_Files/PARCC_NJ_2021-2022_SGPO_D20220808.csv.zip",
+#     keep = head(pearson.var.names, -2))
 # TMP_Data_2022 <-
 #     fread("./Bureau_of_Indian_Education/Data/Base_Files/pcspr22_state_Student_Growth_20220722170814892566.csv",
-#           colClasses=rep("character", length(all.var.names)))[,
-#         pearson.var.names, with=FALSE]
-TMP_Data_2022 <-
-    fread("./Department_Of_Defense/Data/Base_Files/pcspr22_state_Student_Growth_20220722170814891136.csv",
-          colClasses=rep("character", length(all.var.names)))[,
-        pearson.var.names, with=FALSE]
+#           colClasses = rep("character", length(all.var.names)))[, ..pearson.var.names]
 # TMP_Data_2022 <-
-#     fread("./Illinois/Data/Base_Files/PARCC_IL_2021-2022_SGPO_D20220518.csv",
-#           colClasses = rep("character", length(head(all.var.names, -2))))[,
-#         head(pearson.var.names, -2), with = FALSE]
+#     fread("./Department_Of_Defense/Data/Base_Files/pcspr22_state_Student_Growth_20220722170814891136.csv",
+#           colClasses = rep("character", length(all.var.names)))[, ..pearson.var.names]
+# TMP_Data_2022 <- freadZIP(
+#     "./Illinois/Data/Base_Files/PARCC_IL_2021-2022_SGPO_D20220518.csv.zip",
+#     keep = head(pearson.var.names, -2))
+##  Washington_DC done in 2023:
+TMP_Data_2022 <- fread(
+    "./Washington_DC/Data/Base_Files/PARCC_DC_2021-2022_SGPO_D20220711.csv.gz",
+    colClasses = rep("character", 90))[,
+        (head(pearson.var.names, -2)), with = FALSE
+    ]
 
 setkey(TMP_Data_2022, PANUniqueStudentID, TestCode, Period)
 
@@ -99,11 +135,15 @@ setnames(TMP_Data_2022, "PANUniqueStudentID", "ID")
 TMP_Data_2022[, CONTENT_AREA := factor(TestCode)]
 table(TMP_Data_2022$CONTENT_AREA)
 setattr(TMP_Data_2022$CONTENT_AREA, "levels",
+        c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 8),  #   DC
+          "GEOMETRY", rep("MATHEMATICS", 6)))
+        # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), "ELA_GPA",  #   NJ
+        #   "GEOMETRY", rep("MATHEMATICS", 6), "MATH_GPA"))
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   BIE
         #   "GEOMETRY", rep("MATHEMATICS", 6),
         #   "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3"))
-        c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   DoDEA
-          "GEOMETRY", rep("MATHEMATICS", 5)))
+        # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   DoDEA
+        #   "GEOMETRY", rep("MATHEMATICS", 5)))
         # c(rep("ELA", 6), rep("MATHEMATICS", 6)))      #   IL
 TMP_Data_2022[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
@@ -151,7 +191,7 @@ table(TMP_Data_2022[, ACHIEVEMENT_LEVEL, CONTENT_AREA], exclude = NULL)
 ##    Email from K Johnson April 27, 2018
 #
 #  1. ELA09 will always be excluded
-#  2. Algebra I and Integrated Math I will be excluded when the 
+#  2. Algebra I and Integrated Math I will be excluded when the
 #     "Grade Level When Assessed" field is = 09, 10, 11, 12, 13, 99, OS or PS
 #
 # table(TMP_Data_2022[StateAbbreviation == "DC",
@@ -159,9 +199,9 @@ table(TMP_Data_2022[, ACHIEVEMENT_LEVEL, CONTENT_AREA], exclude = NULL)
 
 # TMP_Data_2022[StateAbbreviation == "DC" & TestCode == "ELA09",
 #     VALID_CASE := "INVALID_CASE"] # X cases
-# TMP_Data_2022[StateAbbreviation == "DC" & 
+# TMP_Data_2022[StateAbbreviation == "DC" &
 #                             TestCode == "ALG01" &
-#                             GradeLevelWhenAssessed %in% 
+#                             GradeLevelWhenAssessed %in%
 #                                 c("09", "10", "11", "12", "99"),
 #                             VALID_CASE := "INVALID_CASE"] # X cases
 # TMP_Data_2022[StateAbbreviation == "DC" &
@@ -196,11 +236,11 @@ TMP_Data_2022[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 TMP_Data_2022[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
 ###   Save Spring 2021 individual states LONG data
-dir.create("./Department_Of_Defense/Data/Archive/2021_2022.2", recursive = TRUE)
-assign("Department_of_Defense_Data_LONG_2021_2022.2", TMP_Data_2022)
-save(Department_of_Defense_Data_LONG_2021_2022.2,
-     file = file.path("Department_of_Defense/Data/Archive/2021_2022.2/",
-                      "Department_of_Defense_Data_LONG_2021_2022.2.Rdata"))
+dir.create("./Washington_DC/Data/Archive/2021_2022.2", recursive = TRUE)
+assign("Washington_DC_Data_LONG_2021_2022.2", TMP_Data_2022)
+save(Washington_DC_Data_LONG_2021_2022.2,
+     file = file.path("Washington_DC/Data/Archive/2021_2022.2/",
+                      "Washington_DC_Data_LONG_2021_2022.2.Rdata"))
 
 
 #####

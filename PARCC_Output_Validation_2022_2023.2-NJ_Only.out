@@ -1,0 +1,119 @@
+#################################################
+###        CONSORTIA OUTPUT VALIDATION        ###
+#################################################
+
+
+### New_Jersey Output Validation ###
+
+###   TEST for Identical Variable Names in BASE and OUTPUT files: TRUE
+###   TEST for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+###   TEST for Identical IRTTheta in BASE and OUTPUT files: TRUE
+
+###   TEST of StudentGrowthPercentileComparedtoState:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.   NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num> <num>  <int>        <num>
+ 1:    ALG01     1      25     50 49.84396      75    99 18974 106400         82.2
+ 2:    ALG02     1      25     50 49.81354      75    99  1656  10178         83.7
+ 3:    ELA03    NA      NA     NA      NaN      NA    NA 92302  92302          0.0
+ 4:    ELA04     1      25     50 49.93422      75    99  5472  93504         94.1
+ 5:    ELA05     1      25     50 49.95009      75    99  5300  94934         94.4
+ 6:    ELA06     1      25     50 49.95220      75    99  5491  96337         94.3
+ 7:    ELA07     1      25     50 49.95645      75    99  5363  97297         94.5
+ 8:    ELA08     1      25     50 49.95778      75    99  5428 100461         94.6
+ 9:    ELA09     1      25     50 49.92111      75    99  9165  97947         90.6
+10:    GEO01     1      25     50 49.90082      75    99  4158  30384         86.3
+11:    MAT03    NA      NA     NA      NaN      NA    NA 94111  94111          0.0
+12:    MAT04     1      25     50 49.92639      75    99  6070  95226         93.6
+13:    MAT05     1      25     50 49.91769      75    99  5868  96582         93.9
+14:    MAT06     1      25     50 49.90296      75    99  6145  97971         93.7
+15:    MAT07     1      25     50 49.88940      75    99  5852  93752         93.8
+16:    MAT08     1      25     50 49.86259      75    99  5040  67096         92.5
+
+
+###   TEST of SGPRankedSimexState:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.   NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num> <num>  <int>        <num>
+ 1:    ALG01     1      25     50 49.99913      75    99 18974 106400         82.2
+ 2:    ALG02     1      25     50 50.01772      75    99  1656  10178         83.7
+ 3:    ELA03    NA      NA     NA      NaN      NA    NA 92302  92302          0.0
+ 4:    ELA04     1      25     50 49.99968      75    99  5472  93504         94.1
+ 5:    ELA05     1      25     50 49.99642      75    99  5300  94934         94.4
+ 6:    ELA06     1      25     50 50.01146      75    99  5491  96337         94.3
+ 7:    ELA07     1      25     50 50.00695      75    99  5363  97297         94.5
+ 8:    ELA08     1      25     50 50.00780      75    99  5428 100461         94.6
+ 9:    ELA09     1      25     50 49.99558      75    99  9165  97947         90.6
+10:    GEO01     1      25     50 50.00313      75    99  4158  30384         86.3
+11:    MAT03    NA      NA     NA      NaN      NA    NA 94111  94111          0.0
+12:    MAT04     1      25     50 50.00544      75    99  6070  95226         93.6
+13:    MAT05     1      25     50 50.00378      75    99  5868  96582         93.9
+14:    MAT06     1      25     50 49.99866      75    99  6145  97971         93.7
+15:    MAT07     1      25     50 50.00586      75    99  5852  93752         93.8
+16:    MAT08     1      25     50 50.00485      75    99  5040  67096         92.5
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortia:
+
+		No Consortia-level SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortia:
+
+		No Consortia-level SIMEX SGPs calculated:
+
+
+###   TEST of StudentGrowthPercentileComparedtoStateBaseline:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.   NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num> <num>  <int>        <num>
+ 1:    ALG01     1      25     52 51.28962      77    99 25024 106400         76.5
+ 2:    ALG02     1      33     61 58.02488      85    99  1656  10178         83.7
+ 3:    ELA03    NA      NA     NA      NaN      NA    NA 92302  92302          0.0
+ 4:    ELA04     1      25     51 50.90100      77    99  5472  93504         94.1
+ 5:    ELA05     1      27     55 53.28497      81    99  5300  94934         94.4
+ 6:    ELA06     1      21     48 48.53407      76    99  5491  96337         94.3
+ 7:    ELA07     1      25     50 49.68470      75    99  5363  97297         94.5
+ 8:    ELA08     1      25     52 51.43499      78    99  5428 100461         94.6
+ 9:    ELA09     1      25     54 52.55369      81    99  9165  97947         90.6
+10:    GEO01     1      36     64 59.70598      86    99  4158  30384         86.3
+11:    MAT03    NA      NA     NA      NaN      NA    NA 94111  94111          0.0
+12:    MAT04     1      24     50 49.92704      76    99  6070  95226         93.6
+13:    MAT05     1      23     50 49.97838      77    99  5868  96582         93.9
+14:    MAT06     1      32     59 56.22766      83    99  6145  97971         93.7
+15:    MAT07     1      27     55 53.31489      80    99  5852  93752         93.8
+16:    MAT08     1      15     36 40.86680      64    99  5040  67096         92.5
+
+
+###   TEST of SGPRankedSimexStateBaseline:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.   NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num> <num>  <int>        <num>
+ 1:    ALG01     1      25     54 52.28140      80    99 25024 106400         76.5
+ 2:    ALG02     1      31     61 57.73175      86    99  1656  10178         83.7
+ 3:    ELA03    NA      NA     NA      NaN      NA    NA 92302  92302          0.0
+ 4:    ELA04     1      25     52 51.43003      79    99  5472  93504         94.1
+ 5:    ELA05     1      26     57 53.99408      83    99  5300  94934         94.4
+ 6:    ELA06     1      20     48 49.00139      78    99  5491  96337         94.3
+ 7:    ELA07     1      24     50 50.10119      77    99  5363  97297         94.5
+ 8:    ELA08     1      24     53 51.96240      80    99  5428 100461         94.6
+ 9:    ELA09     1      23     55 52.99401      83    99  9165  97947         90.6
+10:    GEO01     1      34     64 59.07050      88    99  4158  30384         86.3
+11:    MAT03    NA      NA     NA      NaN      NA    NA 94111  94111          0.0
+12:    MAT04     1      22     50 50.20460      78    99  6070  95226         93.6
+13:    MAT05     1      22     51 50.51843      80    99  5868  96582         93.9
+14:    MAT06     1      31     61 57.16674      85    99  6145  97971         93.7
+15:    MAT07     1      27     57 54.38727      84    99  5852  93752         93.8
+16:    MAT08     1      14     37 41.18010      66    99  5040  67096         92.5
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortiaBaseline:
+
+		No consortium baseline SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortiaBaseline:
+
+		No consortium SIMEX adjusted baseline SGPs calculated:
+
+###   END  New_Jersey Output Validation   ###

@@ -1,9 +1,12 @@
 .Rapp.history
+.Rhistory
 .DS_Store
 .RData
 .Rdata
+.vscode
 */Data
 */Goodness_of_Fit
 */Visualizations
 */Misc
 */Logs
+

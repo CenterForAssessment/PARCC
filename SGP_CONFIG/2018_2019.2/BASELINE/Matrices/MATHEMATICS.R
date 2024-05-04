@@ -105,12 +105,12 @@ ALGEBRA_I_BASELINE.config <- list(
     sgp.baseline.grade.sequences.lags=1),
 
   ###   Baseline Cohort > 1,000
-
-	list(
-    sgp.baseline.content.areas=c("MATHEMATICS", "ALGEBRA_I"),
-    sgp.baseline.panel.years=c("2017_2018.2", "2018_2019.2"),
-    sgp.baseline.grade.sequences=c(6, "EOCT"),
-    sgp.baseline.grade.sequences.lags=1),
+    ## ran this originally in 2021 -- Saved DUPLICATE "ranked_simex_table" !!!
+	# list(
+    # sgp.baseline.content.areas=c("MATHEMATICS", "ALGEBRA_I"),
+    # sgp.baseline.panel.years=c("2017_2018.2", "2018_2019.2"),
+    # sgp.baseline.grade.sequences=c(6, "EOCT"),
+    # sgp.baseline.grade.sequences.lags=1),
 
 	##    Skip Year - 8th grade prior
 	list(

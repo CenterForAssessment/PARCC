@@ -1,6 +1,6 @@
 ################################################################################
 ###                                                                          ###
-###       Illinois Learning Loss Analyses -- Create Baseline Matrices        ###
+###     Washington_DC Learning Loss Analyses -- Create Baseline Matrices     ###
 ###                                                                          ###
 ################################################################################
 
@@ -8,31 +8,31 @@
 require(SGP)
 require(data.table)
 
-###   Load Original Illinois data from 2019 IL SGP Analyses
+###   Load Original Washington_DC data from 2019 IL SGP Analyses
 
-load("Data/Archive/2018_2019.2/Illinois_SGP_LONG_Data.Rdata")
-load("Data/Archive/2015_2016.2/Illinois_SGP_LONG_Data_2015_2016.2.Rdata")
+load("Data/Archive/2018_2019.2/Washington_DC_SGP_LONG_Data.Rdata")
+load("Data/Archive/2015_2016.2/Washington_DC_SGP_LONG_Data_2015_2016.2.Rdata")
 
 ###   Create a smaller subset of the LONG data to work with.
 parcc.years <- c("2016_2017.2", "2017_2018.2", "2018_2019.2")
 parcc.subjects <- c("ELA", "MATHEMATICS") # , "ALGEBRA_I", "GEOMETRY", "ALGEBRA_II")
 
-Illinois_Baseline_Data <- rbindlist(list(
-    Illinois_SGP_LONG_Data_2015_2016.2[CONTENT_AREA %in% parcc.subjects,
+Washington_DC_Baseline_Data <- rbindlist(list(
+    Washington_DC_SGP_LONG_Data_2015_2016.2[CONTENT_AREA %in% parcc.subjects,
       list(VALID_CASE, ID, YEAR, CONTENT_AREA, GRADE, SCALE_SCORE, SCALE_SCORE_CSEM, ACHIEVEMENT_LEVEL)],
-    Illinois_SGP_LONG_Data[CONTENT_AREA %in% parcc.subjects & YEAR %in% parcc.years,
+    Washington_DC_SGP_LONG_Data[CONTENT_AREA %in% parcc.subjects & YEAR %in% parcc.years,
       list(VALID_CASE, ID, YEAR, CONTENT_AREA, GRADE, SCALE_SCORE, SCALE_SCORE_CSEM, ACHIEVEMENT_LEVEL)]))
 
-ids <- unique(Illinois_Baseline_Data[YEAR=="2018_2019.2", ID])
-Illinois_Baseline_Data <- Illinois_Baseline_Data[ID %in% ids, ]
+ids <- unique(Washington_DC_Baseline_Data[YEAR=="2018_2019.2", ID])
+Washington_DC_Baseline_Data <- Washington_DC_Baseline_Data[ID %in% ids, ]
 
-rm(list=c("Illinois_SGP_LONG_Data_2015_2016.2", "Illinois_SGP_LONG_Data"));gc()
+rm(list=c("Washington_DC_SGP_LONG_Data_2015_2016.2", "Washington_DC_SGP_LONG_Data"));gc()
 
 ###   Read in Baseline SGP Configuration Scripts and Combine
 source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/ELA.R")
 source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/MATHEMATICS.R")
 
-Illinois_BASELINE_CONFIG <- c(
+Washington_DC_BASELINE_CONFIG <- c(
     ELA_BASELINE.config,
     MATHEMATICS_BASELINE.config
 )
@@ -43,11 +43,11 @@ Illinois_BASELINE_CONFIG <- c(
 ###
 
 ###   First create shell SGP object
-Illinois_SGP <- prepareSGP(Illinois_Baseline_Data, create.additional.variables=FALSE)
+Washington_DC_SGP <- prepareSGP(Washington_DC_Baseline_Data, create.additional.variables=FALSE)
 
-Illinois_Baseline_Matrices <- baselineSGP(
-  Illinois_SGP,
-  sgp.baseline.config=Illinois_BASELINE_CONFIG,
+Washington_DC_Baseline_Matrices <- baselineSGP(
+  Washington_DC_SGP,
+  sgp.baseline.config=Washington_DC_BASELINE_CONFIG,
   return.matrices.only=TRUE,
   calculate.baseline.sgps=FALSE,
   calculate.simex.baseline=list(
@@ -64,4 +64,4 @@ Illinois_Baseline_Matrices <- baselineSGP(
     WORKERS=list(TAUS=27, SIMEX=25)))
 
 ###   Save results
-save(Illinois_Baseline_Matrices, file="Data/Illinois_Baseline_Matrices.Rdata")
+save(Washington_DC_Baseline_Matrices, file="Data/Washington_DC_Baseline_Matrices.Rdata")

@@ -1,0 +1,99 @@
+#################################################
+###        CONSORTIA OUTPUT VALIDATION        ###
+#################################################
+
+
+### Illinois Output Validation ###
+
+###   TEST for Identical Variable Names in BASE and OUTPUT files: TRUE
+###   TEST for Identical PANUniqueStudentID in BASE and OUTPUT files: TRUE
+###   TEST for Identical IRTTheta in BASE and OUTPUT files: TRUE
+
+###   TEST of StudentGrowthPercentileComparedtoState:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.      N
+      <char> <num>   <num>  <num>    <num>   <num> <num>  <int>
+ 1:    ELA04     1      25     50 49.92069      75    99 120498
+ 2:    ELA05     1      25     50 49.83950      75    99 122544
+ 3:    ELA06     1      25     50 49.69650      75    99 125998
+ 4:    ELA07     1      25     50 49.69853      75    99 126764
+ 5:    ELA08     1      24     49 49.45801      74    99 131461
+ 6:    MAT04     1      25     50 49.91329      75    99 120194
+ 7:    MAT05     1      23     48 48.78138      74    99 122110
+ 8:    MAT06     1      25     50 49.93234      75    99 125546
+ 9:    MAT07     1      25     50 49.98082      75    99 126295
+10:    MAT08     1      25     49 49.57957      75    99 130838
+
+
+###   TEST of SGPRankedSimexState:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.      N
+      <char> <num>   <num>  <num>    <num>   <num> <num>  <int>
+ 1:    ELA04     1      25     50 50.00360      75    99 120498
+ 2:    ELA05     1      25     50 49.95826      75    99 122544
+ 3:    ELA06     1      25     50 49.84768      75    99 125998
+ 4:    ELA07     1      25     50 49.90329      75    99 126764
+ 5:    ELA08     1      25     50 49.65431      75    99 131461
+ 6:    MAT04     1      25     50 50.00700      75    99 120194
+ 7:    MAT05     1      25     50 50.30477      75    99 122110
+ 8:    MAT06     1      25     50 50.27642      75    99 125546
+ 9:    MAT07     1      25     50 50.12366      75    99 126295
+10:    MAT08     1      25     50 49.80747      75    99 130838
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortia:
+Key: <TestCode>
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+
+###   TEST of SGPRankedSimexConsortia:
+Key: <TestCode>
+Empty data.table (0 rows and 8 cols): TestCode,Min.,1st Qu.,Median,Mean,3rd Qu....
+
+
+###   TEST of StudentGrowthPercentileComparedtoStateBaseline:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.    NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num>  <num>  <int>        <num>
+ 1:    ELA03    NA      NA     NA      NaN      NA    NA 128337 128337          0.0
+ 2:    ELA04     1      34     61 57.50236      83    99   7449 127947         94.2
+ 3:    ELA05     1      32     60 56.97256      83    99   7181 129725         94.5
+ 4:    ELA06     1      29     57 54.87650      82    99   7168 133166         94.6
+ 5:    ELA07     1      30     56 54.31764      80    99   7483 134247         94.4
+ 6:    ELA08     1      36     64 59.90061      86    99   7437 138898         94.6
+ 7:    MAT03    NA      NA     NA      NaN      NA    NA 128100 128100          0.0
+ 8:    MAT04     1      24     48 48.95815      74    99   7632 127826         94.0
+ 9:    MAT05     1      26     53 52.15502      79    99   7428 129538         94.3
+10:    MAT06     1      33     60 57.36287      84    99   7319 132865         94.5
+11:    MAT07     1      32     61 57.10804      84    99   7672 133967         94.3
+12:    MAT08     1      23     49 49.63757      76    99   7720 138558         94.4
+
+
+###   TEST of SGPRankedSimexStateBaseline:
+Key: <TestCode>
+    TestCode  Min. 1st Qu. Median     Mean 3rd Qu.  Max.    NAs      N SGP_Calc_Pct
+      <char> <num>   <num>  <num>    <num>   <num> <num>  <num>  <int>        <num>
+ 1:    ELA03    NA      NA     NA      NaN      NA    NA 128337 128337          0.0
+ 2:    ELA04     1      34     62 58.41352      85    99   7449 127947         94.2
+ 3:    ELA05     1      32     61 57.52744      85    99   7181 129725         94.5
+ 4:    ELA06     1      28     58 55.34288      84    99   7168 133166         94.6
+ 5:    ELA07     1      29     57 54.70613      82    99   7483 134247         94.4
+ 6:    ELA08     1      36     66 60.49277      88    99   7437 138898         94.6
+ 7:    MAT03    NA      NA     NA      NaN      NA    NA 128100 128100          0.0
+ 8:    MAT04     1      22     48 49.30316      76    99   7632 127826         94.0
+ 9:    MAT05     1      26     53 52.49618      80    99   7428 129538         94.3
+10:    MAT06     1      33     62 58.11629      85    99   7319 132865         94.5
+11:    MAT07     1      31     62 57.76923      86    99   7672 133967         94.3
+12:    MAT08     1      22     50 49.91749      78    99   7720 138558         94.4
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortiaBaseline:
+
+		No consortium baseline SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortiaBaseline:
+
+		No consortium SIMEX adjusted baseline SGPs calculated:
+
+###   END  Illinois Output Validation   ###

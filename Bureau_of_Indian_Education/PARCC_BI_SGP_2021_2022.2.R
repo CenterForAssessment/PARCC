@@ -32,7 +32,8 @@ load("./Data/Archive/2020_2021.2/Bureau_of_Indian_Education_SGP_LONG_Data.Rdata"
 baseline.names <- grep("BASELINE", names(Bureau_of_Indian_Education_SGP_LONG_Data), value = TRUE)
 setnames(Bureau_of_Indian_Education_SGP_LONG_Data,
          baseline.names,
-         paste0(baseline.names, "_SKIP_YEAR"))
+         paste0(baseline.names, "_SKIP_YEAR")
+)
 
 ##    Remove "Percentile Cuts" from data - not used or returned to Pearson
 percentile.cuts <-
@@ -45,17 +46,14 @@ SGPstateData[["BI"]][["Growth"]][["Cutscores"]] <-
 ###   No DoDEA skip-year SGP variables or objects to re-name
 
 ###   Read in SGP Configuration Scripts and Combine
-source("../SGP_CONFIG/2022/PART_A/ELA.R")
-source("../SGP_CONFIG/2022/PART_A/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_A/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_A/MATHEMATICS.R")
 
 BI_Baseline_Config_2019 <-
   c(ELA_2018_2019.2.config,
     MATHEMATICS_2018_2019.2.config
-  )
+   )
 
-###   Parallel Config
-parallel.config <- list(BACKEND = "PARALLEL",
-                        WORKERS = list(SIMEX = 15))
 
 ###   Run abcSGP analysis
 Bureau_of_Indian_Education_SGP <-
@@ -73,9 +71,13 @@ Bureau_of_Indian_Education_SGP <-
             lambda = seq(0, 2, 0.5), simulation.iterations = 75,
             simex.sample.size = 10000, csem.data.vnames = "SCALE_SCORE_CSEM",
             extrapolation = "linear", simex.use.my.coefficient.matrices = TRUE,
-            save.matrices = FALSE, use.cohort.for.ranking = FALSE),
+            save.matrices = FALSE, use.cohort.for.ranking = FALSE
+        ),
         simulate.sgps = FALSE,
-        parallel.config = parallel.config
+        parallel.config = list(
+            BACKEND = "PARALLEL",
+            WORKERS = list(SIMEX = 15)
+        )
     )
 
 
@@ -87,8 +89,8 @@ Bureau_of_Indian_Education_SGP <-
 load("./Data/Archive/2021_2022.2/Bureau_of_Indian_Education_Data_LONG_2021_2022.2.Rdata")
 
 ###   Read in configuration scripts and combine
-source("../SGP_CONFIG/PART_B/2021_2022.2/ELA.R")
-source("../SGP_CONFIG/PART_B/2021_2022.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_B/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_B/MATHEMATICS.R")
 
 BI_Config_2022 <-
   c(ELA_2021_2022.2.config,
@@ -96,7 +98,7 @@ BI_Config_2022 <-
     ALGEBRA_I.2021_2022.2.config,
     GEOMETRY.2021_2022.2.config,
     ALGEBRA_II.2021_2022.2.config
-  )
+   )
 
 ###   Run Cohort Referenced Student Growth Percentiles
 
@@ -104,7 +106,7 @@ Bureau_of_Indian_Education_SGP <-
     updateSGP(
         what_sgp_object = Bureau_of_Indian_Education_SGP,
         with_sgp_data_LONG = Bureau_of_Indian_Education_Data_LONG_2021_2022.2,
-        years = "2022",
+        years = "2021_2022.2",
         steps = c("prepareSGP", "analyzeSGP"),
         sgp.config = BI_Config_2022,
         sgp.percentiles = TRUE,
@@ -122,14 +124,13 @@ Bureau_of_Indian_Education_SGP <-
         )
     )
 
-
 #####
 ###   PART C -- 2022 Baseline SGP Analyses
 #####
 
 ###   Read in configuration scripts and combine
-source("../SGP_CONFIG/PART_C/2021_2022.2/ELA.R")
-source("../SGP_CONFIG/PART_C/2021_2022.2/MATHEMATICS.R")
+source("../SGP_CONFIG/2021_2022.2/PART_C/ELA.R")
+source("../SGP_CONFIG/2021_2022.2/PART_C/MATHEMATICS.R")
 
 BI_Baseline_Config_2022 <-
   c(ELA_2022_BIE.config,
@@ -153,7 +154,8 @@ Bureau_of_Indian_Education_SGP <-
             lambda = seq(0, 2, 0.5), simulation.iterations = 75,
             simex.sample.size = 10000, csem.data.vnames = "SCALE_SCORE_CSEM",
             extrapolation = "linear", simex.use.my.coefficient.matrices = TRUE,
-            save.matrices = FALSE, use.cohort.for.ranking = FALSE),
+            save.matrices = FALSE, use.cohort.for.ranking = FALSE
+        ),
         save.intermediate.results = FALSE,
         outputSGP.directory = "Data/Archive/2021_2022.2",
         outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data"),
