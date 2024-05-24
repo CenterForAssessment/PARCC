@@ -1,3 +1,4 @@
+#+ include = FALSE, purl = FALSE, eval = FALSE
 ##############################################################################
 ###                                                                        ###
 ###     Create Individual State LONG Data for Spring 2023 SGP Analyses     ###
@@ -9,24 +10,6 @@
 ###   Load required packages
 require(SGP)
 require(data.table)
-
-fletch <-
-    function(.data,
-             output.dir = ".",
-             partitions = "YEAR",
-             ...) {
-        if (!"ArrowObject" %in% class(.data)) {
-            .data <- arrow::arrow_table(.data)
-        }
-        arrow::write_dataset(
-            dataset = .data,
-            path = output.dir,
-            partitioning = partitions,
-            compression = "gzip",
-            ...
-        )
-    }
-
 
 #####
 ###   Read in Spring 2023 Pearson base data
@@ -200,14 +183,6 @@ TMP_Data_2023[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 TMP_Data_2023[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 TMP_Data_2023[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
-###   Save Spring 2023 individual states LONG data
-# fletch(
-#     TMP_Data_2023,
-#     output.dir = "./Data/Arrow_SGP/LONG",
-#     partitions = c("StateAbbreviation", "YEAR"),
-#     existing_data_behavior = "overwrite"
-# )
-
 dir.create("./Department_Of_Defense/Data/Archive/2022_2023.2", recursive = TRUE)
 assign("Department_of_Defense_Data_LONG_2022_2023.2", TMP_Data_2023)
 save(Department_of_Defense_Data_LONG_2022_2023.2,
@@ -222,3 +197,22 @@ save(Department_of_Defense_Data_LONG_2022_2023.2,
 
 # table(TMP_Data_2023[, LearningOption], exclude = NULL)
 # table(TMP_Data_2023[, TestingLocation], exclude = NULL)
+
+
+#' ## Data Preparation
+#'
+#' For the 2023 New Meridian Consortium data preparation and cleaning, we first
+#' combine all Consortium members individual datasets into a single table. We then
+#' modify the provided variable names to match what has been used in previous years or
+#' as required to conform to the `SGP` package conventions. Required variables `GRADE`
+#' and `CONTENT_AREA` are created from the provided `testCode` data, and an achievement
+#' level variable is computed based on historical cut scores for each assessment.
+#' 
+#' The data was also examined to identify invalid records. 
+#' Student records were flagged as "invalid" based on the following criteria:
+#'
+#' * Students with **exact** duplicate records.
+#' * Student records in which the unique student identifier is missing.
+#' 
+#' In 2023 there were no duplicate or invalid cases found in the data recieved from
+#' Pearson.

@@ -1,3 +1,4 @@
+#+ include = FALSE, purl = FALSE, eval = FALSE
 ###############################################################################
 ###                                                                         ###
 ###          Washington_DC 2023 (Cohort and Baseline) SGP Analyses          ###
@@ -159,5 +160,51 @@ Washington_DC_SGP <-
     )
 
 ###   Save results
-
 save(Washington_DC_SGP, file = "./Data/Archive/2022_2023.2/Washington_DC_SGP.Rdata")
+
+
+#' ### Conduct SGP analyses
+#'
+#' All data analysis is conducted using the [`R` Software Environment](http://www.r-project.org/)
+#' in conjunction with the [`SGP` package](http://sgp.io/). Cohort- and
+#' baseline-referenced SGPs were calculated concurrently for the 2023 Washington DC
+#' growth model analyses. Broadly, the analysis takes place using these four steps:
+#'
+#' 1. `prepareSGP`
+#' 2. `analyzeSGP`
+#' 3. `combineSGP`
+#' 4. `outputSGP`
+#'
+#' Because these steps are almost always conducted simultaneously, the `SGP`
+#' package has "wrapper" functions, `abcSGP` and `updateSGP`, that combine
+#' the above steps into a single function call and simplify the source code
+#' associated with the data analysis. Documentation for all SGP functions are
+#' [available online.](https://cran.r-project.org/web/packages/SGP/SGP.pdf)
+#'
+#' #### 2023 Growth Analyses
+#'
+#' SGP analyses were conducted at both the consortium and member/state level. In the
+#' 2023 analyses, we calculated "consecutive-year" cohort- and baseline-referenced
+#' SGPs for grades 4 through 10 ELA, grades 4 through 8 mathematics, as well as
+#' the Algebra 1 and Geometry EOC assessments. There were no viable Algebra II
+#' analyses for 2023 with DC only data, although those students with Algebra II
+#' scores may have had growth calculated at the Consortium level. All 2023
+#' Washington DC SGP analysis versions use a single prior year score (i.e. 2022 where available).
+#'
+#' In the calculation workflow, we first add pre-calculated baseline matrices
+#' to the Washington DC (i.e. "`DC`") entry in the `SGPstateData` object.
+#' The 2023 configuration scripts were loaded and combined
+#' into a single list object that serves to specify the exact analyses to be run.
+#' 
+#' For all analyses we use the [`abcSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/abcSGP)
+#' function to ***a)*** format and combine the cleaned spring 2023 data to prior
+#' years data ([`prepareSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/prepareSGP)
+#' step), ***b)*** calculate 2023 consecutive-year cohort- and baseline-referenced
+#' SGP estimates and growth projections([`analyzeSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/analyzeSGP)
+#' step), ***c)*** merge the results into the master
+#' longitudinal data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/combineSGP)
+#' step). and ***d)*** save the results in both `.Rdata` and pipe delimited versions
+#' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/outputSGP)
+#'
+#' The results were submitted after additional formatting, customization
+#' and data validation was completed.
