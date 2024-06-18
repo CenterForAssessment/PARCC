@@ -167,11 +167,11 @@ save(PARCC_SGP, file = "./Data/Archive/2022_2023.2/PARCC_SGP.Rdata")
 #' function to ***a)*** format and combine the cleaned spring 2023 data to prior
 #' years data ([`prepareSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/prepareSGP)
 #' step), ***b)*** calculate 2023 consecutive-year cohort- and baseline-referenced
-#' SGP estimates and growth projections([`analyzeSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/analyzeSGP)
+#' SGP estimates and growth projections ([`analyzeSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/analyzeSGP)
 #' step), ***c)*** merge the results into the master
 #' longitudinal data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/combineSGP)
 #' step). and ***d)*** save the results in both `.Rdata` and pipe delimited versions
 #' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/outputSGP)
 #'
 #' The results were submitted after additional formatting, customization
-#' and data validation was completed.
+#' and data validation were completed.
