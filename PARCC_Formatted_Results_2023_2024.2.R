@@ -1,6 +1,6 @@
 ###############################################################################
 ###                                                                         ###
-###    Format Spring 2024 Consortium Results to Pearson's specifications    ###
+###    Format Spring 2024 (Xsortium) Results to Pearson's specifications    ###
 ###                                                                         ###
 ###############################################################################
 
@@ -19,18 +19,30 @@ for (org in c("Bureau_of_Indian_Education", "Department_Of_Defense",
 
 
 ###   Amend State Files as needed
-##    Illinois only has percentiles/projections through grade 8 so no EOCT
+##    IL and BIE only have percentiles/projections through grade 8  -  no EOCT
 ##    projection groups / need for SGP_TARGET_3_YEAR_CONTENT_AREA in combineSGP.
 Illinois_SGP_LONG_Data_2023_2024.2[,
     SGP_TARGET_3_YEAR_CONTENT_AREA := as.character(NA)
 ][!is.na(SGP_TARGET_3_YEAR),
     SGP_TARGET_3_YEAR_CONTENT_AREA := CONTENT_AREA
 ]
+Bureau_of_Indian_Education_SGP_LONG_Data_2023_2024.2[
+    !is.na(SGP_TARGET_3_YEAR),
+    SGP_TARGET_3_YEAR_CONTENT_AREA := CONTENT_AREA
+]
 
+###   Rename IDentifiers to match expected
+##    DC and BIE
+##    Use `StateStudentIdentifier` per Pearson/OSSE April 2024 & Growth Layout
+setnames(
+    Washington_DC_SGP_LONG_Data_2023_2024.2,
+    c("ID", "PANUniqueStudentID"),
+    c("StateStudentIdentifier", "ID")
+)
 setnames(
     Bureau_of_Indian_Education_SGP_LONG_Data_2023_2024.2,
-    c("PANUniqueStudentID", "ID"),
-    c("ID", "growthIdentifier")
+    c("ID", "PANUniqueStudentID"),
+    c("StateStudentIdentifier", "ID")
 )
 
 ###   Set names based on Pearson file layout
@@ -95,25 +107,25 @@ all.var.names <- c(all.var.names, addl.bie.dd.names)
 pearson.var.names <- c(pearson.var.names, addl.bie.dd.names)
 
 ###   Combine states' data into single data table
-# State_LONG_Data <-
-#     rbindlist(
-#         list(
-#             Bureau_of_Indian_Education_SGP_LONG_Data_2023_2024.2,
-#             Department_of_Defense_SGP_LONG_Data_2023_2024.2,
-#             Illinois_SGP_LONG_Data_2023_2024.2,
-#             New_Jersey_SGP_LONG_Data_2023_2024.2,
-#             Washington_DC_SGP_LONG_Data_2023_2024.2
-#         ),
-#         fill = TRUE,
-#         use.names = TRUE
-#     )
+State_LONG_Data <-
+    rbindlist(
+        list(
+            Bureau_of_Indian_Education_SGP_LONG_Data_2023_2024.2,
+            Department_of_Defense_SGP_LONG_Data_2023_2024.2,
+            Illinois_SGP_LONG_Data_2023_2024.2,
+            New_Jersey_SGP_LONG_Data_2023_2024.2,
+            Washington_DC_SGP_LONG_Data_2023_2024.2
+        ),
+        fill = TRUE,
+        use.names = TRUE
+    )
 
 ###   For individual state data formatting
-assign("State_LONG_Data", Illinois_SGP_LONG_Data_2023_2024.2)
-rm(Illinois_SGP_LONG_Data_2023_2024.2); gc()
+# assign("State_LONG_Data", Washington_DC_SGP_LONG_Data_2023_2024.2)
+# rm(Washington_DC_SGP_LONG_Data_2023_2024.2); gc()
 
-# assign("PARCC_LONG_Data", PARCC_SGP_LONG_Data_2023_2024.2)
-# rm(list = grep("2023_2024", ls(), value = TRUE)); gc()
+assign("PARCC_LONG_Data", PARCC_SGP_LONG_Data_2023_2024.2)
+rm(list = grep("2023_2024", ls(), value = TRUE)); gc()
 
 
 #####
@@ -129,7 +141,7 @@ State_LONG_Data[,
     SGP := SGP_NOTE
 ]
 
-# No BASELINE specific NOTE.  Make sure its only replacing NAs!
+# No BASELINE specific NOTE. Make sure its only replacing NAs!
 State_LONG_Data[,
     SGP_BASELINE := as.character(SGP_BASELINE)
 ][is.na(SGP_BASELINE),
@@ -137,7 +149,7 @@ State_LONG_Data[,
 ]
 
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-###   JK re JK. LOL. -- 8/18/2022 Kathy.  SMH FML IHTG
+###   JK re JK. LOL. -- 8/18/2022 Kathy.
 State_LONG_Data[,
     SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)
 ][!is.na(SGP_NOTE), SGP_NORM_GROUP := ""
@@ -179,15 +191,10 @@ setnames(
     )[sgp.names %in% names(State_LONG_Data)]
 )
 
+
 ###   Split SGP_NORM_GROUP to create 'SGPPreviousTestCode*' Variables
 state.tmp.split <-
     State_LONG_Data$SGP_NORM_GROUP |> as.character() |> strsplit("; ")
-
-# tst.sbj <- state.tmp.split |> sapply(\(f) rev(f)[2]) |> strsplit("/") |> sapply("[", 1)
-# State_LONG_Data[,
-#     CONTENT_AREA_1PRIOR :=
-#     (state.tmp.split |> sapply(\(f) rev(f)[2]) |> strsplit("/") |> sapply("[", 2) |> strsplit("_") |> sapply(head, -1))
-# ]
 
 State_LONG_Data[,
     CONTENT_AREA_1PRIOR :=
@@ -228,13 +235,13 @@ State_LONG_Data[,
 # levels(State_LONG_Data$CONTENT_AREA_1PRIOR) <-
 #     c(NA, "ALG01", "ALG02", "ELA", "ELA", "GEO01", "MAT", "MAT")
 setattr(State_LONG_Data$CONTENT_AREA_1PRIOR, "levels",
-        c(NA, "ELA", "MAT")) # IL, BIE
-        # c(NA, "ALG01", "ELA", "GEO01", "MAT")) # NJ, DoDEA, ALL
+        c(NA, "ALG01", "ELA", "GEO01", "MAT")) # NJ, DoDEA, ALL
         # c(NA, "ALG01", "ELA", "MAT")) # DC
+        # c(NA, "ELA", "MAT")) # IL, BIE
 table(State_LONG_Data$CONTENT_AREA_2PRIOR)
 setattr(State_LONG_Data$CONTENT_AREA_2PRIOR, "levels",
-        # c(NA, "ALG01", "ELA", "MAT")) # DoDEA, ALL Consortium
-        c(NA, "ELA", "MAT"))   #   The rest...
+        c(NA, "ALG01", "ELA", "MAT")) # NJ, DoDEA, ALL Consortium
+        # c(NA, "ELA", "MAT"))   #   The rest...
 
 State_LONG_Data[,
     GRADE_1PRIOR :=
@@ -284,6 +291,7 @@ table(State_LONG_Data[, SGPPreviousTestCodeState1Prior, SGPPreviousTestCodeState
 ###    Split SGP_NORM_GROUP_SCALE_SCORES to create 'SGPIRTThetaState*' Variables
 state.score.split <-
     State_LONG_Data$SGP_NORM_GROUP_SCALE_SCORES |> as.character() |> strsplit("; ")
+
 State_LONG_Data[,
     SGPIRTThetaState1Prior := as.numeric(sapply(state.score.split, \(x) rev(x)[2]))
 ][, SGPIRTThetaState2Prior := as.numeric(sapply(state.score.split, \(x) rev(x)[3]))
@@ -294,18 +302,19 @@ State_LONG_Data[, SGPTargetTestCodeState := factor(SGPTargetTestCodeState)]
 # levels(State_LONG_Data$SGPTargetTestCodeState) <-
 #         c("MAT", "ELA", "MAT") # BIE - ALG01 targets not possible!
 setattr(State_LONG_Data$SGPTargetTestCodeState, "levels",
-        # c("ALG01", "ALG02", "ELA", "GEO01", "MAT")) # NJ, ALL
+        c("ALG01", "ALG02", "ELA", "GEO01", "MAT")) # NJ, ALL
         # c("ALG02", "ELA", "GEO01", "MAT")) # DoDEA - odd year due to no 7th grade math priors
         # c("ALG01", "ELA", "GEO01", "MAT")) # DC
-        c("ELA", "MAT")) # IL
+        # c("ELA", "MAT")) # IL
 
 State_LONG_Data[,
     SGPTargetTestCodeState := as.character(SGPTargetTestCodeState)
 ][ (SGPTargetTestCodeState %in% c("ELA", "MAT")),
     SGPTargetTestCodeState := paste0(SGPTargetTestCodeState, "0", as.numeric(GRADE) + 3)
 ][, SGPTargetTestCodeState := gsub("010", "10", SGPTargetTestCodeState)
-][, SGPTargetTestCodeState := gsub("011|012|013|014", "11", SGPTargetTestCodeState)
-]
+][, SGPTargetTestCodeState := gsub("011|012|013|014", "10", SGPTargetTestCodeState)
+] # Does anyone (BIE?) use 11th grade ELA in 2024 ???
+
 ##    Illinois only goes to grade 8 & BIE only has data for SGP calcs through Grade 8
 State_LONG_Data[
   StateAbbreviation %in% c("IL", "BI"),
@@ -322,10 +331,12 @@ State_LONG_Data[
 ][StateAbbreviation != "IL",
     SGPTargetTestCodeState := gsub("MAT11", "ALG02", SGPTargetTestCodeState)
 ]
-##    DoDEA
+##    DoDEA & NJ
 State_LONG_Data[
-  StateAbbreviation == "DD",
+  StateAbbreviation %in% c("DD"),
     SGPTargetTestCodeState := gsub("ELA11", "ELA10", SGPTargetTestCodeState)
+][StateAbbreviation %in% c("NJ"),
+    SGPTargetTestCodeState := gsub("ELA11|ELA10", "ELA09", SGPTargetTestCodeState)
 ]
 
 table(State_LONG_Data[, SGPTargetTestCodeState, TestCode], exclude = NULL)
@@ -333,14 +344,16 @@ table(State_LONG_Data[, SGPTargetTestCodeState, StateAbbreviation])
 
 
 ####  For individual state data formatting
-State_LONG_Data[,
-    grep("Consortia", center.var.names, value = TRUE) := as.character(NA)
-][, center.var.names[!center.var.names %in% names(State_LONG_Data)] :=
-        as.character(NA)
-]
+# State_LONG_Data[,
+#     grep("Consortia", center.var.names, value = TRUE) := as.character(NA)
+# ][, center.var.names[!center.var.names %in% names(State_LONG_Data)] :=
+#         as.character(NA)
+# ]
+
 #     For IL/NJ/DC ONLY! :
-State_LONG_Data[, (addl.bie.dd.names) := as.character(NA)]
-####  For individual state data formatting
+# State_LONG_Data[, (addl.bie.dd.names) := as.character(NA)]
+
+####  END  For individual state data formatting
 
 
 ###   Re-order AND subset columns of State_LONG_Data
@@ -353,28 +366,39 @@ State_LONG_Data <-
 
 ####  SKIP CONSORTIUM STEP For individual state data formatting
 
+
 #####
 ###          Consortium Data
 #####
 
 ###   Combine SGP_NOTE and SGP variables
-PARCC_LONG_Data[, SGP := as.character(SGP)
-][which(is.na(SGP)), SGP := SGP_NOTE]
+PARCC_LONG_Data[,
+    SGP := as.character(SGP)
+][which(is.na(SGP)),
+    SGP := SGP_NOTE
+]
 
 ##     No BASELINE specific NOTE.  Make sure its only replacing NAs!
 # table(PARCC_LONG_Data[, is.na(SGP_BASELINE), SGP_NOTE], exclude = NULL)
-PARCC_LONG_Data[, SGP_BASELINE := as.character(SGP_BASELINE)
-][is.na(SGP_BASELINE), SGP_BASELINE := SGP_NOTE]
+PARCC_LONG_Data[,
+    SGP_BASELINE := as.character(SGP_BASELINE)
+][is.na(SGP_BASELINE),
+    SGP_BASELINE := SGP_NOTE
+]
 
 ###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
 ###   JK re JK. LOL. -- 8/18/2022 Kathy.  SMH FML IHTG
-PARCC_LONG_Data[, SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)
-][!is.na(SGP_NOTE), SGP_NORM_GROUP := ""]
+PARCC_LONG_Data[,
+    SGP_NORM_GROUP := as.character(SGP_NORM_GROUP)
+][!is.na(SGP_NOTE),
+    SGP_NORM_GROUP := ""
+]
 
 PARCC_LONG_Data[,
     SGP_NORM_GROUP_BASELINE := as.character(SGP_NORM_GROUP_BASELINE)
-][!is.na(SGP_NOTE), SGP_NORM_GROUP_BASELINE := ""]
-
+][!is.na(SGP_NOTE),
+    SGP_NORM_GROUP_BASELINE := ""
+]
 
 ###   Change relevant SGP package convention names to Pearson's names
 setnames(PARCC_LONG_Data,
@@ -426,8 +450,7 @@ PARCC_LONG_Data[,
                 ), paste, collapse = "_"
             )
         )
-][,
-    CONTENT_AREA_2PRIOR :=
+][, CONTENT_AREA_2PRIOR :=
         factor(
             sapply(
                 sapply(
@@ -446,9 +469,9 @@ PARCC_LONG_Data[,
 ]
 
 setattr(PARCC_LONG_Data$CONTENT_AREA_1PRIOR,
-        "levels", c(NA, "ALG01", "ALG02", "ELA", "GEO01", "MAT"))
+        "levels", c(NA, "ALG01", "ELA", "GEO01", "MAT")) # "ALG02",
 setattr(PARCC_LONG_Data$CONTENT_AREA_2PRIOR,
-        "levels", c(NA, "ELA", "MAT"))
+        "levels", c(NA, "ALG01", "ELA", "MAT"))
 
 PARCC_LONG_Data[,
     GRADE_1PRIOR :=
@@ -500,14 +523,15 @@ PARCC_LONG_Data[,
 ###   Split SGP_NORM_GROUP_SCALE_SCORES for 'SGPIRTThetaConsortia*' Variables
 parcc.score.split <-
     strsplit(as.character(PARCC_LONG_Data$SGP_NORM_GROUP_SCALE_SCORES), "; ")
-PARCC_LONG_Data[, SGPIRTThetaConsortia1Prior :=
-    as.numeric(
-        sapply(parcc.score.split, \(x) rev(x)[2])
-    )
-]
 PARCC_LONG_Data[,
-    SGPIRTThetaConsortia2Prior :=
-        as.numeric(sapply(parcc.score.split, \(x) rev(x)[3]))
+    SGPIRTThetaConsortia1Prior :=
+        as.numeric(
+            sapply(parcc.score.split, \(x) rev(x)[2])
+        )
+][, SGPIRTThetaConsortia2Prior :=
+        as.numeric(
+            sapply(parcc.score.split, \(x) rev(x)[3])
+        )
 ][, # Compute and Format SGPTargetTestCodeConsortia
     SGPTargetTestCodeConsortia := factor(SGPTargetTestCodeConsortia)
 ]
@@ -540,49 +564,60 @@ PARCC_LONG_Data <-
 #####
 
 ####  For individual state data formatting
-FINAL_LONG_Data <- copy(State_LONG_Data)
+# FINAL_LONG_Data <- copy(State_LONG_Data)
 ####  For individual state data formatting
 
-####   SKIP THIS STEP For individual state data formatting
-# State_LONG_Data[, SummativeCSEM := as.numeric(SummativeCSEM)]
-# State_LONG_Data[, SummativeScaleScore := as.numeric(SummativeScaleScore)]
+####  SKIP THIS STEP For individual state data formatting
+State_LONG_Data[, SummativeCSEM := as.numeric(SummativeCSEM)]
+State_LONG_Data[, SummativeScaleScore := as.numeric(SummativeScaleScore)]
 
-# FINAL_LONG_Data <-
-#     merge(PARCC_LONG_Data, State_LONG_Data,
-#           by = intersect(names(PARCC_LONG_Data), names(State_LONG_Data)),
-#           all.x = TRUE
-#     )
+###   Re-align IDs temporarily for merge
+State_LONG_Data[, TEMP_ID := PANUniqueStudentID]
+State_LONG_Data[
+    StateAbbreviation %in% c("BI", "DC"),
+    TEMP_ID := StateStudentIdentifier
+]
+setnames(PARCC_LONG_Data, "PANUniqueStudentID", "TEMP_ID")
 
+FINAL_LONG_Data <-
+    merge(PARCC_LONG_Data, State_LONG_Data,
+          by = intersect(names(PARCC_LONG_Data), names(State_LONG_Data)),
+          all.x = TRUE
+    )
+# grep("[.]x|[.]y", names(FINAL_LONG_Data), value = TRUE)
 
-# ###  Fix EXACT_DUPLICATEs  (None in Spring 2019, 2021, 2022, 2023, [2024? - TBD])
-# FINAL_LONG_Data[EXACT_DUPLICATE == 2, (center.var.names) :=
-#     FINAL_LONG_Data[EXACT_DUPLICATE == 1, center.var.names, with = FALSE]
-# ]
-# FINAL_LONG_Data[, EXACT_DUPLICATE := NULL]
+###  Fix EXACT_DUPLICATEs  (None in Spring 2019, 2021, 2022, 2023, [2024? - TBD])
+FINAL_LONG_Data[EXACT_DUPLICATE == 2, (center.var.names) :=
+    FINAL_LONG_Data[EXACT_DUPLICATE == 1, center.var.names, with = FALSE]
+]
+FINAL_LONG_Data[, EXACT_DUPLICATE := NULL]
 
-###   Coordinate missing SGP notes for small N states
-###   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
-# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) &
-#                       StudentGrowthPercentileComparedtoConsortia == "<1000"),
-#                 SGPPreviousTestCodeState := SGPPreviousTestCodeConsortia]
-# FINAL_LONG_Data[which(is.na(StudentGrowthPercentileComparedtoState) &
-#                       StudentGrowthPercentileComparedtoConsortia == "<1000"),
-#                 StudentGrowthPercentileComparedtoState := "<1000"]
+##   Coordinate missing SGP notes for small N states
+##   Now remove NOTE - Kathy/Pat 8/14/19 -- Just kidding :/
+FINAL_LONG_Data[
+    which(is.na(StudentGrowthPercentileComparedtoState) &
+        StudentGrowthPercentileComparedtoConsortia == "<1000"),
+    SGPPreviousTestCodeState := SGPPreviousTestCodeConsortia
+][
+    which(is.na(StudentGrowthPercentileComparedtoState) &
+        StudentGrowthPercentileComparedtoConsortia == "<1000"),
+    StudentGrowthPercentileComparedtoState := "<1000"
+]
 
-###   Per 2022 'Growth Layout' file:  "If no match is found in both
-###   assessment years (any period) for the PARCC ID then report 'NA'."
+##   Per 2023 'Growth Layout' file:  "If no match is found in both
+##   assessment years (any period) for the PARCC ID then report 'NA'."
 
-##    'Max Order/Best' SGPs already converted to character to include SGP_NOTE:
-# FINAL_LONG_Data[
-#   which(is.na(StudentGrowthPercentileComparedtoState)),
-#     StudentGrowthPercentileComparedtoState := "NA"
-# ][which(is.na(StudentGrowthPercentileComparedtoStateBaseline)),
-#     StudentGrowthPercentileComparedtoStateBaseline := "NA"
-# ][which(is.na(StudentGrowthPercentileComparedtoConsortia)),
-#     StudentGrowthPercentileComparedtoConsortia := "NA"
-# ][which(is.na(StudentGrowthPercentileComparedtoConsortiaBaseline)),
-#     StudentGrowthPercentileComparedtoConsortiaBaseline := "NA"
-# ]
+#    'Max Order/Best' SGPs already converted to character to include SGP_NOTE:
+FINAL_LONG_Data[
+  which(is.na(StudentGrowthPercentileComparedtoState)),
+    StudentGrowthPercentileComparedtoState := "NA"
+][which(is.na(StudentGrowthPercentileComparedtoStateBaseline)),
+    StudentGrowthPercentileComparedtoStateBaseline := "NA"
+][which(is.na(StudentGrowthPercentileComparedtoConsortia)),
+    StudentGrowthPercentileComparedtoConsortia := "NA"
+][which(is.na(StudentGrowthPercentileComparedtoConsortiaBaseline)),
+    StudentGrowthPercentileComparedtoConsortiaBaseline := "NA"
+]
 
 ##    Convert order specific SGPs to `character` first, then insert 'NA's
 FINAL_LONG_Data[,
@@ -590,23 +625,20 @@ FINAL_LONG_Data[,
         as.character(StudentGrowthPercentileComparedtoState1Prior)
 ][which(is.na(StudentGrowthPercentileComparedtoState1Prior)),
     StudentGrowthPercentileComparedtoState1Prior := "NA"
-][,
-    StudentGrowthPercentileComparedtoState2Prior :=
+][, StudentGrowthPercentileComparedtoState2Prior :=
         as.character(StudentGrowthPercentileComparedtoState2Prior)
 ][which(is.na(StudentGrowthPercentileComparedtoState2Prior)),
     StudentGrowthPercentileComparedtoState2Prior := "NA"
+][,
+    StudentGrowthPercentileComparedtoConsortia1Prior :=
+        as.character(StudentGrowthPercentileComparedtoConsortia1Prior)
+][which(is.na(StudentGrowthPercentileComparedtoConsortia1Prior)),
+    StudentGrowthPercentileComparedtoConsortia1Prior := "NA"
+][, StudentGrowthPercentileComparedtoConsortia2Prior :=
+        as.character(StudentGrowthPercentileComparedtoConsortia2Prior)
+][which(is.na(StudentGrowthPercentileComparedtoConsortia2Prior)),
+    StudentGrowthPercentileComparedtoConsortia2Prior := "NA"
 ]
-# ][,
-#     StudentGrowthPercentileComparedtoConsortia1Prior :=
-#         as.character(StudentGrowthPercentileComparedtoConsortia1Prior)
-# ][which(is.na(StudentGrowthPercentileComparedtoConsortia1Prior)),
-#     StudentGrowthPercentileComparedtoConsortia1Prior := "NA"
-# ][, 
-#     StudentGrowthPercentileComparedtoConsortia2Prior :=
-#         as.character(StudentGrowthPercentileComparedtoConsortia2Prior)
-# ][which(is.na(StudentGrowthPercentileComparedtoConsortia2Prior)),
-#     StudentGrowthPercentileComparedtoConsortia2Prior := "NA"
-# ]
 
 
 ###   Make sure no exact duplicates remain.
@@ -630,12 +662,12 @@ FINAL_LONG_Data[,
         format(SGPIRTThetaState1Prior, scientific = FALSE, trim = TRUE)
 ][, SGPIRTThetaState2Prior :=
         format(SGPIRTThetaState2Prior, scientific = FALSE, trim = TRUE)
-]# ][,
-#     SGPIRTThetaConsortia1Prior :=
-#         format(SGPIRTThetaConsortia1Prior, scientific = FALSE, trim = TRUE)
-# ][, SGPIRTThetaConsortia2Prior :=
-#         format(SGPIRTThetaConsortia2Prior, scientific = FALSE, trim = TRUE)
-# ]
+][,
+    SGPIRTThetaConsortia1Prior :=
+        format(SGPIRTThetaConsortia1Prior, scientific = FALSE, trim = TRUE)
+][, SGPIRTThetaConsortia2Prior :=
+        format(SGPIRTThetaConsortia2Prior, scientific = FALSE, trim = TRUE)
+]
 
 ##    Clean up NAs after cleanup - NAs formatted as "      NA"
 # table(FINAL_LONG_Data[, grepl("NA", SGPIRTThetaState1Prior)])
@@ -704,17 +736,17 @@ FINAL_LONG_Data[,
     as.list(summary(as.numeric(SGPRankedSimexConsortiaBaseline))),
     keyby = "TestCode"
 ]
-# table(FINAL_LONG_Data[, SGPPreviousTestCodeConsortia1Prior, TestCode])
-# table(FINAL_LONG_Data[
-#         TestCode == "ELA10" & SGPPreviousTestCodeConsortia1Prior == "ELA08",
-#         StateAbbreviation])
+table(FINAL_LONG_Data[, SGPPreviousTestCodeConsortia1Prior, TestCode])
+table(FINAL_LONG_Data[
+        TestCode == "ELA10" & SGPPreviousTestCodeConsortia1Prior == "ELA08",
+        StateAbbreviation])
 # table(FINAL_LONG_Data[
 #         TestCode == "GEO01" & SGPPreviousTestCodeConsortia1Prior == "MAT08",
 #         StateAbbreviation])
-# FINAL_LONG_Data[
-#     TestCode == "ELA10" & SGPPreviousTestCodeConsortia1Prior == "ELA08",
-#       as.list(summary(as.numeric(StudentGrowthPercentileComparedtoConsortia))),
-#       keyby = "StateAbbreviation"]
+FINAL_LONG_Data[
+    TestCode == "ELA10" & SGPPreviousTestCodeConsortia1Prior == "ELA08",
+      as.list(summary(as.numeric(StudentGrowthPercentileComparedtoConsortia))),
+      keyby = "StateAbbreviation"]
 FINAL_LONG_Data[TestCode == "GEO01",
     as.list(
         summary(as.numeric(StudentGrowthPercentileComparedtoConsortia))
@@ -735,57 +767,102 @@ tbl <-
 #####
 
 ####  For individual state data formatting
-abv <- "IL"
-fname <-
-  paste0("./",
-         gsub(" ", "_", SGP:::getStateAbbreviation(abv, type = "state")),
-         "/Data/Pearson/PARCC_", abv,
-         "_2023-2024_Spring_SGP-STATE_LEVEL_Results_",
-         format(Sys.Date(), format = "%Y%m%d"), ".csv"
-        )
-if (abv == "DD") fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
-# if (!abv %in% c("DD", "BI")) FINAL_LONG_Data[, c("EXACT_DUPLICATE", addl.bie.dd.names) := NULL]
-if (!abv %in% c("DD", "BI")) {
-    tmp.vars <- all.var.names[
-        !all.var.names %in% c("EXACT_DUPLICATE", addl.bie.dd.names)]
-} else {
-    tmp.vars <- all.var.names[!all.var.names %in% "EXACT_DUPLICATE"]
-}
-options(scipen = 999)
+# abv <- "DC"
+# fname <-
+#   paste0("./",
+#          gsub(" ", "_", SGP:::getStateAbbreviation(abv, type = "state")),
+#          "/Data/Pearson/PARCC_", abv,
+#          "_2023-2024_Spring_SGP-STATE_LEVEL_Results_",
+#          format(Sys.Date(), format = "%Y%m%d"), ".csv"
+#         )
+# if (abv == "DD") fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
 
-##    Use `write.csv` - `fwrite` had bug with number of printed digits
-write.csv(FINAL_LONG_Data[, ..tmp.vars], fname, row.names = FALSE, na = "")
-# [PANUniqueStudentID %in% sample(PANUniqueStudentID, 100) &
-# StateAbbreviation == abv & GradeLevelWhenAssessed %in% c("05", "08"), ]
-zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")
-###  END For individual state data formatting
+# # if (!abv %in% c("DD", "BI")) FINAL_LONG_Data[, c("EXACT_DUPLICATE", addl.bie.dd.names) := NULL]
+# if (!abv %in% c("DC", "DD", "BI")) {
+#     tmp.vars <- all.var.names[
+#         !all.var.names %in% c("EXACT_DUPLICATE", addl.bie.dd.names)]
+# } else {
+#     tmp.vars <- all.var.names[!all.var.names %in% "EXACT_DUPLICATE"]
+# }
+# options(scipen = 999)
+
+# ##  Align DC names with the other states/members
+# if (abv == "DC") {
+#     FINAL_LONG_Data <- FINAL_LONG_Data[, ..tmp.vars]
+#     setnames(FINAL_LONG_Data,
+#         c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM",
+#           "TestingLocation", "LearningOption",
+#           "StateStudentIdentifier", "AccountableDistrictCode", "AccountableDistrictName",
+#           "AccountableSchoolCode", "AccountableSchoolName", "Sex", "customerReferenceId"
+#         ),
+
+# # Mispelling in DC - "StudentIdentifier" in the original
+
+#         c("StudentUniqueUuid", "TestScaleScore", "TestCSEMProbableRange",
+#           "Filler51", "Filler52",
+#           "StudentIdentifier", "ReportingDistrictCode", "ReportingDistrictName",
+#           "ReportingSchoolCode", "ReportingSchoolName", "Gender", "CustomerRefID"
+#         )
+#     )
+#     write.csv(FINAL_LONG_Data, fname, row.names = FALSE, na = "")
+# } else {
+#     ##    Use `write.csv` - `fwrite` had bug with number of printed digits
+#     write.csv(FINAL_LONG_Data[, ..tmp.vars], fname, row.names = FALSE, na = "")
+#     # [PANUniqueStudentID %in% sample(PANUniqueStudentID, 100) &
+#     # StateAbbreviation == abv & GradeLevelWhenAssessed %in% c("05", "08"), ]
+# }
+
+# zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")
+# ###  END For individual state data formatting
 
 
 ####  Loop on State Abbreviation to write out each state file in
 ####  format that it was received and requested for return
 
-# tmp.wd <- getwd()
-# options(scipen = 999)
-# for (abv in unique(FINAL_LONG_Data$StateAbbreviation)) {
-#   fname <-
-#       paste0("./",
-#              gsub(" ", "_", SGP:::getStateAbbreviation(abv, type = "state")),
-#              "/Data/Pearson/PARCC_", abv, "_2023-2024_Spring_SGP-Results_",
-#              format(Sys.Date(), format = "%Y%m%d"), ".csv")
-#   if (abv == "DD") fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
-#   if (!abv %in% c("DD", "BI")) {
-#     tmp.vars <- all.var.names[
-#         !all.var.names %in% c("EXACT_DUPLICATE", addl.bie.dd.names)]
-#   } else {
-#     tmp.vars <- all.var.names[!all.var.names %in% "EXACT_DUPLICATE"]
-#   }
+tmp.wd <- getwd()
+options(scipen = 999)
+for (abv in unique(FINAL_LONG_Data$StateAbbreviation)) {
+    fname <-
+        paste0("./",
+                gsub(" ", "_", SGP:::getStateAbbreviation(abv, type = "state")),
+                "/Data/Pearson/PARCC_", abv, "_2023-2024_Spring_SGP-Results_",
+                format(Sys.Date(), format = "%Y%m%d"), ".csv")
+    if (abv == "DD") fname <- gsub("_of_", "_Of_", fname) # DoDEA folder name
+    if (!abv %in% c("DC", "DD", "BI")) {
+        tmp.vars <- all.var.names[
+            !all.var.names %in% c("EXACT_DUPLICATE", addl.bie.dd.names)]
+    } else {
+        tmp.vars <- all.var.names[!all.var.names %in% "EXACT_DUPLICATE"]
+    }
 
-#   ##    Use `write.csv` - `fwrite` had bug with number of printed digits
-#   write.csv(FINAL_LONG_Data[StateAbbreviation == abv, ..tmp.vars],
-#             fname, row.names = FALSE, na = "")
-#   zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")
-#   # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
-#   message("Finished with ", SGP:::getStateAbbreviation(abv, type = "state"))
-# }
+    ##  Align DC & BIE names with the original (submitted) data
+    if (abv %in% c("DC", "BI")) {
+        TMP_Data_2024 <- FINAL_LONG_Data[StateAbbreviation == abv, ..tmp.vars]
+        setnames(TMP_Data_2024,
+            c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM",
+            "TestingLocation", "LearningOption",
+            "StateStudentIdentifier",
+            "AccountableDistrictCode", "AccountableDistrictName",
+            "AccountableSchoolCode", "AccountableSchoolName",
+            "Sex", "customerReferenceId"),
+    # Mispelling in DC - "StudentIndentifier" in the original
+            c("StudentUniqueUuid", "TestScaleScore", "TestCSEMProbableRange",
+              "Filler51", "Filler52",
+              ifelse(abv == "DC", "StudentIndentifier", "StudentIdentifier"),
+              "ReportingDistrictCode", "ReportingDistrictName",
+              "ReportingSchoolCode", "ReportingSchoolName",
+              "Gender", "CustomerRefID")
+        )
+        write.csv(TMP_Data_2024, fname, row.names = FALSE, na = "")
+    } else {
+        ##    Use `write.csv` - `fwrite` had bug with number of printed digits
+        write.csv(FINAL_LONG_Data[StateAbbreviation == abv, ..tmp.vars],
+                  fname, row.names = FALSE, na = "")
+    }
+
+    zip(zipfile = paste0(fname, ".zip"), files = fname, flags = "-mqj")
+    # -mq doesn't leave a csv copy. j "junks" the directory structure (tree)
+    message("Finished with ", SGP:::getStateAbbreviation(abv, type = "state"))
+}
 
 ####  END State Abbreviation (ALL) Loop

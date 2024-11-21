@@ -62,36 +62,63 @@ center.var.names <- c(
     "StudentGrowthPercentileComparedtoConsortiaBaseline",
     "SGPRankedSimexConsortiaBaseline", "SGPTargetConsortiaBaseline")
 
-all.var.names <- c(pearson.var.names[1:11], center.var.names[1:4],
-                   pearson.var.names[12:13], center.var.names[5:44], # Old order
-                   pearson.var.names[14], center.var.names[45:50],
-                   pearson.var.names[15:40])  #  Added in 2021
+var.name.order <- c(pearson.var.names[1:11], center.var.names[1:4],
+                    pearson.var.names[12:13], center.var.names[5:44], # Old order
+                    pearson.var.names[14], center.var.names[45:50],
+                    pearson.var.names[15:40])  #  Added in 2021
 
 ##    Two additional variables for BIE & DoDEA
 addl.bie.dd.names <- c("customerReferenceId", "testAdminReferenceId", "growthIdentifier")
-all.var.names <- c(all.var.names, addl.bie.dd.names)
+all.var.names <- c(var.name.order, addl.bie.dd.names)
 bie.dd.var.names <- c(pearson.var.names, addl.bie.dd.names)
 
 
 ###   Read in spring 2024 data by state
 # TMP_Data_2024 <- fread(
-#     "./New_Jersey/Data/Base_Files/",
+#     "./New_Jersey/Data/Base_Files/PARCC_NJ_2023-2024_SGPO_D20240704.csv.gz",
 #     colClasses = rep("character", 90))[, ..pearson.var.names]
+TMP_Data_2024 <-
+    fread("./Bureau_of_Indian_Education/Data/Base_Files/bi_24_biespr24_SGPO_20240724-2137.csv",
+          colClasses = rep("character", length(all.var.names)))
+##  Align DC names with the other states/members
+# names(TMP_Data_2024)[!names(TMP_Data_2024) %in% all.var.names]
+setnames(TMP_Data_2024,
+    c("StudentUniqueUuid", "TestScaleScore", "TestCSEMProbableRange",
+    "Filler51", "Filler52", # Watch for mispelling in DC - "StudentIndentifier"
+    "StudentIdentifier", "ReportingDistrictCode", "ReportingDistrictName",
+    "ReportingSchoolCode", "ReportingSchoolName", "Gender", "CustomerRefID"),
+    # all.var.names[!all.var.names %in% names(TMP_Data_2024)]
+    c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM",
+    "TestingLocation", "LearningOption",
+    "StateStudentIdentifier", "AccountableDistrictCode", "AccountableDistrictName",
+    "AccountableSchoolCode", "AccountableSchoolName", "Sex", "customerReferenceId")
+)
+TMP_Data_2024 <- TMP_Data_2024[, ..bie.dd.var.names]
 # TMP_Data_2024 <-
-#     fread("./Bureau_of_Indian_Education/Data/Base_Files/",
+#     fread("./Department_Of_Defense/Data/Base_Files/pcspr24_state_Student_Growth_20240605201928380746.csv.gz",
 #           colClasses = rep("character", length(all.var.names)))[, ..bie.dd.var.names]
-# TMP_Data_2024 <-
-#     fread("./Department_Of_Defense/Data/Base_Files/",
-#           colClasses = rep("character", length(all.var.names)))[, ..bie.dd.var.names]
-TMP_Data_2024 <- fread(
-    "./Illinois/Data/Base_Files/PARCC_IL_2023-2024_SGPO_D20240516.csv.gz",
-    colClasses = rep("character", 90))[, ..pearson.var.names]
 # TMP_Data_2024 <- fread(
-#     "./Washington_DC/Data/Base_Files/",
+#     "./Illinois/Data/Base_Files/PARCC_IL_2023-2024_SGPO_D20240516.csv.gz",
 #     colClasses = rep("character", 90))[, ..pearson.var.names]
+# TMP_Data_2024 <- fread(
+#     "./Washington_DC/Data/Base_Files/dc_24_dcspr24_SGPO_20240708-1557.csv.gz",
+#     colClasses = rep("character", length(all.var.names)))#[, ..pearson.var.names]
+# ##  Align DC names with the other states/members
+# # names(TMP_Data_2024)[!names(TMP_Data_2024) %in% all.var.names]
+# setnames(TMP_Data_2024,
+#     c("StudentUniqueUuid", "TestScaleScore", "TestCSEMProbableRange",
+#     "Filler51", "Filler52", # Mispelling in DC - should be "StudentIdentifier"
+#     "StudentIndentifier", "ReportingDistrictCode", "ReportingDistrictName",
+#     "ReportingSchoolCode", "ReportingSchoolName", "Gender", "CustomerRefID"),
+#     # all.var.names[!all.var.names %in% names(TMP_Data_2024)]
+#     c("PANUniqueStudentID", "SummativeScaleScore", "SummativeCSEM",
+#     "TestingLocation", "LearningOption",
+#     "StateStudentIdentifier", "AccountableDistrictCode", "AccountableDistrictName",
+#     "AccountableSchoolCode", "AccountableSchoolName", "Sex", "customerReferenceId")
+# )
+# TMP_Data_2024 <- TMP_Data_2024[, ..pearson.var.names]
 
-
-setkey(TMP_Data_2024, PANUniqueStudentID, TestCode, Period)
+setkey(TMP_Data_2024, PANUniqueStudentID, StateStudentIdentifier, TestCode, Period)
 
 
 #####
@@ -99,23 +126,25 @@ setkey(TMP_Data_2024, PANUniqueStudentID, TestCode, Period)
 #####
 
 ###   ID
-##    BIE & DoDEA use `growthIdentifier` as of '23 -- change in formatting script
+##    DoDEA use `growthIdentifier` as of '23 
+##    BIE & DC uses `StateStudentIdentifier` as of '24 
+##    - Make changes in 1) analyses and 2) post- analysis formatting scripts
 setnames(TMP_Data_2024, "PANUniqueStudentID", "ID")
 
 ###   CONTENT_AREA from TestCode
 TMP_Data_2024[, CONTENT_AREA := factor(TestCode)]
-table(TMP_Data_2024$CONTENT_AREA)
+table(TMP_Data_2024$CONTENT_AREA, exclude = NULL)
 setattr(TMP_Data_2024$CONTENT_AREA, "levels",
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 8),  #   DC
         #   "GEOMETRY", rep("MATHEMATICS", 6)))
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7), #   NJ
         #   "GEOMETRY", rep("MATHEMATICS", 6)))
-        # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   BI
-        #   "GEOMETRY", rep("MATHEMATICS", 6),
-        #   "INTEGRATED_MATH_1", "INTEGRATED_MATH_2"))
+        c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   BI
+          "GEOMETRY", rep("MATHEMATICS", 6),
+          "INTEGRATED_MATH_1", "INTEGRATED_MATH_2", "INTEGRATED_MATH_3"))
         # c("ALGEBRA_I", "ALGEBRA_II", rep("ELA", 7),   #   DoDEA
         #   "GEOMETRY", rep("MATHEMATICS", 6)))
-        c(rep("ELA", 6), rep("MATHEMATICS", 6)))      #   IL
+        # c(rep("ELA", 6), rep("MATHEMATICS", 6)))      #   IL
 TMP_Data_2024[, CONTENT_AREA := as.character(CONTENT_AREA)]
 
 ###   GRADE from TestCode
@@ -126,9 +155,9 @@ TMP_Data_2024[, GRADE := as.character(GRADE)]
 table(TMP_Data_2024[, GRADE, TestCode], exclude = NULL)
 
 ###   YEAR
-TMP_Data_2024[, YEAR := gsub("-", "_", AssessmentYear)]
-TMP_Data_2024[which(Period == "Spring"), YEAR := paste0(YEAR, ".2")]
-
+# TMP_Data_2024[, YEAR := gsub("-", "_", AssessmentYear)]
+# TMP_Data_2024[which(Period == "Spring"), YEAR := paste0(YEAR, ".2")]
+TMP_Data_2024[, YEAR := "2023_2024.2"]  #  DC
 
 ###   Theta - create IRT CSEM
 scaling.constants <- as.data.table(read.csv(
@@ -153,6 +182,7 @@ TMP_Data_2024[, VALID_CASE := "VALID_CASE"]
 
 ###   Invalidate Cases with missing IDs - 0 invalid in FINAL data
 TMP_Data_2024[ID == "", VALID_CASE := "INVALID_CASE"] #|is.na(ID)
+# TMP_Data_2024[StateStudentIdentifier == "", VALID_CASE := "INVALID_CASE"] # BIE, DC, etc.
 
 ###   ACHIEVEMENT_LEVEL
 TMP_Data_2024 <- SGP:::getAchievementLevel(TMP_Data_2024, state = "PARCC")
@@ -183,28 +213,30 @@ TMP_Data_2024[, SCALE_SCORE_CSEM := as.numeric(SCALE_SCORE_CSEM)]
 TMP_Data_2024[, SCALE_SCORE_ACTUAL := as.numeric(SCALE_SCORE_ACTUAL)]
 TMP_Data_2024[, SCALE_SCORE_CSEM_ACTUAL := as.numeric(SCALE_SCORE_CSEM_ACTUAL)]
 
-dir.create("./Illinois/Data/Archive/2023_2024.2")
-assign("Illinois_Data_LONG_2023_2024.2", TMP_Data_2024)
-save(Illinois_Data_LONG_2023_2024.2,
+dir.create("./Bureau_of_Indian_Education/Data/Archive/2023_2024.2")
+assign("Bureau_of_Indian_Education_Data_LONG_2023_2024.2", TMP_Data_2024)
+save(Bureau_of_Indian_Education_Data_LONG_2023_2024.2,
     file =
-      file.path("Illinois/Data/Archive/2023_2024.2",
-                "Illinois_Data_LONG_2023_2024.2.Rdata")
+      file.path("Bureau_of_Indian_Education/Data/Archive/2023_2024.2",
+                "Bureau_of_Indian_Education_Data_LONG_2023_2024.2.Rdata")
 )
 
 
 #####
 ###   "Optional" variables for IL according to Growth Layout (v1)
 #####
-
 # table(TMP_Data_2024[, LearningOption], exclude = NULL)
 # table(TMP_Data_2024[, TestingLocation], exclude = NULL)
 
 
+###   For the member-specific reports, the below is located in
+###   Technical_Reports/*state*/2024/assets/rmd/Custom_Content/3.1_ANALYTICS__Data_Prep_PARCC.Rmd
+
 #' ## Data Preparation
 #'
-#' For the 2024 New Meridian Consortium data preparation and cleaning, we first
-#' combine all Consortium members individual datasets into a single table. We then
-#' modify the provided variable names to match what has been used in previous years
+#' For the 2024 Consortium data preparation and cleaning, we first combine all
+#' Consortium members individual datasets into a single table. We then modify
+#' the provided variable names to match what has been used in previous years
 #' or as required to conform to the `SGP` package conventions. Required variables
 #' `GRADE` and `CONTENT_AREA` are created from the provided `testCode` variable,
 #' and an achievement level variable is computed based on historical cut scores
@@ -216,5 +248,5 @@ save(Illinois_Data_LONG_2023_2024.2,
 #' * Students with **exact** duplicate records.
 #' * Student records in which the unique student identifier is missing.
 #' 
-#' In 2024 there were no duplicate or invalid cases found in the data recieved from
+#' In 2024 there were no duplicate or invalid cases found in the data received from
 #' Pearson.

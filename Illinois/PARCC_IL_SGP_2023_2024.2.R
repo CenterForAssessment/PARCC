@@ -94,7 +94,7 @@ Illinois_SGP <-
         )
     )
 
-###   Add R session Info & Save results (`cfaDocs` version 0.0-1.12 or later)
+###   Add R session info & save results (`cfaDocs` version 0.0-1.12 or later)
 source(
     system.file(
         "rmarkdown", "shared_resources", "rmd", "R_Session_Info.R",
@@ -133,10 +133,10 @@ save(Illinois_SGP, file = "./Data/Archive/2023_2024.2/Illinois_SGP.Rdata")
 #' SGPs for grades 4 through 8 ELA and mathematics. All SGP analyses calculate
 #' both uncorrected and SIMEX measurement corrected growth measures, resulting
 #' in four "versions" of the SGP growth metric using the same student data. All
-#' versions include up to two prior years' scores (i.e. 2021 and 2022) where available.
+#' versions include up to two prior years' scores (2022 and 2023) where available.
 #'
 #' In the calculation workflow, we first add pre-calculated baseline matrices
-#' to the Illinois (i.e. "`IL`") entry in the `SGPstateData` object.
+#' to the Illinois (i.e., "`IL`") entry in the `SGPstateData` object.
 #' The 2024 configuration scripts were loaded and combined into a single list
 #' object that serves to specify the exact analyses to be run.
 #' 
@@ -150,7 +150,7 @@ save(Illinois_SGP, file = "./Data/Archive/2023_2024.2/Illinois_SGP.Rdata")
 #' step), ***c)*** merge the results into the master longitudinal data set
 #' ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/combineSGP)
 #' step). and ***d)*** save the results in both `.Rdata` and pipe delimited versions
-#' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/outputSGP)
+#' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.1-0.0/topics/outputSGP)).
 #'
 #' The results were submitted after additional formatting, customization
 #' and data validation were completed.

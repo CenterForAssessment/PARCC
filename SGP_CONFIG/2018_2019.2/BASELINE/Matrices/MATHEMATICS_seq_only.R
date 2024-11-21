@@ -73,11 +73,15 @@ ALGEBRA_I_BASELINE.config <- list(
 
     ###   Baseline Cohort > 1,000
 
-    list(
-        sgp.baseline.content.areas = c("MATHEMATICS", "ALGEBRA_I"),
-        sgp.baseline.panel.years = order.1.years,
-        sgp.baseline.grade.sequences = c(6, "EOCT"),
-        sgp.baseline.grade.sequences.lags = 1),
+   ###
+  #####     This config is DUPLICATED!!!  Messed up NJ analyses (noticed/commented out in 2024) -- NOT RERUN as of 7/17/2024
+    # list(
+    #     sgp.baseline.content.areas = c("MATHEMATICS", "ALGEBRA_I"),
+    #     sgp.baseline.panel.years = order.1.years,
+    #     sgp.baseline.grade.sequences = c(6, "EOCT"),
+    #     sgp.baseline.grade.sequences.lags = 1),
+  #####
+   ###
 
     list( # Sequential 8th grade Math to Alg1
         sgp.baseline.content.areas = c("MATHEMATICS", "ALGEBRA_I"),
