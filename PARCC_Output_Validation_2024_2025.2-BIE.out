@@ -1,0 +1,124 @@
+###############################################################################
+###                       CONSORTIA OUTPUT VALIDATION                       ###
+###############################################################################
+
+
+			###        Bureau_of_Indian_Education Output Validation       ###
+
+###   TEST for Identical Variable Names in BASE and OUTPUT files: TRUE
+###   TEST for Identical Student ID in BASE and OUTPUT files: TRUE
+###   TEST for Identical IRTTheta in BASE and OUTPUT files: TRUE
+
+###   TEST of StudentGrowthPercentileComparedtoState:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    -       -      -     -       -    -  232  232            -
+    ALG02    -       -      -     -       -    -  640  640            -
+    ELA03    -       -      -     -       -    - 2019 2019            -
+    ELA04    1      25     50 49.59      75   99  324 1894         82.9
+    ELA05    1      25     49 49.54      74   99  334 1888         82.3
+    ELA06    1      24     48 48.86      74   99  398 1902         79.1
+    ELA07    1      25     49 49.37      74   99  331 1682         80.3
+    ELA08    1      24     48 48.67      74   99  322 1641         80.4
+    ELA11    -       -      -     -       -    - 1108 1108            -
+    GEO01    -       -      -     -       -    -  255  255            -
+    MAT03    -       -      -     -       -    - 2022 2022            -
+    MAT04    1      24     49 49.18      74   99  326 1877         82.6
+    MAT05    1      24     49 49.32      74   99  334 1885         82.3
+    MAT06    1   23.25     49 48.83      74   99  402 1892         78.8
+    MAT07    1      24     49 49.04      74   99  339 1663         79.6
+    MAT08    1      23     48 48.74      74   99  331 1627         79.7
+    MAT1I    -       -      -     -       -    -   30   30            -
+    MAT2I    -       -      -     -       -    -   28   28            -
+    MAT3I    -       -      -     -       -    -    1    1            -
+
+
+###   TEST of SGPRankedSimexState:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    -       -      -     -       -    -  232  232            -
+    ALG02    -       -      -     -       -    -  640  640            -
+    ELA03    -       -      -     -       -    - 2019 2019            -
+    ELA04    1      25     50 50.02      75   99  324 1894         82.9
+    ELA05    1      26     50 50.17      75   99  334 1888         82.3
+    ELA06    1      24     49 49.52   74.25   99  398 1902         79.1
+    ELA07    1      26     50 50.23      75   99  331 1682         80.3
+    ELA08    1      25     49  49.5      74   99  322 1641         80.4
+    ELA11    -       -      -     -       -    - 1108 1108            -
+    GEO01    -       -      -     -       -    -  255  255            -
+    MAT03    -       -      -     -       -    - 2022 2022            -
+    MAT04    1      25     50 50.03      75   99  326 1877         82.6
+    MAT05    1      25     50 50.11      75   99  334 1885         82.3
+    MAT06    1      25     49 49.76      75   99  402 1892         78.8
+    MAT07    1      25     50 50.15      75   99  339 1663         79.6
+    MAT08    1      24     49 49.63      75   99  331 1627         79.7
+    MAT1I    -       -      -     -       -    -   30   30            -
+    MAT2I    -       -      -     -       -    -   28   28            -
+    MAT3I    -       -      -     -       -    -    1    1            -
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortia:
+
+		No Consortia-level SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortia:
+
+		No Consortia-level SIMEX SGPs calculated:
+
+
+###   TEST of StudentGrowthPercentileComparedtoStateBaseline:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    -       -      -     -       -    -  232  232            -
+    ALG02    -       -      -     -       -    -  640  640            -
+    ELA03    -       -      -     -       -    - 2019 2019            -
+    ELA04    1      23     46 48.33      74   99  324 1894         82.9
+    ELA05    1      28     51 52.05      79   99  334 1888         82.3
+    ELA06    1      19     47 48.05   77.25   99  398 1902         79.1
+    ELA07    1      26     50 50.64      76   99  331 1682         80.3
+    ELA08    1      20     45 48.04      77   99  322 1641         80.4
+    ELA11    -       -      -     -       -    - 1108 1108            -
+    GEO01    -       -      -     -       -    -  255  255            -
+    MAT03    -       -      -     -       -    - 2022 2022            -
+    MAT04    1    19.5     45 47.47      75   99  326 1877         82.6
+    MAT05    1      20     47 48.39      77   99  334 1885         82.3
+    MAT06    1      19     44 46.02      72   99  402 1892         78.8
+    MAT07    1   33.75     55 55.31      82   99  339 1663         79.6
+    MAT08    1      18     41 44.09      69   99  331 1627         79.7
+    MAT1I    -       -      -     -       -    -   30   30            -
+    MAT2I    -       -      -     -       -    -   28   28            -
+    MAT3I    -       -      -     -       -    -    1    1            -
+
+
+###   TEST of SGPRankedSimexStateBaseline:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    -       -      -     -       -    -  232  232            -
+    ALG02    -       -      -     -       -    -  640  640            -
+    ELA03    -       -      -     -       -    - 2019 2019            -
+    ELA04    1      24     49 49.68      75   99  324 1894         82.9
+    ELA05    1      28     52 53.31      82   99  334 1888         82.3
+    ELA06    1   19.75     50 49.47      80   99  398 1902         79.1
+    ELA07    1      27     53 52.02      78   99  331 1682         80.3
+    ELA08    1      19     46 48.89      80   99  322 1641         80.4
+    ELA11    -       -      -     -       -    - 1108 1108            -
+    GEO01    -       -      -     -       -    -  255  255            -
+    MAT03    -       -      -     -       -    - 2022 2022            -
+    MAT04    1      20     48 48.55      78   99  326 1877         82.6
+    MAT05    1      19     47 48.94      79   99  334 1885         82.3
+    MAT06    1      19     45 46.52      74   99  402 1892         78.8
+    MAT07    1      36     58 56.79      83   99  339 1663         79.6
+    MAT08    1      16     41 45.05      73   99  331 1627         79.7
+    MAT1I    -       -      -     -       -    -   30   30            -
+    MAT2I    -       -      -     -       -    -   28   28            -
+    MAT3I    -       -      -     -       -    -    1    1            -
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortiaBaseline:
+
+		No consortium baseline SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortiaBaseline:
+
+		No consortium SIMEX adjusted baseline SGPs calculated:
+
+
+			###   END  Bureau_of_Indian_Education Output Validation   ###

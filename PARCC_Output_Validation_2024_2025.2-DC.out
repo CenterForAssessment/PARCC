@@ -1,0 +1,116 @@
+###############################################################################
+###                       CONSORTIA OUTPUT VALIDATION                       ###
+###############################################################################
+
+
+			###        Washington_DC Output Validation       ###
+
+###   TEST for Identical Variable Names in BASE and OUTPUT files: TRUE
+###   TEST for Identical Student ID in BASE and OUTPUT files: TRUE
+###   TEST for Identical IRTTheta in BASE and OUTPUT files: TRUE
+
+###   TEST of StudentGrowthPercentileComparedtoState:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    1      25     49  49.5      75   99 1157 5130         77.4
+    ALG02    -       -      -     -       -    -  314  314            -
+    ELA03    -       -      -     -       -    - 6704 6704            -
+    ELA04    1      25     50 49.84      75   99  383 6414           94
+    ELA05    1      25     50 49.99      75   99  382 6148         93.8
+    ELA06    1      25     50 49.89      75   99  382 5811         93.4
+    ELA07    1      24     50  49.7      75   99  394 5687         93.1
+    ELA08    1      25     50 49.73      75   99  347 5424         93.6
+    ELA09    1      25     50 49.86      75   99  551 4824         88.6
+    ELA10    1      24     50 49.63      75   99  627 4756         86.8
+    GEO01    1      24     49  49.3      74   99 1015 4866         79.1
+    MAT03    -       -      -     -       -    - 6726 6726            -
+    MAT04    1      25     49 49.76      75   99  349 6436         94.6
+    MAT05    1      25     50 50.05      75   99  341 6165         94.5
+    MAT06    1      25     50 49.89      75   99  356 5777         93.8
+    MAT07    1      25     50 49.74      75   99  363 5486         93.4
+    MAT08    1      25     50 49.68      75   99  316 3903         91.9
+
+
+###   TEST of SGPRankedSimexState:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    1      25     50 50.02      75   99 1157 5130         77.4
+    ALG02    -       -      -     -       -    -  314  314            -
+    ELA03    -       -      -     -       -    - 6704 6704            -
+    ELA04    1      25     50 50.01      75   99  383 6414           94
+    ELA05    1      25     50 50.19      75   99  382 6148         93.8
+    ELA06    1      25     50 50.09      75   99  382 5811         93.4
+    ELA07    1      25     50 49.92      75   99  394 5687         93.1
+    ELA08    1      25     50 49.96      75   99  347 5424         93.6
+    ELA09    1      25     50 50.11      75   99  551 4824         88.6
+    ELA10    1      25     50  49.9      75   99  627 4756         86.8
+    GEO01    1      24     48 49.09      74   99 1015 4866         79.1
+    MAT03    -       -      -     -       -    - 6726 6726            -
+    MAT04    1      25     50 50.01      75   99  349 6436         94.6
+    MAT05    1      25     50 50.27      75   99  341 6165         94.5
+    MAT06    1      25     50 50.14      75   99  356 5777         93.8
+    MAT07    1      25     50 50.03      75   99  363 5486         93.4
+    MAT08    1      25     50 50.11      75   99  316 3903         91.9
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortia:
+
+		No Consortia-level SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortia:
+
+		No Consortia-level SIMEX SGPs calculated:
+
+
+###   TEST of StudentGrowthPercentileComparedtoStateBaseline:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    1      22     49 49.02      75   99 1157 5130         77.4
+    ALG02    -       -      -     -       -    -  314  314            -
+    ELA03    -       -      -     -       -    - 6704 6704            -
+    ELA04    1      29     57 54.15      79   99  383 6414           94
+    ELA05    1      26     52 51.95      79   99  382 6148         93.8
+    ELA06    1      28     53 52.38      77   99  382 5811         93.4
+    ELA07    1      28     55 52.76      78   99  394 5687         93.1
+    ELA08    1      29     54 52.68      78   99  347 5424         93.6
+    ELA09    1      34     61 58.02      84   99  551 4824         88.6
+    ELA10    1      31     56 54.11      78   99  627 4756         86.8
+    GEO01    1      34     60 57.35      83   99 1015 4866         79.1
+    MAT03    -       -      -     -       -    - 6726 6726            -
+    MAT04    1      31     58 55.63      83   99  349 6436         94.6
+    MAT05    1      24     52 50.98      77   99  341 6165         94.5
+    MAT06    1      26     52 51.28      77   99  356 5777         93.8
+    MAT07    1      26     53 51.95      78   99  363 5486         93.4
+    MAT08    1      28     51 51.56      77   99  316 3903         91.9
+
+
+###   TEST of SGPRankedSimexStateBaseline:
+ TestCode Min. 1st Qu. Median  Mean 3rd Qu. Max.  NAs    N SGP_Calc_Pct
+    ALG01    1      21     50 49.12      76   99 1157 5130         77.4
+    ALG02    -       -      -     -       -    -  314  314            -
+    ELA03    -       -      -     -       -    - 6704 6704            -
+    ELA04    1      26     58 54.08      82   99  383 6414           94
+    ELA05    1      25     53 52.15      80   99  382 6148         93.8
+    ELA06    1      26     54 52.41      78   99  382 5811         93.4
+    ELA07    1      27     54 52.72      79   99  394 5687         93.1
+    ELA08    1      27     54 52.74      79   99  347 5424         93.6
+    ELA09    1      34     61 58.26      85   99  551 4824         88.6
+    ELA10    1      30     57 54.18      79   99  627 4756         86.8
+    GEO01    1      31     62 56.96      84   99 1015 4866         79.1
+    MAT03    -       -      -     -       -    - 6726 6726            -
+    MAT04    1      31     58 55.88      84   99  349 6436         94.6
+    MAT05    1      23     52 51.06      78   99  341 6165         94.5
+    MAT06    1      24     51 51.04      78   99  356 5777         93.8
+    MAT07    1      25     53 52.06      79   99  363 5486         93.4
+    MAT08    1      27     51 51.48      78   99  316 3903         91.9
+
+
+###   TEST of StudentGrowthPercentileComparedtoConsortiaBaseline:
+
+		No consortium baseline SGPs calculated:
+
+
+###   TEST of SGPRankedSimexConsortiaBaseline:
+
+		No consortium SIMEX adjusted baseline SGPs calculated:
+
+
+			###   END  Washington_DC Output Validation   ###

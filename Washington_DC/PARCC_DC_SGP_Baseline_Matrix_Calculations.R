@@ -10,12 +10,14 @@ require(data.table)
 
 ###   Load Original Washington_DC data from 2019 DC SGP Analyses
 
-load("Data/Archive/2022_2023.2/Washington_DC_SGP_LONG_Data.Rdata")
+load("Data/Archive/2023_2024.2/Washington_DC_SGP_LONG_Data.Rdata")
+# load("Data/Archive/2022_2023.2/Washington_DC_SGP_LONG_Data.Rdata")
 # load("Data/Archive/2018_2019.2/Washington_DC_SGP_LONG_Data.Rdata")
 
 ###   Create a smaller subset of the LONG data to work with.
 # bline.years <- c("2016_2017.2", "2017_2018.2", "2018_2019.2")
-bline.years <- c("2021_2022.2", "2022_2023.2")
+# bline.years <- c("2021_2022.2", "2022_2023.2")
+bline.years <- c("2021_2022.2", "2022_2023.2", "2023_2024.2")
 bline.subjects <- c("ELA", "MATHEMATICS", "ALGEBRA_I", "GEOMETRY")
 
 Washington_DC_Baseline_Data <-
@@ -27,16 +29,19 @@ Washington_DC_Baseline_Data <-
             SCALE_SCORE, SCALE_SCORE_CSEM, ACHIEVEMENT_LEVEL)
     ]
 
-ids <- unique(Washington_DC_Baseline_Data[YEAR=="2022_2023.2", ID])
+ids <- unique(Washington_DC_Baseline_Data[YEAR == "2023_2024.2", ID])
 Washington_DC_Baseline_Data <- Washington_DC_Baseline_Data[ID %in% ids, ]
 
-Washington_DC_Baseline_Data[, VALID_CASE := "VALID_CASE"]
+# Washington_DC_Baseline_Data[, VALID_CASE := "VALID_CASE"]
 
 rm(list = "Washington_DC_SGP_LONG_Data");gc()
 
 ###   Read in Baseline SGP Configuration Scripts and Combine
-source("../SGP_CONFIG/2023_2024.2/BASELINE/Matrices/ELA_DC_23.R")
-source("../SGP_CONFIG/2023_2024.2/BASELINE/Matrices/MATHEMATICS_DC_23.R")
+source("../SGP_CONFIG/2024_2025.2/BASELINE/ELA_DC_24.R")
+source("../SGP_CONFIG/2024_2025.2/BASELINE/MATHEMATICS_DC_24.R")
+##   Trial (single-prior only) matrices used in 2024
+# source("../SGP_CONFIG/2024_2024.2/BASELINE/Matrices/ELA_DC_23.R")
+# source("../SGP_CONFIG/2023_2024.2/BASELINE/Matrices/MATHEMATICS_DC_23.R")
 ##    Pre-COVID matrices used in 2023
 # source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/ELA_seq_only.R")
 # source("../SGP_CONFIG/2018_2019.2/BASELINE/Matrices/MATHEMATICS_seq_only.R")
@@ -53,6 +58,8 @@ Washington_DC_BASELINE_CONFIG <-
 ###
 ###    baselineSGP - To produce uncorrected and SIMEX baseline matrices
 ###
+
+# SGPstateData[["DC"]][["SGP_Configuration"]][["rq.method"]] <- "br"
 
 ###   First create shell SGP object
 Washington_DC_SGP <-
@@ -76,10 +83,11 @@ Washington_DC_Baseline_Matrices <-
         goodness.of.fit.print = FALSE,
         parallel.config = list(
             BACKEND = "PARALLEL",
-            WORKERS = list(TAUS = 11, SIMEX = 8)
+            WORKERS = list(TAUS = 11, SIMEX = 11)
         )
     )
 
 ###   Save results
-save(Washington_DC_Baseline_Matrices, file = "Data/Archive/Washington_DC_Baseline_Matrices-2023.Rdata")
+save(Washington_DC_Baseline_Matrices, file = "Data/Archive/Washington_DC_Baseline_Matrices-2024.Rdata")
+# save(Washington_DC_Baseline_Matrices, file = "Data/Archive/Washington_DC_Baseline_Matrices-2023.Rdata")
 # save(Washington_DC_Baseline_Matrices, file = "Data/Archive/Washington_DC_Baseline_Matrices.Rdata")
